@@ -5,21 +5,14 @@ import "./Popup.css";
 
 const Popup = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/pages/Popup/Popup.jsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React!
-        </a>
-      </header>
+    <div className="mx-2 my-3 p-0">
+      <div className="container">
+        <div className="d-flex justify-content-between align-items-start">
+          <h1 className="display" style={{ fontSize: 40, fontWeight: 200 }}>
+            Cobweb
+          </h1>
+        </div>
+      </div>
     </div>
   );
 };
