@@ -1,4 +1,5 @@
 import React from "react";
+// @ts-ignore
 import logo from "../../assets/img/icon-34.png";
 import "./Popup.css";
 
