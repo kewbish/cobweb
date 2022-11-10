@@ -16,6 +16,10 @@
 .env.test.local
 .env.production.local
 .history
+package-lock.json
 
 # secrets
 secrets.*.js
+secrets.*.ts
+
+Cobweb Playground.excalidraw

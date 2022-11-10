@@ -98,6 +98,9 @@ var options = {
     extensions: fileExtensions
       .map((extension) => "." + extension)
       .concat([".js", ".jsx", ".ts", ".tsx", ".css"]),
+    fallback: {
+      stream: require.resolve("stream-browserify"),
+    },
   },
   plugins: [
     new CleanWebpackPlugin({ verbose: false }),
@@ -150,6 +153,9 @@ var options = {
   ],
   infrastructureLogging: {
     level: "info",
+  },
+  experiments: {
+    topLevelAwait: true,
   },
 };
 
