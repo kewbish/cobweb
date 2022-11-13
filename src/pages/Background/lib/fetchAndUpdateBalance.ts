@@ -48,7 +48,7 @@ const fetchAndUpdateBalance = async ({
     balanceRes = BigNumber.from(availableBalance);
     storage.local.set({ balance: balanceRes });
   } catch (e) {
-    document.monetization = "stopped";
+    // document.monetization = "stopped";
     throw e;
   }
   if (balanceRes.eq(constants.Zero)) {

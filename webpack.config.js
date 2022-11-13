@@ -104,6 +104,15 @@ var options = {
     },
   },
   plugins: [
+    new webpack.ProvidePlugin({
+      Buffer: ["buffer", "Buffer"],
+    }),
+    new webpack.ProvidePlugin({
+      process: "process",
+    }),
+    new webpack.DefinePlugin({
+      "process.env": JSON.stringify(process.env),
+    }),
     new CleanWebpackPlugin({ verbose: false }),
     new webpack.ProgressPlugin(),
     // expose and write the allowed env vars on the compiled bundle

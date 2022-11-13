@@ -15,7 +15,6 @@ import {
   MONTAG_FOUND,
   USER_SET_WALLET,
   DELETE_STREAM,
-  UPDATE_STREAM,
   BLOCK_SITE,
   UPDATE_SETTING,
   EDIT_CURRENT_STREAM,
@@ -85,7 +84,7 @@ try {
 let sf: Framework | null = null;
 try {
   sf = await Framework.create({
-    chainId: 4,
+    chainId: 5,
     provider: infuraProvider,
   });
 } catch (e) {

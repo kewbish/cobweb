@@ -6,6 +6,7 @@ const FadedPill = ({ children }: { children: JSX.Element }) => {
       style={{
         borderRadius: "100px",
         padding: "8px",
+        marginBottom: 0,
       }}
       className="alert"
     >

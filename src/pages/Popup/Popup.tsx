@@ -160,7 +160,19 @@ const Popup = () => {
     }
   };
 
-  const [popoverOpen, setPopoverOpen] = useState(false);
+  useEffect(() => {
+    var popoverTriggerList = [].slice.call(
+      document.querySelectorAll('[data-bs-toggle="popover"]')
+    );
+    var popoverList = popoverTriggerList.map(function (
+      popoverTriggerEl: HTMLElement
+    ) {
+      return new bootstrap.Popover(popoverTriggerEl);
+    });
+    for (const popover of popoverList) {
+      popover.enable();
+    }
+  }, []);
 
   return (
     <div className="App mx-2 my-3 p-0">
@@ -172,55 +184,27 @@ const Popup = () => {
           </h1>
           <div
             style={{ marginTop: "-10px" }}
-            onMouseEnter={() => setPopoverOpen(true)}
-            onMouseLeave={() => setPopoverOpen(false)}
+            data-bs-toggle="popover"
+            title={ethers.utils.formatUnits(balance) + " " + TOKEN_MAP.ETH.name}
+            data-bs-trigger="hover focus"
+            data-bs-template={
+              '<div class="popover" role="tooltip"><div class="popover-arrow popover-arrow-override"></div><p class="popover-header"></p><div class="popover-body"></div></div>'
+            }
           >
-            <Link to="balance" style={{ textDecoration: "none" }}>
-              <FadedPill>
-                <div className="d-flex justify-content-end align-items-center h-auto">
-                  <div
-                    className="d-flex align-items-center"
-                    style={{ marginRight: "5px" }}
-                  >
-                    <p className="align-self-center m-0">
-                      {ethers.utils.formatUnits(balance.sub(balance.mod(1e12)))}{" "}
-                      {TOKEN_MAP.ETH.name}
-                    </p>
-                  </div>
-                  <ProfilePic width={40} address={address} />
+            <FadedPill>
+              <div className="d-flex justify-content-end align-items-center h-auto">
+                <div
+                  className="d-flex align-items-center"
+                  style={{ marginRight: "5px" }}
+                >
+                  <p className="align-self-center m-0">
+                    {ethers.utils.formatUnits(balance.sub(balance.mod(1e12)))}{" "}
+                    {TOKEN_MAP.ETH.name}
+                  </p>
                 </div>
-              </FadedPill>
-            </Link>
-          </div>
-        </div>
-        <div
-          style={{
-            position: "relative",
-          }}
-        >
-          <div
-            style={{
-              position: "absolute",
-              top: "-10px",
-              right: "0px",
-              zIndex: 1,
-              pointerEvents: "none",
-            }}
-          >
-            <div
-              className="popover"
-              style={{
-                borderRadius: "100px",
-                transform: "translateX(-100%)",
-                transition: "opacity 0.5s",
-                opacity: popoverOpen ? 1 : 0,
-                width: "max-content",
-              }}
-            >
-              <div className="popover-body" style={{ padding: "10px 15px" }}>
-                <p className="mb-0">{ethers.utils.formatUnits(balance)} ETH</p>
+                <ProfilePic width={40} address={address} />
               </div>
-            </div>
+            </FadedPill>
           </div>
         </div>
         <BackgroundBox>
@@ -234,7 +218,6 @@ const Popup = () => {
                 <p
                   className="display"
                   style={{
-                    fontSize: 40,
                     fontWeight: 200,
                     marginBottom: 0,
                   }}
@@ -255,7 +238,7 @@ const Popup = () => {
                 <div className="d-flex justify-content-evenly gap-2">
                   <button
                     type="button"
-                    className="btn p-1"
+                    className="btn p-1 glassy-cw-btn"
                     data-bs-toggle="modal"
                     data-bs-target="#editingStream"
                   >
@@ -263,14 +246,14 @@ const Popup = () => {
                   </button>
                   <button
                     type="button"
-                    className="btn p-1"
+                    className="btn p-1 glassy-cw-btn"
                     onClick={() => cancelStream(currentStream)}
                   >
                     Cancel stream
                   </button>
                   <button
                     type="button"
-                    className="btn p-1 "
+                    className="btn p-1 glassy-cw-btn"
                     data-bs-toggle="modal"
                     data-bs-target="#blockPage"
                   >
@@ -288,7 +271,7 @@ const Popup = () => {
                   {rate.rateAmount === constants.Zero ? (
                     <button
                       type="button"
-                      className="btn p-1 "
+                      className="btn p-1 glassy-cw-btn"
                       data-bs-toggle="modal"
                       data-bs-target="#unblockSite"
                     >
@@ -296,17 +279,17 @@ const Popup = () => {
                     </button>
                   ) : null}
                   <Link to="balance">
-                    <button type="button" className="btn p-1 ">
+                    <button type="button" className="btn p-1 glassy-cw-btn">
                       Manage balances
                     </button>
                   </Link>
                   <Link to="streams/out">
-                    <button type="button" className="btn p-1 ">
+                    <button type="button" className="btn p-1 glassy-cw-btn">
                       See past streams
                     </button>
                   </Link>
                   <Link to="settings/default">
-                    <button type="button" className="btn p-1 ">
+                    <button type="button" className="btn p-1 glassy-cw-btn">
                       Edit stream settings
                     </button>
                   </Link>
@@ -316,10 +299,9 @@ const Popup = () => {
           </div>
         </BackgroundBox>
         <div className="d-flex flex-row justify-content-between align-items-end">
-          <p className="mt-2 mb-0 text-muted">
+          <p className="mt-2 mb-0">
             <a
               href="https://github.com/kewbish/cobweb"
-              className="muted-link"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -328,28 +310,12 @@ const Popup = () => {
             |{" "}
             <a
               href="https://github.com/kewbish/cobweb/discussions"
-              className="muted-link"
               target="_blank"
               rel="noopener noreferrer"
             >
               get help
             </a>
           </p>
-          <Link to="dev">
-            <button
-              type="button"
-              className="btn "
-              style={{
-                marginTop: 5,
-                padding: 5,
-                fontSize: 20,
-                borderRadius: 8,
-                lineHeight: "0.5em",
-              }}
-            >
-              <i className="bi bi-terminal-fill"></i>
-            </button>
-          </Link>
         </div>
       </div>
       <DropdownModal id="editingStream" title="Edit stream">
@@ -372,7 +338,11 @@ const Popup = () => {
           <div className="d-flex gap-2">
             <button
               type="button"
-              className={"btn  p-1" + currentStream == null ? " disabled" : ""}
+              className={
+                "btn glassy-cw-btn p-1" + currentStream == null
+                  ? " disabled"
+                  : ""
+              }
               onClick={() => {
                 if (currentStream) {
                   cancelStream(currentStream);
@@ -384,7 +354,11 @@ const Popup = () => {
             </button>
             <button
               type="button"
-              className={"btn  p-1" + currentStream == null ? " disabled" : ""}
+              className={
+                "btn glassy-cw-btn p-1" + currentStream == null
+                  ? " disabled"
+                  : ""
+              }
               onClick={() => {
                 if (currentStream) {
                   blockStream(currentStream);

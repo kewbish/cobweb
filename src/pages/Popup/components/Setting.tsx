@@ -56,7 +56,7 @@ const Setting = ({
         {deleteSetting ? (
           <button
             type="button"
-            className="btn"
+            className="btn glassy-cw-btn"
             onClick={() => deleteSetting(skey)}
             style={{ padding: 10 }}
           >
@@ -66,7 +66,7 @@ const Setting = ({
         {!onBlur ? (
           <button
             type="button"
-            className="btn "
+            className="btn glassy-cw-btn"
             onClick={() => {
               setSetting({
                 oldKey: skey,
@@ -90,7 +90,7 @@ const Setting = ({
               </p>
               <button
                 type="button"
-                className="btn "
+                className="btn glassy-cw-btn"
                 onClick={() =>
                   setSetting({
                     oldKey: skey,
@@ -145,7 +145,10 @@ const Setting = ({
               }
             />
             <label
-              className={"btn  p-1"}
+              className={
+                "btn glassy-cw-btn p-1" +
+                (value.payWhen === PayRates.ANY ? " glassy-cw-btn-checked" : "")
+              }
               htmlFor="btnradio1"
               style={{ fontSize: 14 }}
             >
@@ -168,8 +171,11 @@ const Setting = ({
             />
             <label
               className={
-                "btn p-1" +
-                }
+                "btn glassy-cw-btn p-1" +
+                (value.payWhen === PayRates.FOCUS
+                  ? " glassy-cw-btn-checked"
+                  : "")
+              }
               htmlFor="btnradio2"
               style={{ fontSize: 14 }}
             >
@@ -190,7 +196,7 @@ const Setting = ({
               }
             />
             <label
-              className="btn  p-1"
+              className="btn glassy-cw-btn p-1"
               htmlFor="btnradio3"
               style={{ fontSize: 14 }}
             >
