@@ -4,7 +4,7 @@ import { constants } from "ethers";
 
 const blockSite = ({ site }: { site: string }) => {
   storage.local.set(({ settings }: { settings: RateSettings }) => {
-    settings[site] = { pay: PayRates.BLOCKED, rateAmount: constants.Zero };
+    settings[site] = { payWhen: PayRates.BLOCKED, rateAmount: constants.Zero };
     return settings;
   });
 };

@@ -4,6 +4,7 @@ import {
   MonetizationPending,
   MonetizationStop,
 } from "../../shared/monetization";
+// @ts-expect-error
 import { v5 as fromString } from "uuid";
 import NAMESPACE from "./secrets.uuid";
 import { BigNumber, Signer, utils } from "ethers";

@@ -1,18 +1,405 @@
-import React from "react";
-// @ts-ignore
-import logo from "../../assets/img/icon-34.png";
-import "./Popup.css";
+import { ethers, BigNumber, constants } from "ethers";
+import React, { useEffect, useState } from "react";
+import { Link, Navigate, useSearchParams } from "react-router-dom";
+import {
+  DELETE_STREAM,
+  BLOCK_SITE,
+  UPDATE_SETTING,
+  UPDATE_STREAM,
+  FETCH_BALANCE,
+} from "../shared/events";
+import { useChromeStorageLocal } from "use-chrome-storage";
+import { PayRates, Stream } from "../shared/types";
+import Setting from "./components/Setting";
+import DropdownModal from "./components/DropdownModal";
+import BackgroundBox from "./components/BackgroundBox";
+import ProfilePic from "./components/ProfilePic";
+import FadedPill from "./components/FadedPill";
+import streamedUntilNow from "./lib/streamedUntilNow";
+import { getRate } from "../Background/lib/getRate";
+import Onboarding from "./components/OnboardingCarousel";
+
+import "bootstrap-icons/font/bootstrap-icons.css";
+// @ts-expect-error
+import bootstrap from "bootstrap/dist/js/bootstrap.bundle";
+import TOKEN_MAP from "../shared/tokens";
 
 const Popup = () => {
+  const [address, , addressSet]: [string, any, boolean, any] =
+    useChromeStorageLocal("extend-chrome/storage__local--address", "");
+  const [balance, setBalance] = useState(constants.Zero);
+  const [balanceRes, , ,]: [any, any, any, any] = useChromeStorageLocal(
+    "extend-chrome/storage__local--balance",
+    null
+  );
+  const [, , cwInitializedSet]: [any, any, boolean, any] =
+    useChromeStorageLocal("extend-chrome/storage__local--cwInitialized", null);
+
+  useEffect(() => {
+    chrome.runtime.sendMessage({
+      message: FETCH_BALANCE,
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!balanceRes) {
+      return;
+    }
+    setBalance(BigNumber.from(balanceRes));
+  }, [balanceRes]);
+
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const welcomeModal = new bootstrap.Modal(
+      document.getElementById("welcome")
+    );
+    if (searchParams.get("onboarding") === "true") {
+      welcomeModal.show();
+    }
+  }, [searchParams]);
+
+  const [currentStreams, , ,]: [Array<Stream>, any, any, any] =
+    useChromeStorageLocal("streams", []);
+
+  const [tabId, setTabId] = useState(0);
+  const [url, setUrl] = useState("");
+  const [rate, setRate] = useState({
+    rateAmount: constants.Zero,
+    payWhen: PayRates.ANY,
+  });
+
+  useEffect(() => {
+    try {
+      chrome.tabs.query({ active: true }, async (tabs: chrome.tabs.Tab[]) => {
+        if (!tabs) {
+          return;
+        }
+        setTabId(tabs[0].id ?? 0);
+        setUrl(tabs[0].url ?? tabs[0].pendingUrl ?? "");
+        setRate(
+          (await getRate(url)) ?? {
+            rateAmount: constants.Zero,
+            payWhen: PayRates.ANY,
+          }
+        );
+      });
+    } catch (e) {
+      throw new Error("couldn't get current tab rate");
+    }
+  }, [url]);
+
+  const [currentStream, setCurrentStream] = useState<Stream | null>(null);
+
+  useEffect(() => {
+    setCurrentStream(
+      currentStreams.filter((stream: Stream) => stream.tabId === tabId)[0]
+    );
+  }, [tabId, currentStreams]);
+
+  const editStream = async ({
+    oldKey,
+    newKey,
+    rateAmt,
+  }: {
+    oldKey: string;
+    newKey: string;
+    rateAmt: BigNumber;
+  }) => {
+    if (!currentStream) {
+      throw new Error("Expected stream");
+    }
+    try {
+      chrome.runtime.sendMessage({
+        message: UPDATE_SETTING,
+        options: {
+          oldKey,
+          newKey,
+          rateAmt,
+        },
+      });
+      chrome.runtime.sendMessage({
+        message: UPDATE_STREAM,
+        options: {
+          rateAmount: rateAmt,
+          to: currentStream.recipient,
+          tabId,
+          url,
+        },
+      });
+    } catch {
+      throw new Error("Could not update settings");
+    }
+  };
+
+  const cancelStream = async (stream: Stream) => {
+    try {
+      chrome.runtime.sendMessage({
+        message: DELETE_STREAM,
+        options: {
+          tabId: stream.tabId,
+        },
+      });
+    } catch {
+      throw new Error("Couldn't cancel stream");
+    }
+  };
+
+  const blockStream = async (stream: Stream) => {
+    try {
+      await cancelStream(stream);
+      const hostname = new URL(url).hostname;
+      chrome.runtime.sendMessage({
+        message: BLOCK_SITE,
+        options: {
+          site: hostname,
+        },
+      });
+    } catch {
+      throw new Error("Couldn't block site");
+    }
+  };
+
+  const [popoverOpen, setPopoverOpen] = useState(false);
+
   return (
-    <div className="mx-2 my-3 p-0">
+    <div className="App mx-2 my-3 p-0">
+      {!addressSet || !cwInitializedSet ? <Navigate to="/welcome" /> : null}
       <div className="container">
         <div className="d-flex justify-content-between align-items-start">
           <h1 className="display" style={{ fontSize: 40, fontWeight: 200 }}>
             Cobweb
           </h1>
+          <div
+            style={{ marginTop: "-10px" }}
+            onMouseEnter={() => setPopoverOpen(true)}
+            onMouseLeave={() => setPopoverOpen(false)}
+          >
+            <Link to="balance" style={{ textDecoration: "none" }}>
+              <FadedPill>
+                <div className="d-flex justify-content-end align-items-center h-auto">
+                  <div
+                    className="d-flex align-items-center"
+                    style={{ marginRight: "5px" }}
+                  >
+                    <p className="align-self-center m-0">
+                      {ethers.utils.formatUnits(balance.sub(balance.mod(1e12)))}{" "}
+                      {TOKEN_MAP.ETH.name}
+                    </p>
+                  </div>
+                  <ProfilePic width={40} address={address} />
+                </div>
+              </FadedPill>
+            </Link>
+          </div>
+        </div>
+        <div
+          style={{
+            position: "relative",
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              top: "-10px",
+              right: "0px",
+              zIndex: 1,
+              pointerEvents: "none",
+            }}
+          >
+            <div
+              className="popover"
+              style={{
+                borderRadius: "100px",
+                transform: "translateX(-100%)",
+                transition: "opacity 0.5s",
+                opacity: popoverOpen ? 1 : 0,
+                width: "max-content",
+              }}
+            >
+              <div className="popover-body" style={{ padding: "10px 15px" }}>
+                <p className="mb-0">{ethers.utils.formatUnits(balance)} ETH</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <BackgroundBox>
+          <div>
+            {currentStream ? (
+              <>
+                <h2 style={{ fontWeight: 400, marginBottom: 0 }}>
+                  Web Monetization Enabled
+                </h2>
+                <hr className="my-1" />
+                <p
+                  className="display"
+                  style={{
+                    fontSize: 40,
+                    fontWeight: 200,
+                    marginBottom: 0,
+                  }}
+                  id="streamed-until"
+                  data-bs-toggle="popover"
+                  data-bs-trigger="hover focus"
+                  data-bs-placement="bottom"
+                  data-bs-content={ethers.utils.formatUnits(
+                    streamedUntilNow(currentStream)
+                  )}
+                >
+                  {(+streamedUntilNow(currentStream)).toFixed(4)} ETH
+                </p>
+                <p>
+                  streamed so far to{" "}
+                  <span className="purple">{currentStream.url}</span>
+                </p>
+                <div className="d-flex justify-content-evenly gap-2">
+                  <button
+                    type="button"
+                    className="btn p-1"
+                    data-bs-toggle="modal"
+                    data-bs-target="#editingStream"
+                  >
+                    Edit stream
+                  </button>
+                  <button
+                    type="button"
+                    className="btn p-1"
+                    onClick={() => cancelStream(currentStream)}
+                  >
+                    Cancel stream
+                  </button>
+                  <button
+                    type="button"
+                    className="btn p-1 "
+                    data-bs-toggle="modal"
+                    data-bs-target="#blockPage"
+                  >
+                    Block this page
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <h2 style={{ fontWeight: 400, marginBottom: 0 }}>
+                  Web Monetization Disabled
+                </h2>
+                <hr className="my-1 mb-2" />
+                <div className="d-flex justify-content-evenly gap-2">
+                  {rate.rateAmount === constants.Zero ? (
+                    <button
+                      type="button"
+                      className="btn p-1 "
+                      data-bs-toggle="modal"
+                      data-bs-target="#unblockSite"
+                    >
+                      Unblock site
+                    </button>
+                  ) : null}
+                  <Link to="balance">
+                    <button type="button" className="btn p-1 ">
+                      Manage balances
+                    </button>
+                  </Link>
+                  <Link to="streams/out">
+                    <button type="button" className="btn p-1 ">
+                      See past streams
+                    </button>
+                  </Link>
+                  <Link to="settings/default">
+                    <button type="button" className="btn p-1 ">
+                      Edit stream settings
+                    </button>
+                  </Link>
+                </div>
+              </>
+            )}
+          </div>
+        </BackgroundBox>
+        <div className="d-flex flex-row justify-content-between align-items-end">
+          <p className="mt-2 mb-0 text-muted">
+            <a
+              href="https://github.com/kewbish/cobweb"
+              className="muted-link"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              view source
+            </a>{" "}
+            |{" "}
+            <a
+              href="https://github.com/kewbish/cobweb/discussions"
+              className="muted-link"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              get help
+            </a>
+          </p>
+          <Link to="dev">
+            <button
+              type="button"
+              className="btn "
+              style={{
+                marginTop: 5,
+                padding: 5,
+                fontSize: 20,
+                borderRadius: 8,
+                lineHeight: "0.5em",
+              }}
+            >
+              <i className="bi bi-terminal-fill"></i>
+            </button>
+          </Link>
         </div>
       </div>
+      <DropdownModal id="editingStream" title="Edit stream">
+        <>
+          <p className="purple">This will instantly take effect.</p>
+          <Setting
+            skey={url}
+            value={rate}
+            setSetting={editStream}
+            onBlur={false}
+          />
+        </>
+      </DropdownModal>
+      <DropdownModal
+        id="blockPage"
+        title="Do you want to block this site once or forever?"
+      >
+        <>
+          <p className="purple">You can always change this in settings.</p>
+          <div className="d-flex gap-2">
+            <button
+              type="button"
+              className={"btn  p-1" + currentStream == null ? " disabled" : ""}
+              onClick={() => {
+                if (currentStream) {
+                  cancelStream(currentStream);
+                }
+              }}
+              data-bs-dismiss="modal"
+            >
+              Once
+            </button>
+            <button
+              type="button"
+              className={"btn  p-1" + currentStream == null ? " disabled" : ""}
+              onClick={() => {
+                if (currentStream) {
+                  blockStream(currentStream);
+                }
+              }}
+              data-bs-dismiss="modal"
+            >
+              Forever
+            </button>
+          </div>
+        </>
+      </DropdownModal>
+      <DropdownModal id="welcome" title="Welcome to CobWeb!">
+        <Onboarding />
+      </DropdownModal>
     </div>
   );
 };

@@ -100,6 +100,7 @@ var options = {
       .concat([".js", ".jsx", ".ts", ".tsx", ".css"]),
     fallback: {
       stream: require.resolve("stream-browserify"),
+      process: require.resolve("process"),
     },
   },
   plugins: [
