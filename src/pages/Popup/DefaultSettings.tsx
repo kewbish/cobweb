@@ -1,7 +1,7 @@
 import React from "react";
 import { BigNumber, constants } from "ethers";
 import { useChromeStorageLocal } from "use-chrome-storage";
-import { Rate, PayRates } from "../shared/types";
+import { Rate } from "../shared/types";
 import TokenInput from "./components/TokenInput";
 import { useState, useEffect } from "react";
 import { ethers } from "ethers";
@@ -10,13 +10,14 @@ import CobwebPage from "./components/CobwebPage";
 import InfoPopover from "./components/InfoPopover";
 // @ts-expect-error
 import bootstrap from "bootstrap/dist/js/bootstrap.bundle";
+import fallbackRate from "../shared/fallbackRate";
 
 const DefaultSettings = () => {
   const [defaultRate, setDefaultRate, ,]: [Rate, any, any, any] =
-    useChromeStorageLocal("extend-chrome/storage__local--defaultRate", {
-      rateAmount: BigNumber.from(100),
-      payWhen: PayRates.ANY,
-    });
+    useChromeStorageLocal(
+      "extend-chrome/storage__local--defaultRate",
+      fallbackRate
+    );
 
   const [timeSpent, setTimeSpent] = useState(60);
 
