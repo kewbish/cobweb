@@ -22,7 +22,7 @@ const fetchAndUpdateBalance = async ({
     if (
       !addressRes ||
       !utils.getAddress(addressRes) ||
-      (await mmProvider.resolveName(addressRes))
+      !(await mmProvider.resolveName(addressRes))
     ) {
       throw new Error("Wallet address is invalid.");
     }
