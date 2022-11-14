@@ -24,8 +24,8 @@ p {
   font-size: 18px;
 }
 
-.purple {
-  color: #d6c4fd;
+.blue {
+  color: var(--bs-primary);
 }
 
 .glassy-cw-btn {
@@ -82,4 +82,17 @@ p {
 
 .popover-arrow-override {
   display: none !important;
+}
+
+.dropdown-item {
+  color: "white";
+  padding: 0.5rem 1rem;
+}
+
+.cobweb-link {
+  transition: ease-in-out 0.2s;
+}
+
+.cobweb-link:hover {
+  color: var(--bs-blue);
 }

@@ -233,7 +233,7 @@ const Popup = () => {
                 </p>
                 <p>
                   streamed so far to{" "}
-                  <span className="purple">{currentStream.url}</span>
+                  <span className="blue">{currentStream.url}</span>
                 </p>
                 <div className="d-flex justify-content-evenly gap-2">
                   <button
@@ -304,6 +304,7 @@ const Popup = () => {
               href="https://github.com/kewbish/cobweb"
               target="_blank"
               rel="noopener noreferrer"
+              className="cobweb-link"
             >
               view source
             </a>{" "}
@@ -312,6 +313,7 @@ const Popup = () => {
               href="https://github.com/kewbish/cobweb/discussions"
               target="_blank"
               rel="noopener noreferrer"
+              className="cobweb-link"
             >
               get help
             </a>
@@ -320,7 +322,7 @@ const Popup = () => {
       </div>
       <DropdownModal id="editingStream" title="Edit stream">
         <>
-          <p className="purple">This will instantly take effect.</p>
+          <p className="blue">This will instantly take effect.</p>
           <Setting
             skey={url}
             value={rate}
@@ -334,7 +336,7 @@ const Popup = () => {
         title="Do you want to block this site once or forever?"
       >
         <>
-          <p className="purple">You can always change this in settings.</p>
+          <p className="blue">You can always change this in settings.</p>
           <div className="d-flex gap-2">
             <button
               type="button"

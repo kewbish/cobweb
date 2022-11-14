@@ -2,8 +2,8 @@ import React from "react";
 import { BigNumberInput } from "big-number-input";
 import { BigNumber, constants } from "ethers";
 import { useState } from "react";
-import TOKEN_MAP from "../../shared/tokens";
-import { Token } from "../../shared/types";
+// import TOKEN_MAP from "../../shared/tokens";
+// import { Token } from "../../shared/types";
 
 const TokenInput = ({
   value,
@@ -20,7 +20,7 @@ const TokenInput = ({
   fontSize?: number;
   small?: boolean;
 }) => {
-  const [currency, setCurrency] = useState(TOKEN_MAP.fDAI.name);
+  // const [currency, setCurrency] = useState(TOKEN_MAP.fDAI.name);
 
   return (
     <BigNumberInput
@@ -41,12 +41,13 @@ const TokenInput = ({
             onBlur={onBlur}
             disabled={disabled ?? false}
             style={{
-              borderRadius: "16px 0 0 16px",
+              // borderRadius: "16px 0 0 16px",
+              borderRadius: 16,
               ...(fontSize && { fontSize }),
               textAlign: "center",
             }}
           />
-          <button
+          {/*<button
             className="glassy-cw-btn dropdown-toggle"
             type="button"
             data-bs-toggle="dropdown"
@@ -61,7 +62,7 @@ const TokenInput = ({
             {currency}
           </button>
           <ul
-            className="dropdown-menu glassy-dd"
+            className="dropdown-menu"
             style={{
               backgroundImage: "none",
               borderRadius: 16,
@@ -75,7 +76,7 @@ const TokenInput = ({
                 </div>
               </li>
             ))}
-          </ul>
+          </ul>*/}
         </div>
       )}
     />
