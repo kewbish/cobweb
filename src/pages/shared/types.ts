@@ -38,3 +38,12 @@ export interface Rate {
 export interface RateSettings {
   [key: string]: Rate;
 }
+
+export interface GraphQlStream {
+  id: string;
+  addressInOut: string;
+  updatedAtTimestamp: Date;
+  token: Token;
+  streamedUntilUpdatedAt: BigNumber;
+  userData?: string;
+}

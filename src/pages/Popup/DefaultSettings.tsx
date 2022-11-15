@@ -98,6 +98,9 @@ const DefaultSettings = () => {
                     )
                   : constants.Zero
               )}
+              data-bs-template={
+                '<div class="popover" role="tooltip"><div class="popover-arrow popover-arrow-override"></div><p class="popover-header"></p><div class="popover-body"></div></div>'
+              }
             >
               {(+ethers.utils.formatUnits(
                 Boolean(defaultRate)
@@ -122,6 +125,9 @@ const DefaultSettings = () => {
                     )
                   : constants.Zero
               )}
+              data-bs-template={
+                '<div class="popover" role="tooltip"><div class="popover-arrow popover-arrow-override"></div><p class="popover-header"></p><div class="popover-body"></div></div>'
+              }
             >
               {(+ethers.utils.formatUnits(
                 Boolean(defaultRate)
@@ -146,6 +152,9 @@ const DefaultSettings = () => {
                     )
                   : constants.Zero
               )}
+              data-bs-template={
+                '<div class="popover" role="tooltip"><div class="popover-arrow popover-arrow-override"></div><p class="popover-header"></p><div class="popover-body"></div></div>'
+              }
             >
               {(+ethers.utils.formatUnits(
                 Boolean(defaultRate)
@@ -170,6 +179,9 @@ const DefaultSettings = () => {
                     )
                   : constants.Zero
               )}
+              data-bs-template={
+                '<div class="popover" role="tooltip"><div class="popover-arrow popover-arrow-override"></div><p class="popover-header"></p><div class="popover-body"></div></div>'
+              }
             >
               {(+ethers.utils.formatUnits(
                 Boolean(defaultRate)

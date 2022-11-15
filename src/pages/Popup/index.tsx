@@ -12,6 +12,7 @@ import ManageBalances from "./ManageBalances";
 import Popup from "./Popup";
 import DowngradingTokens from "./DowngradingTokens";
 import UpgradingTokens from "./UpgradingTokens";
+import ListStreamsOut from "./ListStreamsOut";
 
 render(
   <Router>
@@ -22,6 +23,7 @@ render(
       <Route path="balance" element={<ManageBalances />} />
       <Route path="balance/downgrade" element={<DowngradingTokens />} />
       <Route path="balance/upgrade" element={<UpgradingTokens />} />
+      <Route path="streams/out" element={<ListStreamsOut />} />
     </Routes>
   </Router>,
   window.document.querySelector("#app-container")
