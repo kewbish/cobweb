@@ -50,7 +50,7 @@ const ListStreamsOut = () => {
               <CurrentStreamComponent stream={stream} key={stream.tabId} />
             ))
           ) : (
-            <p className="purple mb-1">No streams found.</p>
+            <p className="blue mb-1">No streams found.</p>
           )}
         </div>
         <h2 className="mb-0">Past Streams</h2>
@@ -61,7 +61,7 @@ const ListStreamsOut = () => {
               <StreamComponent stream={stream} key={stream.id} isIn={true} />
             ))
           ) : (
-            <p className="purple mb-1">No streams found.</p>
+            <p className="blue mb-1">No streams found.</p>
           )}
         </div>
       </>
