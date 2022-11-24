@@ -4,6 +4,7 @@ import { GraphQlStream } from "../shared/types";
 import { getStreamsDeepIn } from "./lib/getStreams";
 import StreamComponent from "./components/StreamComponent";
 import CobwebPage from "./components/CobwebPage";
+import { toast } from "../shared/toast";
 
 const ListStreamsIn = () => {
   const [mmAddress, , ,]: [string, any, any, any] = useChromeStorageLocal(
@@ -17,12 +18,12 @@ const ListStreamsIn = () => {
       try {
         const res = await getStreamsDeepIn(mmAddress);
         if (!res) {
-          // throw new Error("Expected streams");
+          throw new Error("Expected streams");
         } else {
           setStreams(res);
         }
       } catch {
-        throw new Error("Could not fetch streams");
+        toast("Could not fetch streams");
       }
     };
 

@@ -11,6 +11,7 @@ import { UPDATE_STREAM } from "../shared/events";
 import CobwebPage from "./components/CobwebPage";
 // @ts-expect-error
 import bootstrap from "bootstrap/dist/js/bootstrap.bundle";
+import { toast } from "../shared/toast";
 
 const ListSettings = () => {
   const [rateSettings, setRateSettings, ,]: [RateSettings, any, any, any] =
@@ -57,7 +58,7 @@ const ListSettings = () => {
       });
       resetNewSetting();
     } catch {
-      throw new Error("Couldn't add setting");
+      toast("Couldn't add setting");
     }
   };
 
@@ -68,7 +69,7 @@ const ListSettings = () => {
         return prevSettings;
       });
     } catch {
-      throw new Error("Couldn't delete setting");
+      toast("Couldn't delete setting");
     }
   };
 
@@ -103,7 +104,7 @@ const ListSettings = () => {
         });
       }
     } catch {
-      throw new Error("Couldn't update setting");
+      toast("Couldn't update setting");
     }
   };
 

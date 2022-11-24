@@ -22,6 +22,7 @@ import {
   APPROVE_AMT,
   DOWNGRADE_TOKEN,
   UPGRADE_TOKEN,
+  NEW_TOAST,
 } from "../shared/events";
 import TOKEN_MAP from "../shared/tokens";
 import { Wallet } from "../shared/types";
@@ -36,6 +37,8 @@ import fetchAndUpdateBalance from "./lib/fetchAndUpdateBalance";
 import setNewAddress from "./lib/updateAddress";
 import approveAmt from "./lib/approveAmt";
 import { downgradeTokens, upgradeTokens } from "./lib/wrapTokens";
+import setNewToast, { deleteToast } from "./lib/setNewToast";
+import errorToast, { toast } from "../shared/toast";
 
 const metamaskProvider = createMetaMaskProvider();
 
@@ -68,6 +71,7 @@ try {
     new ethers.utils.SigningKey(newWallet.privateKey),
     mmProvider
   );
+  errorToast(e as Error);
   throw e;
 }
 
@@ -77,7 +81,8 @@ try {
     projectId: INFURA_PROJECT_ID,
     projectSecret: INFURA_PROJECT_SECRET,
   });
-} catch {
+} catch (e) {
+  toast("Error - failed to initialize provider");
   throw new Error("Error - failed to initialize provider");
 }
 
@@ -88,26 +93,33 @@ try {
     provider: infuraProvider,
   });
 } catch (e) {
+  errorToast(e as Error);
   throw e;
 }
 
 let sfSigner: Signer | null = null;
 try {
-  if (!walletRes) {
+  if (!walletRes || !sf || !infuraProvider) {
+    toast("Error - expected wallet.");
     throw new Error("Error - expected wallet.");
+  } else {
+    sfSigner = sf.createSigner({
+      privateKey: (walletRes as ethers.Wallet).privateKey,
+      provider: infuraProvider as InfuraProvider,
+    });
   }
-  sfSigner = sf.createSigner({
-    privateKey: (walletRes as ethers.Wallet).privateKey,
-    provider: infuraProvider,
-  });
 } catch (e) {
+  errorToast(e as Error);
   throw e;
 }
 
 let sfToken: SuperToken | null = null;
 try {
-  sfToken = await sf.loadSuperToken(TOKEN_MAP.fDAI.name);
+  if (sf) {
+    sfToken = await sf.loadSuperToken(TOKEN_MAP.fDAI.name);
+  }
 } catch (e) {
+  errorToast(e as Error);
   throw e;
 }
 
@@ -233,6 +245,13 @@ const upgradeTokenAmount = async ({ request }: { request: any }) => {
   });
 };
 
+const createNewToast = async ({ request }: { request: any }) => {
+  setNewToast(request.options.message);
+  setTimeout(() => {
+    deleteToast(request.options.message);
+  }, 5050);
+};
+
 const handleMessaging = async (
   request: any,
   sender: chrome.runtime.MessageSender,
@@ -290,6 +309,11 @@ const handleMessaging = async (
     }
     case UPGRADE_TOKEN: {
       upgradeTokenAmount({ request });
+      sendResponse();
+      return;
+    }
+    case NEW_TOAST: {
+      createNewToast({ request });
       sendResponse();
       return;
     }

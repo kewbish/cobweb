@@ -10,3 +10,4 @@ export const FETCH_BALANCE = "user/fetch-balance";
 export const APPROVE_AMT = "user/approve-amt";
 export const DOWNGRADE_TOKEN = "tokens/downgrade";
 export const UPGRADE_TOKEN = "tokens/upgrade";
+export const NEW_TOAST = "toast/new";

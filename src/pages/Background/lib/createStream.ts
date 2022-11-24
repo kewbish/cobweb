@@ -12,6 +12,7 @@ import { Stream } from "../../shared/types";
 import { storage } from "@extend-chrome/storage";
 import { Framework, SuperToken } from "@superfluid-finance/sdk-core";
 import { InfuraProvider } from "@ethersproject/providers";
+import errorToast from "../../shared/toast";
 
 const createStream = async ({
   from,
@@ -77,7 +78,7 @@ const createStream = async ({
         finalized: true,
       })
     );
-    throw e;
+    errorToast(e as Error);
   }
 
   const { streams } = await storage.local.get("streams");
@@ -153,7 +154,7 @@ export const updateStream = async ({
     });
     updateStream = await updateStreamOperation.exec(sfSigner);
   } catch (e) {
-    throw e;
+    errorToast(e as Error);
   }
 
   const { streams } = await storage.local.get("streams");

@@ -1,4 +1,5 @@
 import { storage } from "@extend-chrome/storage";
+import errorToast, { toast } from "../../shared/toast";
 import { Framework, SuperToken } from "@superfluid-finance/sdk-core";
 import { BigNumber, Signer, Wallet } from "ethers";
 
@@ -16,6 +17,8 @@ const approveAmt = async ({
   try {
     const { wallet }: { wallet: Wallet } = await storage.local.get("wallet");
     if (!wallet) {
+      // throw new Error("Expected wallet.");
+      toast("No wallet found");
       throw new Error("Expected wallet.");
     }
     const updateFlowOperatorOperation = sf.cfaV1.updateFlowOperatorPermissions({
@@ -26,6 +29,7 @@ const approveAmt = async ({
     });
     await updateFlowOperatorOperation.exec(sfSigner);
   } catch (e) {
+    errorToast(e as Error);
     throw e;
   }
 };

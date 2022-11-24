@@ -23,6 +23,7 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 // @ts-expect-error
 import bootstrap from "bootstrap/dist/js/bootstrap.bundle";
 import TOKEN_MAP from "../shared/tokens";
+import { toast } from "../shared/toast";
 
 const Popup = () => {
   const [address, , addressSet]: [string, any, boolean, any] =
@@ -85,7 +86,7 @@ const Popup = () => {
         );
       });
     } catch (e) {
-      throw new Error("couldn't get current tab rate");
+      toast("Couldn't get current tab rate");
     }
   }, [url]);
 
@@ -107,7 +108,9 @@ const Popup = () => {
     rateAmt: BigNumber;
   }) => {
     if (!currentStream) {
-      throw new Error("Expected stream");
+      toast("Couldn't find stream");
+      // throw new Error("Expected stream");
+      return;
     }
     try {
       chrome.runtime.sendMessage({
@@ -128,7 +131,7 @@ const Popup = () => {
         },
       });
     } catch {
-      throw new Error("Could not update settings");
+      toast("Could not update settings");
     }
   };
 
@@ -141,7 +144,7 @@ const Popup = () => {
         },
       });
     } catch {
-      throw new Error("Couldn't cancel stream");
+      toast("Couldn't cancel stream");
     }
   };
 
@@ -156,7 +159,7 @@ const Popup = () => {
         },
       });
     } catch {
-      throw new Error("Couldn't block site");
+      toast("Couldn't block site");
     }
   };
 

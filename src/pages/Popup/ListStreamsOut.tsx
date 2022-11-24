@@ -5,6 +5,7 @@ import { getStreamsDeepOut } from "./lib/getStreams";
 import StreamComponent from "./components/StreamComponent";
 import CurrentStreamComponent from "./components/CurrentStreamComponent";
 import CobwebPage from "./components/CobwebPage";
+import { toast } from "../shared/toast";
 
 const ListStreamsOut = () => {
   const [mmAddress, , ,]: [string, any, any, any] = useChromeStorageLocal(
@@ -20,12 +21,12 @@ const ListStreamsOut = () => {
       try {
         const res = await getStreamsDeepOut(mmAddress);
         if (!res) {
-          // throw new Error('Expected streams');
+          throw new Error("Expected streams");
         } else {
           setStreams(res);
         }
       } catch {
-        throw new Error("Couldn't fetch streams");
+        toast("Couldn't fetch streams");
       }
     };
 

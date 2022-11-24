@@ -2,6 +2,7 @@ import { storage } from "@extend-chrome/storage";
 import { Web3Provider } from "@ethersproject/providers";
 import { SuperToken } from "@superfluid-finance/sdk-core";
 import { BigNumber, constants, utils } from "ethers";
+import errorToast, { toast } from "../../shared/toast";
 
 const fetchAndUpdateBalance = async ({
   sfToken,
@@ -24,7 +25,8 @@ const fetchAndUpdateBalance = async ({
       !utils.getAddress(addressRes) ||
       !(await mmProvider.resolveName(addressRes))
     ) {
-      throw new Error("Wallet address is invalid.");
+      toast("Wallet address is invalid");
+      return;
     }
 
     let address = addressRes;
@@ -46,17 +48,23 @@ const fetchAndUpdateBalance = async ({
       providerOrSigner: mmProvider,
     }));
     balanceRes = BigNumber.from(availableBalance);
-    storage.local.set({ balance: balanceRes });
   } catch (e) {
     // document.monetization = "stopped";
-    throw e;
+    errorToast(e as Error);
+  }
+  if (!balanceRes || !deposit) {
+    toast("Wallet balance could not be fetched");
+    return;
+  } else {
+    storage.local.set({ balance: balanceRes });
   }
   if (balanceRes.eq(constants.Zero)) {
     return;
   }
   if (balanceRes.gt(constants.Zero) && balanceRes.lte(deposit)) {
     // critical balance
-    throw new Error("Balance is critically low");
+    toast("Balance is critically low");
+    return;
   }
 
   let defaultRate: BigNumber | null = null;
@@ -64,10 +72,11 @@ const fetchAndUpdateBalance = async ({
     // low balance == less than 12h's worth of default stream rate
     ({ defaultRate } = await storage.local.get("defaultRate"));
     if (balanceRes.lte(BigNumber.from(defaultRate).mul(BigNumber.from(12)))) {
-      throw new Error("Balance is low.");
+      toast("Balance is low.");
+      return;
     }
   } catch (e) {
-    throw e;
+    errorToast(e as Error);
   }
 };
 

@@ -1,7 +1,6 @@
 import React from "react";
 import { BigNumberInput } from "big-number-input";
 import { BigNumber, constants } from "ethers";
-import { useState } from "react";
 // import TOKEN_MAP from "../../shared/tokens";
 // import { Token } from "../../shared/types";
 

@@ -1,5 +1,6 @@
 import { SuperToken, WrapperSuperToken } from "@superfluid-finance/sdk-core";
 import { BigNumber, Signer } from "ethers";
+import errorToast from "../../shared/toast";
 
 export const downgradeTokens = async ({
   sfToken,
@@ -16,7 +17,7 @@ export const downgradeTokens = async ({
     });
     await downgradeTokenOperation.exec(sfSigner);
   } catch (e) {
-    throw e;
+    errorToast(e as Error);
   }
 };
 
@@ -35,6 +36,6 @@ export const upgradeTokens = async ({
     });
     await upgradeTokenOperation.exec(sfSigner);
   } catch (e) {
-    throw e;
+    errorToast(e as Error);
   }
 };
