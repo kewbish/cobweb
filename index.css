@@ -17,7 +17,7 @@ nav.card {
   justify-content: space-between;
   flex-direction: row;
   padding: 1rem 2rem;
-  width: 70%;
+  width: min(70%, 1000px);
   align-items: center;
   border-radius: 1rem;
 }
@@ -47,7 +47,7 @@ nav.card {
 .hero {
   margin: 0 auto;
   padding-top: 4rem;
-  width: 50%;
+  width: max(50%, 500px);
   text-align: center;
 }
 
@@ -61,4 +61,57 @@ nav.card {
   padding: 0.5rem 1rem;
   box-shadow: inset 1px 1px rgb(255 255 255 / 20%),
     inset -1px -1px rgb(255 255 255 / 10%), 1px 2px 9px -1px rgb(0 0 0 / 12%);
+}
+
+.container {
+  width: max(70%, 1000px);
+  padding: 5rem 0;
+}
+
+.circle {
+  background: conic-gradient(
+      from 180deg at 50% 50%,
+      #ffffff 0deg,
+      rgba(129, 129, 129, 0.609375) 93.75deg,
+      #ffffff 187.5deg,
+      rgba(255, 255, 255, 0.47) 247.5deg,
+      #ffffff 360deg
+    ),
+    conic-gradient(
+      from 180deg at 50% 50%,
+      #ffffff 0deg,
+      rgba(255, 255, 255, 0.609375) 93.75deg,
+      #ffffff 187.5deg,
+      rgba(255, 255, 255, 0.12) 247.5deg,
+      #ffffff 360deg
+    ),
+    conic-gradient(
+      from 180deg at 50% 50%,
+      #6db2f2 0deg,
+      #113872 56.25deg,
+      #3581db 135deg,
+      #2366a4 256.87deg,
+      #6db2f2 360deg
+    );
+  background-blend-mode: screen, darken, normal;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+#simulator-header {
+  font-weight: 400;
+}
+
+.card {
+  border-radius: 1rem;
+}
+
+li.list-group-item:not(.list-group-item:last-child) {
+  border-bottom: 1px solid #ffffff40;
+}
+
+.p-20 {
+  font-size: 20px;
 }
