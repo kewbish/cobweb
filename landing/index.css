@@ -19,6 +19,7 @@ nav.card {
   width: min(70%, 1000px);
   align-items: center;
   border-radius: 1rem;
+  top: 2rem;
 }
 
 #nav-links {
@@ -127,4 +128,9 @@ img {
 
 #technologies {
   margin-left: -20px;
+}
+
+#why,
+#about {
+  scroll-margin-top: 3rem;
 }
