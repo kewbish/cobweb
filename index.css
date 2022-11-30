@@ -1,11 +1,10 @@
 html {
   width: 100%;
-  height: 100%;
+  overflow-y: scroll;
 }
 
 body {
   width: 100%;
-  height: 100%;
   background: linear-gradient(151.6deg, #49a1f2 -0.25%, #206fb9 83.64%);
 }
 
@@ -64,7 +63,7 @@ nav.card {
 }
 
 .container {
-  width: max(70%, 1000px);
+  width: max(60%, 1000px);
   padding: 5rem 0;
 }
 
@@ -114,4 +113,18 @@ li.list-group-item:not(.list-group-item:last-child) {
 
 .p-20 {
   font-size: 20px;
+}
+
+#simulator {
+  max-width: min(850px, 80%);
+}
+
+img {
+  width: 90%;
+  height: 90%;
+  object-fit: contain;
+}
+
+#technologies {
+  margin-left: -20px;
 }
