@@ -141,10 +141,25 @@ img {
 }
 
 #how .card p {
-  margin-bottom: 0;
+  margin-bottom: 0.25rem;
+  text-align: center;
 }
 
 #how .card img {
   height: 40px;
   margin: 0 auto;
+}
+
+#footer,
+#footer a {
+  color: var(--bs-cyan);
+  transition: 0.3s;
+}
+
+#footer a:hover {
+  color: white;
+}
+
+#footer {
+  margin-bottom: 3rem;
 }
