@@ -131,6 +131,20 @@ img {
 }
 
 #why,
-#about {
+#about,
+#how {
   scroll-margin-top: 3rem;
+}
+
+#how .card {
+  padding: 1rem;
+}
+
+#how .card p {
+  margin-bottom: 0;
+}
+
+#how .card img {
+  height: 40px;
+  margin: 0 auto;
 }
