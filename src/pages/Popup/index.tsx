@@ -5,6 +5,7 @@ import { MemoryRouter as Router, Routes, Route } from "react-router-dom";
 import "../../assets/css/bootstrap.min.css";
 import "../../assets/css/fonts.css";
 import "./index.css";
+import "./scrollbars.css";
 
 import DefaultSettings from "./DefaultSettings";
 import ListSettings from "./ListSettings";
