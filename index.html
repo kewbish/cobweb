@@ -45,8 +45,8 @@
                 </div>
             </div>
             <div class="col">
-                <p>Cobweb lets you stream micropayments from your browser to the websites you visit. For creators, this means you can set a single <meta> tag on your website to get paid. For fans, this means you can automatically support your favourite blogs and sites by streaming tips in the background.</p><p>
-                Cobweb doesn't break the bank either, like pricy direct subscriptions. Users can choose to allow web monetization for one visit to unlock exclusive content just once. Cobweb helps shift from a patron-based web economy to a content-focused one.
+                <p>Cobweb lets you stream micropayments from your browser to your favourite teen creators. For creators, this means you can add a single tag on your content to get paid. For fans, this means you can automatically support other teen creators by streaming tips in the background.</p><p>
+                Cobweb is affordable and user-controlled too, unlike pricy direct subscriptions. Users can choose to allow web monetization for one visit to unlock exclusive content just once. Cobweb helps shift from a passive web browsing experience to a creative, community-focused one.
                 </p>
                 <a href="#download" class="btn glassy-cw-btn mt-1" role="button">get started now</a>
             </div>
@@ -72,13 +72,12 @@
     </div></div>
     </div>
 
-<div class="container" id="why">
+<div class="container pt-3" id="why">
     <h2 class="display mx-auto text-center mb-3">why cobweb?</h2>
         <div class="row">
 <div class="col">
-    <p class="text-end">The conventional <a href="https://webmonetization.org/">Web Monetization</a> ecosystem is currently highly centralized around a single for-profit payment provider, <a href="https://coil.com">Coil</a>, and a single cryptocurrency and chain, <a href="https://ripple.com">XRP</a>.</p>
-    <p class="text-end">
-Instead, Cobweb is built on the more popular <a href="https://ethereum.org/">Ethereum cryptocurrency</a>. Cobweb cuts out the middleman tools, making setup much easier for those who already have an Ethereum wallet. Even if you don't have a wallet, getting started is as easy as downloading the user-friendly <a href="https://metamask.io">MetaMask wallet</a>.  
+    <p class="text-end">Teens today have grown up in a world of endless content and possibility. We've witnessed the rise of the Internet, and have experienced first-hand how passive and addictive scrolling down social media can be. Cobweb aims to incentivize teens to create more content and to be compensated for their creativity.</p>
+    <p class="text-end">As well, teens looking to explore the vast world of decentralized technology like blockchain or Web3 DApps are often limited because of age or geographical restrictions. Cobweb helps teens get jump-started with the blockchain by granting them a base amount of crypto and empowering them to earn real tokens in real time.</p>
 </p><p class="text-end">
 For more technical differences, see <a href="#docs">Cobweb's docs</a>.
 </p>
@@ -95,29 +94,75 @@ For more technical differences, see <a href="#docs">Cobweb's docs</a>.
         <div class="row">
 <div class="col">
 <div class="card">
-    <p>Cobweb scans websites you visit for a Web Monetization tag.</p>
+    <p>Cobweb scans websites you visit for a <a href="https://webmonetization.org">Web Monetization</a> tag.</p>
     <img src="webmonetization.png" alt="Web Monetization logo">
 </div>
 </div>
 <div class="col">
 <div class="card">
-    <p>Cobweb connects to your Metamask account to ask for permissions.</p>
+    <p>Cobweb connects to your <a href="https://metamask.io">Metamask</a> account to ask for permissions.</p>
     <img src="metamask.png" alt="MetaMask logo">
 </div>
 </div>
 <div class="col">
 <div class="card">
-    <p>Cobweb initiates a payment stream of fractions of a cent with Superfluid.</p>
+    <p>Cobweb initiates a payment stream of fractions of a cent with <a href="https://superfluid.finance">Superfluid</a>.</p>
     <img src="superfluid.png" alt="Superfluid logo">
 </div>
 </div>
 <div class="col">
 <div class="card">
-    <p>Payments stream directly to an Ethereum address, no middleman.</p>
+    <p>Payments stream directly to an <a href="https://ethereum.org">Ethereum</a> address, no middleman.</p>
     <img src="ethereum.png" alt="Ethereum logo">
 </div>
 </div>
             
+        </div>
+    </div>
+<div class="container pt-3" id="differences">
+    <h2 class="display mx-auto text-center mb-3">differences</h2>
+        <div class="row">
+<div class="col">
+    <div class="btn-group-vertical w-100">
+
+            <button class="btn glassy-cw-btn" role="button">Purpose And Goals</button>
+            <button class="btn glassy-cw-btn" role="button">Cryptocurrency Networks</button>
+            <button class="btn glassy-cw-btn" role="button">Authentication and Payment Handling</button>
+            <button class="btn glassy-cw-btn" role="button">JavaScript API and Receiving Payments
+</button>
+</div>
+</div>
+<div class="col">
+    <div class="card" id="differences-content">
+<div id="differences-content-purpose">
+            <p>While Cobweb is built on the Web Monetization ecosystem to make it easier to integrate with existing technology, its primary focus isn't forcing monetized content on users. As well, Cobweb's target user base is teen creators, not companies or established content creators. Cobweb aims to empower teens to explore their creativity and to get easier access to the blockchain.</p>
+        </div>
+        <div id="differences-content-crypto">
+            <p>Web Monetization is based on the <a href="https://ripple.com">XRP chain</a>, with <a href="https://coil.com">Coil</a> as an intermediary for withdrawing payments and managing refilling your account.</p>
+            <p class="mb-0">
+            Cobweb, on the other hand, is based on streamed micropayments with <a href="https://superfluid.finance">Superfluid</a> on the <a href="https://ethereum.org">Ethereum</a> chain. Cobweb itself does not have a deployed smart contract, and relies on the Superfluid contracts, which have been <a href="https://medium.com/superfluid-blog/results-from-halborn-smart-contracts-audit-5070a2945357">thoroughly audited</a>.
+            </p>
+        </div>
+<div id="differences-content-auth">
+<p>
+Web Monetization requires you to have a <a href="https://coil.com">Coil</a> account, as well as a <a href="https://paymentpointers.org">payment pointer</a> through a <a href="https://webmonetization.org/#wallets">wallet provider</a></p>
+            <p class="mb-0">
+Cobweb requires you to have an Ethereum address and a <a href="https://metamask.io">MetaMask</a> wallet. (Note: additional wallet support is planned.)
+            </p>
+        </div>
+<div id="differences-content-javascript">
+            <p>
+            Cobweb's JavaScript API is largely the same as the <a href="https://webmonetization.org/docs/api">Web Monetization API</a>. Cobweb emits the same events with the same datatypes, albeit with ENS or Ethereum addresses instead of payment pointers.
+            </p>
+            <p class="mb-0">
+Cobweb does not conform to the WM API in one notable way - receiving payments. Because the Ethereum blockchain handles the payments, Cobweb cuts out the payment provider and hence the complex <a href="https://webmonetization.org/docs/receiving/">receiving infrastructure</a>. For example, the `requestId` sent with each event is not a <a href="https://webmonetization.org/docs/receiving/#stream-protocol">STREAM protocol</a>-adherent ID, but an UUID.
+            </p>
+            <p class="mb-0">
+For developers, this should not make a significant difference. The payments will be processed by the blockchain, and Cobweb optimistically emits the payment events. If you wish to ensure a payment stream has initiated, you can directly access the streams GraphQL with Superfluid's <a href="https://api.thegraph.com/subgraphs/name/superfluid-finance/">Subgraph</a>.
+            </p>
+        </div>
+    </div>
+</div>
         </div>
     </div>
 

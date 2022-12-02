@@ -37,7 +37,12 @@ nav.card {
   transition: 0.3s;
 }
 
-#nav-links > a:hover {
+.card a {
+  transition: 0.3s;
+}
+
+#nav-links > a:hover,
+.card a:hover {
   color: var(--bs-cyan);
 }
 
@@ -137,7 +142,8 @@ img {
   scroll-margin-top: 3rem;
 }
 
-#how .card {
+#how .card,
+#differences .card {
   padding: 1rem;
 }
 
@@ -178,4 +184,8 @@ code {
 #getStarted .row {
   gap: 1rem;
   padding: 0 3rem;
+}
+
+.btn-group-vertical button {
+  font-size: 18px;
 }
