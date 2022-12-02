@@ -125,10 +125,10 @@ For more technical differences, see <a href="#docs">Cobweb's docs</a>.
 <div class="col">
     <div class="btn-group-vertical w-100">
 
-            <button class="btn glassy-cw-btn" role="button">Purpose And Goals</button>
-            <button class="btn glassy-cw-btn" role="button">Cryptocurrency Networks</button>
-            <button class="btn glassy-cw-btn" role="button">Authentication and Payment Handling</button>
-            <button class="btn glassy-cw-btn" role="button">JavaScript API and Receiving Payments
+            <button class="btn glassy-cw-btn" role="button" onclick="showPurpose()">Purpose And Goals</button>
+            <button class="btn glassy-cw-btn" role="button" onclick="showCrypto()">Cryptocurrency Networks</button>
+            <button class="btn glassy-cw-btn" role="button" onclick="showPayment()">Authentication and Payment Handling</button>
+            <button class="btn glassy-cw-btn" role="button" onclick="showJS()">JavaScript API and Receiving Payments
 </button>
 </div>
 </div>
@@ -155,7 +155,7 @@ Cobweb requires you to have an Ethereum address and a <a href="https://metamask.
             Cobweb's JavaScript API is largely the same as the <a href="https://webmonetization.org/docs/api">Web Monetization API</a>. Cobweb emits the same events with the same datatypes, albeit with ENS or Ethereum addresses instead of payment pointers.
             </p>
             <p class="mb-0">
-Cobweb does not conform to the WM API in one notable way - receiving payments. Because the Ethereum blockchain handles the payments, Cobweb cuts out the payment provider and hence the complex <a href="https://webmonetization.org/docs/receiving/">receiving infrastructure</a>. For example, the `requestId` sent with each event is not a <a href="https://webmonetization.org/docs/receiving/#stream-protocol">STREAM protocol</a>-adherent ID, but an UUID.
+Cobweb does not conform to the WM API in one notable way - receiving payments. Because the Ethereum blockchain handles the payments, Cobweb cuts out the payment provider and hence the complex <a href="https://webmonetization.org/docs/receiving/">receiving infrastructure</a>. For example, the <code>requestId</code> sent with each event is not a <a href="https://webmonetization.org/docs/receiving/#stream-protocol">STREAM protocol</a>-adherent ID, but an UUID.
             </p>
             <p class="mb-0">
 For developers, this should not make a significant difference. The payments will be processed by the blockchain, and Cobweb optimistically emits the payment events. If you wish to ensure a payment stream has initiated, you can directly access the streams GraphQL with Superfluid's <a href="https://api.thegraph.com/subgraphs/name/superfluid-finance/">Subgraph</a>.
@@ -170,4 +170,28 @@ For developers, this should not make a significant difference. The payments will
         <p class="text-center">made by <a href="https://kewbi.sh">kewbish</a> · <a href="https://github.com/kewbish/cobweb">open source on GitHub</a></p>
     </div>
   </body>
+  <script>
+      const hideAll = () => {
+        document.getElementById("differences-content-purpose").style.display = "none";
+        document.getElementById("differences-content-crypto").style.display = "none";
+        document.getElementById("differences-content-auth").style.display = "none";
+        document.getElementById("differences-content-javascript").style.display = "none";
+      }
+      const showPurpose= () => {
+        hideAll();
+        document.getElementById("differences-content-purpose").style.display = "block";
+      }
+      const showCrypto= () => {
+        hideAll();
+        document.getElementById("differences-content-crypto").style.display = "block";
+      }
+      const showPayment= () => {
+        hideAll();
+        document.getElementById("differences-content-auth").style.display = "block";
+      }
+      const showJS= () => {
+        hideAll();
+        document.getElementById("differences-content-javascript").style.display = "block";
+      }
+  </script>
 </html>
