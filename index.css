@@ -1,6 +1,7 @@
 html {
   width: 100%;
   overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 body {
@@ -46,7 +47,7 @@ nav.card {
 
 .hero {
   margin: 0 auto;
-  padding-top: 4rem;
+  padding: 5rem 0;
   width: max(50%, 500px);
   text-align: center;
 }
@@ -162,4 +163,19 @@ img {
 
 #footer {
   margin-bottom: 3rem;
+}
+
+pre,
+code {
+  color: var(--bs-cyan);
+  margin-bottom: 0;
+}
+
+#getStarted .col {
+  text-align: center;
+}
+
+#getStarted .row {
+  gap: 1rem;
+  padding: 0 3rem;
 }
