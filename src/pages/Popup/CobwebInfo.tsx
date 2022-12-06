@@ -45,6 +45,7 @@ const CobwebInfo = () => {
               style={{
                 borderRadius: "0 0.5rem 0.5rem 0",
               }}
+              onClick={() => navigator.clipboard.writeText(signature)}
             >
               Copy
             </button>
