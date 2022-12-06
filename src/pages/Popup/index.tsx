@@ -15,12 +15,14 @@ import DowngradingTokens from "./DowngradingTokens";
 import UpgradingTokens from "./UpgradingTokens";
 import ListStreamsOut from "./ListStreamsOut";
 import ListStreamsIn from "./ListStreamsIn";
+import CobwebInfo from "./CobwebInfo";
 
 render(
   <Router>
     <Routes>
       <Route path="/" element={<Popup />} />
       <Route path="settings/default" element={<DefaultSettings />} />
+      <Route path="settings/about" element={<CobwebInfo />} />
       <Route path="settings/list" element={<ListSettings />} />
       <Route path="balance" element={<ManageBalances />} />
       <Route path="balance/downgrade" element={<DowngradingTokens />} />

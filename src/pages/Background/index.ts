@@ -23,6 +23,7 @@ import {
   DOWNGRADE_TOKEN,
   UPGRADE_TOKEN,
   NEW_TOAST,
+  FETCH_SIGNATURE,
 } from "../shared/events";
 import TOKEN_MAP from "../shared/tokens";
 import { Wallet } from "../shared/types";
@@ -39,6 +40,7 @@ import approveAmt from "./lib/approveAmt";
 import { downgradeTokens, upgradeTokens } from "./lib/wrapTokens";
 import setNewToast, { deleteToast } from "./lib/setNewToast";
 import errorToast, { toast } from "../shared/toast";
+import generateSignature from "./lib/generateSignature";
 
 const metamaskProvider = createMetaMaskProvider();
 
@@ -252,6 +254,16 @@ const createNewToast = async ({ request }: { request: any }) => {
   }, 5050);
 };
 
+const fetchSignature = async ({
+  request,
+}: {
+  request: any;
+}): Promise<String> => {
+  await mmProvider.send("eth_requestAccounts", []);
+  const signature = await generateSignature(mmProvider.getSigner());
+  return signature;
+};
+
 const handleMessaging = async (
   request: any,
   sender: chrome.runtime.MessageSender,
@@ -317,6 +329,10 @@ const handleMessaging = async (
       sendResponse();
       return;
     }
+    case FETCH_SIGNATURE:
+      const signature = await fetchSignature({ request });
+      sendResponse(signature);
+      return;
     default:
       sendResponse();
       return;
