@@ -98,10 +98,15 @@ const CobwebInfo = () => {
             Click to show Cobweb Wallet
           </button>
         ) : null}
-        {show && address && pkey ? (
-          <div className="card mt-2 p-2">
-            <p style={{ fontSize: 16 }}>Address: {address}</p>
-            <p style={{ fontSize: 16 }}>Private key: {pkey}</p>
+        {address && pkey ? (
+          <div
+            className={"card cobweb-dropdown" + (show ? " mt-2 p-2 open" : "")}
+          >
+            <p style={{ fontSize: 16 }}>
+              Address: {address}
+              <br />
+              Private key: {pkey}
+            </p>
           </div>
         ) : null}
       </>
