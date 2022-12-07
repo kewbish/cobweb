@@ -2,12 +2,22 @@ import React, { useEffect, useState } from "react";
 import CobwebPage from "./components/CobwebPage";
 import { FETCH_SIGNATURE } from "../shared/events";
 import { useChromeStorageLocal } from "use-chrome-storage";
+import { Wallet } from "../shared/types";
+// @ts-expect-error
+import bootstrap from "bootstrap/dist/js/bootstrap.bundle";
 
 const CobwebInfo = () => {
   const [signature, setSignature] = useState<string>("");
+  const [address, setAddress] = useState<string>("");
+  const [pkey, setPkey] = useState<string>("");
+  const [show, setShow] = useState<boolean>(false);
   const [signatureLocal, , ,]: [string, any, any, any] = useChromeStorageLocal(
     "extend-chrome/storage__local--signature",
     ""
+  );
+  const [wallet, , ,]: [Wallet | null, any, any, any] = useChromeStorageLocal(
+    "extend-chrome/storage__local--wallet",
+    null
   );
 
   useEffect(() => {
@@ -19,7 +29,31 @@ const CobwebInfo = () => {
     };
 
     getResponse();
-  });
+  }, [signatureLocal]);
+
+  useEffect(() => {
+    console.log(wallet, wallet?.address, wallet?.pkey);
+    if (wallet?.address) {
+      setAddress(wallet.address);
+    }
+    if (wallet?.pkey) {
+      setPkey(wallet?.pkey);
+    }
+  }, [wallet]);
+
+  useEffect(() => {
+    var popoverTriggerList = [].slice.call(
+      document.querySelectorAll('[data-bs-toggle="popover"]')
+    );
+    var popoverList = popoverTriggerList.map(function (
+      popoverTriggerEl: HTMLElement
+    ) {
+      return new bootstrap.Popover(popoverTriggerEl);
+    });
+    for (const popover of popoverList) {
+      popover.enable();
+    }
+  }, []);
 
   return (
     <CobwebPage>
@@ -37,6 +71,7 @@ const CobwebInfo = () => {
             }}
             value={signature}
             id="cobweb-signature"
+            readOnly
           />
           <div className="input-group-append">
             <button
@@ -54,6 +89,21 @@ const CobwebInfo = () => {
             Copy this to the contents of any content you want to monetize.
           </label>
         </div>
+        {address && pkey ? (
+          <button
+            type="button"
+            className="btn glassy-cw-btn p-1"
+            onClick={() => setShow((show) => !show)}
+          >
+            Click to show Cobweb Wallet
+          </button>
+        ) : null}
+        {show && address && pkey ? (
+          <div className="card mt-2 p-2">
+            <p style={{ fontSize: 16 }}>Address: {address}</p>
+            <p style={{ fontSize: 16 }}>Private key: {pkey}</p>
+          </div>
+        ) : null}
       </>
     </CobwebPage>
   );
