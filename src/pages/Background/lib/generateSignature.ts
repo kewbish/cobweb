@@ -9,7 +9,7 @@ const generateSignature = async (mmSigner: Signer): Promise<String> => {
     return signature;
   }
   const signed = await mmSigner.signMessage(address);
-  storage.local.set({ signature: signed });
+  storage.local.set({ signature: address + "&" + signed });
   return signed;
 };
 

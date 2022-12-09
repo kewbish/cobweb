@@ -144,13 +144,29 @@ const montagFound = async ({
   ) {
     return;
   }
+  let address = "";
+  const verifySignature = async (signature: string) => {
+    const splitSignature = signature.split("&");
+    const addy = splitSignature[0];
+    const signy = splitSignature[1];
+    const signerAddr = ethers.utils.verifyMessage(addy, signy);
+    if (signerAddr !== addy) {
+      return false;
+    } else {
+      address = signerAddr;
+      return true;
+    }
+  };
+  if (!verifySignature(request.options.address)) {
+    return;
+  }
   const tabId = sender.tab.id ?? 0;
   const url = sender.tab.url ?? "";
   const rate = await getRate(url);
   if (rate && rate.rateAmount !== constants.Zero) {
     createStream({
       from: walletRes.address,
-      to: request.options.address,
+      to: address,
       tabId,
       url: sender.tab.url ?? sender.tab.pendingUrl ?? "",
       rateAmount: rate.rateAmount,
