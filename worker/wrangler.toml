@@ -1,0 +1,7 @@
+name = "cobweb-worker"
+main = "src/index.ts"
+compatibility_date = "2022-12-09"
+
+kv_namespaces = [
+  { binding = "COBWEB_KV", id = "3d8d5884ac32406aa098b1e0114c1a4b", preview_id = "4f68b914b2ae414fb3305f4672b101d0" },
+]
