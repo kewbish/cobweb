@@ -1,6 +1,10 @@
+import { ethers } from "ethers";
+
 export interface Env {
   COBWEB_KV: KVNamespace;
   ADMIN_KEY: string;
+  INFURA_API_KEY: string;
+  INFURA_ID: string;
 }
 
 const worker = {
@@ -9,7 +13,22 @@ const worker = {
     env: Env,
     ctx: ExecutionContext
   ): Promise<Response> {
-    if (request.headers.get("Authorization")?.endsWith(` ${env.ADMIN_KEY}`)) {
+    const auth = request.headers.get("Authorization") ?? "";
+    if (
+      atob(auth.substring(auth.lastIndexOf(" ") + 1)).endsWith(
+        `:${env.ADMIN_KEY}`
+      )
+    ) {
+      const provider = new ethers.providers.InfuraProvider("goerli", {
+        projectSecret: env.INFURA_API_KEY,
+        projectId: env.INFURA_ID,
+      });
+      console.log(
+        "Connected to Infura on chain " +
+          (await provider.getNetwork()).chainId +
+          "."
+      );
+
       const params = new URLSearchParams(request.url);
       const identifier = params.get("identifier");
       const address = params.get("address");
