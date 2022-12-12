@@ -7,7 +7,12 @@ import bootstrap from "bootstrap/dist/js/bootstrap.bundle";
 
 const InfoPopover = ({ text }: { text: string }) => {
   useEffect(() => {
-    new bootstrap.Popover(document.getElementById("info-popover"));
+    const popover = new bootstrap.Popover(
+      document.getElementById("info-popover")
+    );
+    return () => {
+      popover.dispose();
+    };
   }, []);
 
   return (

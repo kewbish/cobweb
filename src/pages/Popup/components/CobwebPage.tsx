@@ -40,7 +40,10 @@ const CobwebPage = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    new bootstrap.Popover(document.getElementById("popover"));
+    const popover = new bootstrap.Popover(document.getElementById("popover"));
+    return () => {
+      popover.dispose();
+    };
   }, []);
 
   return (

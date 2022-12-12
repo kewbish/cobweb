@@ -22,10 +22,16 @@ const DefaultSettings = () => {
   const [timeSpent, setTimeSpent] = useState(60);
 
   useEffect(() => {
-    new bootstrap.Popover(document.getElementById("eth-hours"));
-    new bootstrap.Popover(document.getElementById("eth-days"));
-    new bootstrap.Popover(document.getElementById("eth-weeks"));
-    new bootstrap.Popover(document.getElementById("eth-months"));
+    const hours = new bootstrap.Popover(document.getElementById("eth-hours"));
+    const days = new bootstrap.Popover(document.getElementById("eth-days"));
+    const weeks = new bootstrap.Popover(document.getElementById("eth-weeks"));
+    const months = new bootstrap.Popover(document.getElementById("eth-months"));
+    return () => {
+      hours.dispose();
+      days.dispose();
+      weeks.dispose();
+      months.dispose();
+    };
   }, []);
 
   return (

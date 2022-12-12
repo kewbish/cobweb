@@ -175,6 +175,11 @@ const Popup = () => {
     for (const popover of popoverList) {
       popover.enable();
     }
+    return () => {
+      for (const popover of popoverList) {
+        popover.dispose();
+      }
+    };
   }, []);
 
   return (

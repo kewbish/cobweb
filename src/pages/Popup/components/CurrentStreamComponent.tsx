@@ -7,7 +7,12 @@ import { ethers } from "ethers";
 
 const StreamComponent = ({ stream }: { stream: Stream }) => {
   useEffect(() => {
-    new bootstrap.Popover(document.getElementById("streamed-until"));
+    const until = new bootstrap.Popover(
+      document.getElementById("streamed-until")
+    );
+    return () => {
+      until.dispose();
+    };
   }, []);
 
   return (

@@ -13,7 +13,12 @@ const StreamComponent = ({
   isIn: boolean;
 }) => {
   useEffect(() => {
-    new bootstrap.Popover(document.getElementById("streamed-until"));
+    const until = new bootstrap.Popover(
+      document.getElementById("streamed-until")
+    );
+    return () => {
+      until.dispose();
+    };
   }, []);
 
   return (
