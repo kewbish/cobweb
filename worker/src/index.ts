@@ -6,6 +6,7 @@ export interface Env {
   INFURA_API_KEY: string;
   INFURA_ID: string;
   MASTER_WALLET_PKEY: string;
+  ENVIRONMENT: string;
 }
 
 const worker = {
@@ -14,7 +15,17 @@ const worker = {
     env: Env,
     ctx: ExecutionContext
   ): Promise<Response> {
+    const logger = (message: String, scope: String = "") => {
+      console.log(
+        `${new Date().toJSON()} ${scope ? "- [" + scope + "]" : ""} ${message}`
+      );
+    };
+
     const auth = request.headers.get("Authorization") ?? "";
+    if (env.ENVIRONMENT === "dev") {
+      logger(request.headers.get("Authorization") ?? "null", "AUTH");
+    }
+
     if (
       atob(auth.substring(auth.lastIndexOf(" ") + 1)).endsWith(
         `:${env.ADMIN_KEY}`
@@ -24,15 +35,19 @@ const worker = {
         projectSecret: env.INFURA_API_KEY,
         projectId: env.INFURA_ID,
       });
-      console.log(
-        "Connected to Infura on chain " +
-          (await provider.getNetwork()).chainId +
-          "."
-      );
+      if (env.ENVIRONMENT === "dev") {
+        logger(
+          "Connected to Infura on chain " +
+            (await provider.getNetwork()).chainId +
+            ".",
+          "ETH"
+        );
+      }
 
       const params = new URLSearchParams(request.url);
       const identifier = params.get("identifier");
       const address = params.get("address");
+
       if (identifier && address && ethers.utils.isAddress(address)) {
         await env.COBWEB_KV.put(identifier, address);
         const total = await env.COBWEB_KV.get("total");
@@ -41,6 +56,12 @@ const worker = {
         }
         if (total) {
           await env.COBWEB_KV.put("total", String(parseInt(total) - 1));
+          if (env.ENVIRONMENT === "dev") {
+            logger(
+              String(parseInt(total) - 1) + " giveaways remaining.",
+              "ETH"
+            );
+          }
         }
         const wallet = new ethers.Wallet(env.MASTER_WALLET_PKEY);
         const signer = wallet.connect(provider);
@@ -53,16 +74,28 @@ const worker = {
           gasPrice: provider.getGasPrice(),
         };
         signer.sendTransaction(tx).then((transaction) => {
-          console.dir(transaction);
+          if (env.ENVIRONMENT === "dev") {
+            logger(String(transaction), "ETH");
+          }
         });
         return new Response(
           `Associated ${identifier} to ${address} and transferred starter ETH.`
         );
       }
+      if (env.ENVIRONMENT === "dev") {
+        logger("Could not get params - " + params, "PARAMS");
+      }
       return new Response(
         "Error: could not get `identifier` and `address` params."
       );
     } else {
+      if (env.ENVIRONMENT === "dev") {
+        logger(
+          "Unauthorized, attempted: " +
+            atob(auth.substring(auth.lastIndexOf(" ") + 1)),
+          "AUTH"
+        );
+      }
       return new Response("Error: unauthorized.");
     }
   },

@@ -8,3 +8,7 @@ kv_namespaces = [
 
 [vars]
 INFURA_ID = "68536930f1864c1b8e9aac67c3095ec8"
+ENVIRONMENT = "production"
+
+[env.dev]
+ENVIRONMENT = "dev"
