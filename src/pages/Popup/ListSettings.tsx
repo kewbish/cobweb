@@ -108,25 +108,6 @@ const ListSettings = () => {
     }
   };
 
-  useEffect(() => {
-    var popoverTriggerList = [].slice.call(
-      document.querySelectorAll('[data-bs-toggle="popover"]')
-    );
-    var popoverList = popoverTriggerList.map(function (
-      popoverTriggerEl: HTMLElement
-    ) {
-      return new bootstrap.Popover(popoverTriggerEl);
-    });
-    for (const popover of popoverList) {
-      popover.enable();
-    }
-    return () => {
-      for (const popover of popoverList) {
-        popover.dispose();
-      }
-    };
-  }, []);
-
   return (
     <CobwebPage>
       <>

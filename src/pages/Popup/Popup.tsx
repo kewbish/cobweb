@@ -47,6 +47,12 @@ const Popup = () => {
       return;
     }
     setBalance(BigNumber.from(balanceRes));
+    const popover = document.getElementById("balance-popover");
+    if (popover) {
+      popover.title =
+        ethers.utils.formatUnits(balanceRes) + " " + TOKEN_MAP.ETH.name;
+      new bootstrap.Popover(popover);
+    }
   }, [balanceRes]);
 
   const [searchParams] = useSearchParams();
@@ -180,7 +186,7 @@ const Popup = () => {
         popover.dispose();
       }
     };
-  }, []);
+  }, [balance]);
 
   return (
     <div className="App mx-2 my-3 p-0">
@@ -193,11 +199,16 @@ const Popup = () => {
           <div
             style={{ marginTop: "-10px" }}
             data-bs-toggle="popover"
-            title={ethers.utils.formatUnits(balance) + " " + TOKEN_MAP.ETH.name}
+            title={
+              ethers.utils.formatUnits(balance, "ether") +
+              " " +
+              TOKEN_MAP.ETH.name
+            }
             data-bs-trigger="hover focus"
             data-bs-template={
               '<div class="popover" role="tooltip"><div class="popover-arrow popover-arrow-override"></div><p class="popover-header"></p><div class="popover-body"></div></div>'
             }
+            id="balance-popover"
           >
             <FadedPill>
               <div className="d-flex justify-content-end align-items-center h-auto">
