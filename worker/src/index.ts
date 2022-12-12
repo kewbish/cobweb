@@ -5,6 +5,7 @@ export interface Env {
   ADMIN_KEY: string;
   INFURA_API_KEY: string;
   INFURA_ID: string;
+  MASTER_WALLET_PKEY: string;
 }
 
 const worker = {
@@ -32,13 +33,31 @@ const worker = {
       const params = new URLSearchParams(request.url);
       const identifier = params.get("identifier");
       const address = params.get("address");
-      if (identifier && address) {
+      if (identifier && address && ethers.utils.isAddress(address)) {
         await env.COBWEB_KV.put(identifier, address);
         const total = await env.COBWEB_KV.get("total");
+        if (!total) {
+          await env.COBWEB_KV.put("total", String(100));
+        }
         if (total) {
           await env.COBWEB_KV.put("total", String(parseInt(total) - 1));
         }
-        return new Response(`Associated ${identifier} to ${address}.`);
+        const wallet = new ethers.Wallet(env.MASTER_WALLET_PKEY);
+        const signer = wallet.connect(provider);
+        const tx = {
+          from: wallet.address,
+          to: address,
+          value: ethers.utils.parseUnits((0.2 / 500).toString(), "ether"), // TODO
+          nonce: provider.getTransactionCount(wallet.address, "latest"),
+          gasLimit: 0x100000,
+          gasPrice: provider.getGasPrice(),
+        };
+        signer.sendTransaction(tx).then((transaction) => {
+          console.dir(transaction);
+        });
+        return new Response(
+          `Associated ${identifier} to ${address} and transferred starter ETH.`
+        );
       }
       return new Response(
         "Error: could not get `identifier` and `address` params."
