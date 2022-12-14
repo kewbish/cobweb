@@ -86,14 +86,24 @@ const worker = {
             }
           });
           return new Response(
-            `Associated ${identifier} to ${address} and transferred starter ETH.`
+            JSON.stringify({
+              message: `Associated ${identifier} to ${address} and transferred starter ETH.`,
+            }),
+            {
+              ...HEADERS,
+              status: 200,
+            }
           );
         }
         if (env.ENVIRONMENT === "dev") {
           logger("Could not get params - " + params, "PARAMS");
         }
         return new Response(
-          "Error: could not get `identifier` and `address` params."
+          JSON.stringify({ error: "No address or no identifier provided" }),
+          {
+            ...HEADERS,
+            status: 400,
+          }
         );
       } else {
         if (env.ENVIRONMENT === "dev") {
@@ -103,7 +113,10 @@ const worker = {
             "AUTH"
           );
         }
-        return new Response("Error: unauthorized.");
+        return new Response(JSON.stringify({ error: "Unauthorized" }), {
+          ...HEADERS,
+          status: 401,
+        });
       }
     };
 
@@ -112,9 +125,15 @@ const worker = {
       const address = params.get("address");
       if (address) {
         const valid = await env.COBWEB_KV.get(address);
+        if (env.ENVIRONMENT === "dev") {
+          logger("Requested " + address + ", is " + valid, "GET");
+        }
         return new Response(JSON.stringify({ valid }), HEADERS);
       } else {
-        return new Response("Error: no address provided.");
+        return new Response(JSON.stringify({ error: "No address provided." }), {
+          ...HEADERS,
+          status: 400,
+        });
       }
     };
 
