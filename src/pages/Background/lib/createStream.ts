@@ -36,7 +36,7 @@ const createStream = async ({
   infuraProvider: InfuraProvider;
 }) => {
   const possibleName = await infuraProvider.resolveName(to);
-  if (!possibleName || !utils.getAddress(to)) {
+  if (!possibleName || !utils.isAddress(to)) {
     return;
   }
 
@@ -44,6 +44,18 @@ const createStream = async ({
     to = possibleName;
   } else {
     to = utils.getAddress(to);
+  }
+
+  const response = await fetch(
+    "https://cobweb-worker.kewbish.workers.dev/get?" +
+      new URLSearchParams({ address: to })
+  );
+  const responseJson = await response.json();
+  if (responseJson.error) {
+    return;
+  } else if (!responseJson.valid) {
+    // hasn't been added to Cobweb network
+    return;
   }
 
   document.monetization.state = "pending";
