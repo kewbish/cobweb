@@ -7,6 +7,7 @@ export interface Env {
   INFURA_ID: string;
   MASTER_WALLET_PKEY: string;
   ENVIRONMENT: string;
+  WEBHOOK_URL: string;
 }
 
 const HEADERS = {
@@ -140,6 +141,44 @@ const worker = {
       }
     };
 
+    const requestNewUser = async (): Promise<Response> => {
+      const params = new URLSearchParams(request.url);
+      const address = params.get("address");
+      if (address) {
+        const valid = await env.COBWEB_KV.get(address);
+        if (!valid) {
+          fetch(env.WEBHOOK_URL, {
+            method: "POST",
+            body: JSON.stringify({
+              content: null,
+              embeds: [
+                {
+                  title: "New Cobweb User Request",
+                  description: `Address: \`${address}\``,
+                  color: 9228287,
+                },
+              ],
+              attachments: [],
+            }),
+          });
+          if (env.ENVIRONMENT === "dev") {
+            logger("Sent request for " + address + ".", "VERIF");
+          }
+          return new Response(JSON.stringify({ success: true }), HEADERS);
+        } else {
+          return new Response(JSON.stringify({ success: false }), {
+            ...HEADERS,
+            status: 403,
+          });
+        }
+      } else {
+        return new Response(JSON.stringify({ error: "No address provided." }), {
+          ...HEADERS,
+          status: 400,
+        });
+      }
+    };
+
     if (env.ENVIRONMENT === "dev") {
       logger("Request URL:" + request.url, "REQ");
     }
@@ -147,6 +186,8 @@ const worker = {
     const url = new URL(request.url);
     if (url.pathname === "/add") {
       return addNewUser();
+    } else if (url.pathname === "/request") {
+      return requestNewUser();
     } else {
       return returnUserInformation();
     }
