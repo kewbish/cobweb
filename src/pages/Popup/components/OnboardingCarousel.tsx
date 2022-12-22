@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useChromeStorageLocal } from "use-chrome-storage";
 import { toast } from "../../shared/toast";
+import InfoPopover from "../components/InfoPopover";
 
 const Onboarding = () => {
   const [hasJoined, setHasJoined] = useState(false);
@@ -32,7 +33,7 @@ const Onboarding = () => {
       <div
         id="onboardingCarousel"
         className="carousel slide"
-        data-bs-ride="carousel"
+        data-bs-interval="false"
       >
         <div className="carousel-indicators">
           <button
@@ -46,12 +47,15 @@ const Onboarding = () => {
           <button
             type="button"
             data-bs-target="#onboardingCarousel"
-            data-bs-slide-to="0"
+            data-bs-slide-to="1"
             aria-label="Slide 2"
           ></button>
         </div>
         <div className="carousel-inner">
-          <div className="carousel-item active">
+          <div
+            className="carousel-item active"
+            style={{ height: 150, marginBottom: "0.75rem" }}
+          >
             <div>
               <p style={{ fontSize: 16 }} className="mb-1 mt-1">
                 Cobweb enables you to support other creative teens and start
@@ -63,6 +67,7 @@ const Onboarding = () => {
                   href="https://github.com/kewbish/cobweb"
                   target="_blank"
                   rel="noopener noreferrer"
+                  className="cobweb-link"
                 >
                   here
                 </a>
@@ -70,39 +75,34 @@ const Onboarding = () => {
               </p>
             </div>
           </div>
-          <div className="carousel-item">
-            <p style={{ fontSize: 16 }} className="mb-1">
+          <div
+            className="carousel-item"
+            style={{ height: 150, marginBottom: "0.75rem" }}
+          >
+            <p style={{ fontSize: 16 }} className="mb-1 d-inline">
               To help you get started, we're offering a limited-time 0.003 ETH
-              top-up to your account! Click the button below to register your
-              ETH address.
+              (~$5) top-up to your account! Register your ETH address to get
+              started.
             </p>
-            <small className="mb-1">
-              <em>
-                Please note verification is performed manually. We reserve the
-                right to not offer ETH but will always register you into the
-                community.
-              </em>
-            </small>
-            <button
-              type="button"
-              className="btn glassy-cw-btn p-1"
-              disabled={hasJoined}
-              onClick={joinCobweb}
-            >
-              {hasJoined ? "Thanks, and welcome!" : "Join the Cobweb!"}
-            </button>
+            <InfoPopover
+              text={
+                "Please note verification is performed manually. We reserve the right to not offer ETH but will always register you into the community."
+              }
+              moreSquare={true}
+            />
+            <br />
+            <div className="d-flex align-items-center">
+              <button
+                type="button"
+                className="btn glassy-cw-btn p-1 mt-2 mx-auto text-center"
+                disabled={hasJoined}
+                onClick={joinCobweb}
+              >
+                {hasJoined ? "Thanks, and welcome!" : "Join the Cobweb!"}
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-      <div className="d-flex justify-content-end">
-        <button
-          type="button"
-          className="btn glassy-cw-btn p-1"
-          data-bs-dismiss="modal"
-          style={{ marginTop: 30 }}
-        >
-          Thanks, I'll dive in!
-        </button>
       </div>
     </div>
   );

@@ -80,6 +80,10 @@ p {
   border-radius: 100px;
 }
 
+.popover-squarer {
+  border-radius: 16px;
+}
+
 .popover-arrow-override {
   display: none !important;
 }
@@ -117,4 +121,8 @@ p {
 .cobweb-dropdown.open {
   max-height: 300px;
   opacity: 1;
+}
+
+.carousel-indicators {
+  margin-bottom: 0rem;
 }

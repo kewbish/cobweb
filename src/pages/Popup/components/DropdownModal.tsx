@@ -21,7 +21,7 @@ const DropdownModal = ({
     aria-hidden="true"
     data-bs-backdrop={force ? "static" : undefined}
   >
-    <div className="modal-dialog">
+    <div className="modal-dialog modal-dialog-centered">
       <div
         className="modal-content"
         style={{ borderRadius: "32px", backdropFilter: "blur(15px)" }}
