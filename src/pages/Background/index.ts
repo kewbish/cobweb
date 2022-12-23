@@ -41,6 +41,7 @@ import { downgradeTokens, upgradeTokens } from "./lib/wrapTokens";
 import setNewToast, { deleteToast } from "./lib/setNewToast";
 import errorToast, { toast } from "../shared/toast";
 import generateSignature from "./lib/generateSignature";
+import verifySignature from "../shared/verifySignature";
 
 const metamaskProvider = createMetaMaskProvider();
 
@@ -144,31 +145,17 @@ const montagFound = async ({
   ) {
     return;
   }
-  let address = "";
-  const verifySignature = async (signature: string) => {
-    const splitSignature = signature.split("&");
-    const addy = splitSignature[0];
-    const signy = splitSignature[1];
-    const signerAddr = ethers.utils.verifyMessage(addy, signy);
-    if (signerAddr !== addy) {
-      return false;
-    } else {
-      address = signerAddr;
-      return true;
-    }
-  };
-  if (!verifySignature(request.options.address)) {
+  let address = verifySignature(request.options.address);
+  if (address) {
     return;
   }
   const tabId = sender.tab.id ?? 0;
-  const url = sender.tab.url ?? "";
-  const rate = await getRate(url);
+  const rate = await getRate(address);
   if (rate && rate.rateAmount !== constants.Zero) {
     createStream({
       from: walletRes.address,
       to: address,
       tabId,
-      url: sender.tab.url ?? sender.tab.pendingUrl ?? "",
       rateAmount: rate.rateAmount,
       sf,
       sfSigner,
@@ -219,7 +206,6 @@ const editCurrentStream = async ({ request }: { request: any }) => {
     from: request.options.from,
     rateAmount: request.options.rateAmount,
     to: request.options.to,
-    url: request.options.url,
     tabId: request.options.tabId,
     sf,
     sfSigner,

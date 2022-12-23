@@ -1,6 +1,6 @@
 import React from "react";
 import { useChromeStorageLocal } from "use-chrome-storage";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { PayRates, Rate, RateSettings, Stream } from "../shared/types";
 import { BigNumber, utils } from "ethers";
 import fallbackRate from "../shared/fallbackRate";
@@ -12,28 +12,17 @@ import CobwebPage from "./components/CobwebPage";
 // @ts-expect-error
 import bootstrap from "bootstrap/dist/js/bootstrap.bundle";
 import { toast } from "../shared/toast";
+import verifySignature from "../shared/verifySignature";
 
 const ListSettings = () => {
   const [rateSettings, setRateSettings, ,]: [RateSettings, any, any, any] =
     useChromeStorageLocal("extend-chrome/storage__local--settings", {});
-
-  /*const rateSettings = {
-    "https://github.com/kewbish": {
-      rateAmount: BigNumber.from(1.529 * 10e2),
-      payWhen: PayRates.ANY,
-    },
-    "https://github.com/kewbish2": {
-      rateAmount: BigNumber.from(0),
-      payWhen: PayRates.BLOCKED,
-    },
-  };*/
-
   const { 0: defaultRate }: { 0: Rate } = useChromeStorageLocal(
     "extend-chrome/storage__local--defaultRate",
     fallbackRate
   );
 
-  const [newSettingSite, setNewSettingSite] = useState<string>("");
+  const [newSettingTag, setNewSettingTag] = useState<string>("");
   const [newSettingRateAmt, setNewSettingRateAmt] = useState<BigNumber>(
     BigNumber.from(defaultRate.rateAmount)
   );
@@ -42,15 +31,15 @@ const ListSettings = () => {
     useChromeStorageLocal("extend-chrome/storage__local--streams", []);
 
   const resetNewSetting = () => {
-    setNewSettingSite("");
+    setNewSettingTag("");
     setNewSettingRateAmt(BigNumber.from(defaultRate.rateAmount));
   };
 
   const addNewSetting = () => {
     try {
       setRateSettings((prevSettings: RateSettings) => {
-        prevSettings[newSettingSite] = {
-          ...prevSettings[newSettingSite],
+        prevSettings[newSettingTag] = {
+          ...prevSettings[newSettingTag],
           rateAmount: newSettingRateAmt,
           payWhen: PayRates.ANY,
         };
@@ -149,7 +138,13 @@ const ListSettings = () => {
                           width: "100%",
                         }}
                       >
-                        <a href={key}>{key}</a>:{" "}
+                        <p>
+                          {key.split(":").length > 1 &&
+                          key.split(":")[1].split("&").length > 1
+                            ? key.split(":")[1].split("&")[0]
+                            : "[invalid Cobweb Tag]"}
+                        </p>
+                        :{" "}
                         <span>
                           {(+utils.formatUnits(value.rateAmount)).toFixed(4)}
                         </span>{" "}
@@ -207,10 +202,10 @@ const ListSettings = () => {
                     <input
                       type="text"
                       className="form-control p-1"
-                      placeholder="Site URL (Regex supported)"
+                      placeholder="Cobweb Tag"
                       id="inputDefault"
-                      value={newSettingSite}
-                      onChange={(e) => setNewSettingSite(e.target.value)}
+                      value={newSettingTag}
+                      onChange={(e) => setNewSettingTag(e.target.value)}
                       style={{ borderRadius: 16 }}
                     />
                     <div className="d-flex align-space-between justify-center gap-1 mb-1">
@@ -227,7 +222,7 @@ const ListSettings = () => {
                         <i className="bi bi-plus"></i>
                       </button>
                       {/* TODO - catch more 'edited' possibilities below */}
-                      {newSettingSite !== "" ? (
+                      {newSettingTag !== "" ? (
                         <button
                           type="button"
                           className="btn glassy-cw-btn"
@@ -239,8 +234,11 @@ const ListSettings = () => {
                       ) : null}
                     </div>
                   </div>
+                  {newSettingTag && !verifySignature(newSettingTag) ? (
+                    <p className="blue">This Cobweb tag is invalid.</p>
+                  ) : null}
                   <p className="text-muted mb-0" style={{ fontSize: 12 }}>
-                    This amount will be streamed to {newSettingSite} every
+                    This amount will be streamed to {newSettingTag} every
                     second. A recommended setting is 1e8 wei, or ~0.00000001
                     USD.
                   </p>

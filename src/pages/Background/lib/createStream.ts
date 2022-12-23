@@ -18,7 +18,6 @@ const createStream = async ({
   from,
   to,
   tabId,
-  url,
   rateAmount,
   sf,
   sfSigner,
@@ -28,7 +27,6 @@ const createStream = async ({
   from: string;
   to: string;
   tabId: number;
-  url: string;
   rateAmount: BigNumber;
   sf: Framework;
   sfSigner: Signer;
@@ -78,7 +76,7 @@ const createStream = async ({
       flowRate: rateAmount.toString(),
       receiver: to,
       superToken: sfToken.address,
-      userData: `${url} ${new Date()}`,
+      userData: `${to} ${new Date()}`,
     });
     newStream = await newStreamOperation.exec(sfSigner);
   } catch (e) {
@@ -101,7 +99,6 @@ const createStream = async ({
       {
         recipient: to,
         tabId,
-        url,
         rateAmount,
         requestId: uuid,
         startTime: new Date(),
@@ -128,7 +125,6 @@ export const updateStream = async ({
   from,
   to,
   tabId,
-  url,
   rateAmount,
   sf,
   sfSigner,
@@ -137,7 +133,6 @@ export const updateStream = async ({
   from: string;
   to: string;
   tabId: number;
-  url: string;
   rateAmount: BigNumber;
   sf: Framework;
   sfSigner: Signer;
@@ -162,7 +157,7 @@ export const updateStream = async ({
       flowRate: rateAmount.toString(),
       receiver: to,
       superToken: sfToken.address,
-      userData: `${url} ${new Date()}`,
+      userData: `${to} ${new Date()}`,
     });
     updateStream = await updateStreamOperation.exec(sfSigner);
   } catch (e) {
