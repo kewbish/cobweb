@@ -1,16 +1,23 @@
-import { Signer } from "ethers";
+import ethers, { providers } from "ethers";
 import { storage } from "@extend-chrome/storage";
 
-const generateSignature = async (mmSigner: Signer): Promise<String> => {
+const generateSignature = async (
+  mmProvider: providers.Web3Provider
+): Promise<String> => {
   const { address } = await storage.local.get("address");
-  // TODO - verify signature before proceeding
   const { signature } = await storage.local.get("signature");
-  if (signature) {
+  const signatureParts = signature.split("&");
+  if (
+    signatureParts[0] === address &&
+    ethers.utils.verifyMessage(address, signatureParts[1])
+  ) {
     return signature;
   }
-  const signed = await mmSigner.signMessage(address);
-  storage.local.set({ signature: address + "&" + signed });
-  return signed;
+  await mmProvider.send("eth_requestAccounts", []);
+  const signed = await mmProvider.getSigner().signMessage(address);
+  const finalSignature = address + "&" + signed;
+  storage.local.set({ signature: finalSignature });
+  return finalSignature;
 };
 
 export default generateSignature;

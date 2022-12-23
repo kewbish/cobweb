@@ -275,8 +275,7 @@ const fetchSignature = async ({
 }: {
   request: any;
 }): Promise<String> => {
-  await mmProvider.send("eth_requestAccounts", []);
-  const signature = await generateSignature(mmProvider.getSigner());
+  const signature = await generateSignature(mmProvider);
   return signature;
 };
 
