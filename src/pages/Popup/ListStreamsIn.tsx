@@ -5,6 +5,7 @@ import { getStreamsDeepIn } from "./lib/getStreams";
 import StreamComponent from "./components/StreamComponent";
 import CobwebPage from "./components/CobwebPage";
 import { toast } from "../shared/toast";
+import ToastHandler from "./components/ToastHandler";
 
 const ListStreamsIn = () => {
   const [mmAddress, , ,]: [string, any, any, any] = useChromeStorageLocal(
@@ -35,21 +36,24 @@ const ListStreamsIn = () => {
   }, [mmAddress]);
 
   return (
-    <CobwebPage>
-      <>
-        <h2 className="mb-0">Streams In</h2>
-        <hr className="my-1" />
-        <div className="overflow-auto" style={{ maxHeight: 300 }}>
-          {streams.length ? (
-            streams.map((stream: GraphQlStream) => (
-              <StreamComponent stream={stream} key={stream.id} isIn={true} />
-            ))
-          ) : (
-            <p className="blue">No streams found.</p>
-          )}
-        </div>
-      </>
-    </CobwebPage>
+    <>
+      <CobwebPage>
+        <>
+          <h2 className="mb-0">Streams In</h2>
+          <hr className="my-1" />
+          <div className="overflow-auto" style={{ maxHeight: 300 }}>
+            {streams.length ? (
+              streams.map((stream: GraphQlStream) => (
+                <StreamComponent stream={stream} key={stream.id} isIn={true} />
+              ))
+            ) : (
+              <p className="blue">No streams found.</p>
+            )}
+          </div>
+        </>
+      </CobwebPage>
+      <ToastHandler />
+    </>
   );
 };
 

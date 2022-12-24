@@ -7,6 +7,7 @@ import {
   UPDATE_SETTING,
   UPDATE_STREAM,
   FETCH_BALANCE,
+  CHECK_METAMASK,
 } from "../shared/events";
 import { useChromeStorageLocal } from "use-chrome-storage";
 import { PayRates, Stream } from "../shared/types";
@@ -18,6 +19,7 @@ import FadedPill from "./components/FadedPill";
 import streamedUntilNow from "./lib/streamedUntilNow";
 import { getRate } from "../Background/lib/getRate";
 import Onboarding from "./components/OnboardingCarousel";
+import ToastHandler from "./components/ToastHandler";
 
 import "bootstrap-icons/font/bootstrap-icons.css";
 // @ts-expect-error
@@ -26,21 +28,34 @@ import TOKEN_MAP from "../shared/tokens";
 import { toast } from "../shared/toast";
 
 const Popup = () => {
-  const [address, , addressSet]: [string, any, boolean, any] =
-    useChromeStorageLocal("extend-chrome/storage__local--address", "");
+  const [address, , ,]: [string, any, boolean, any] = useChromeStorageLocal(
+    "extend-chrome/storage__local--address",
+    null
+  );
   const [balance, setBalance] = useState(constants.Zero);
   const [balanceRes, , ,]: [any, any, any, any] = useChromeStorageLocal(
     "extend-chrome/storage__local--balance",
     null
   );
-  const [, , cwInitializedSet]: [any, any, boolean, any] =
-    useChromeStorageLocal("extend-chrome/storage__local--cwInitialized", null);
+  const [cwInitialized, , ,]: [boolean, any, any, any] = useChromeStorageLocal(
+    "extend-chrome/storage__local--cwInitialized",
+    null
+  );
+  const [metamaskNotFound, ,]: [boolean, any, any, any] = useChromeStorageLocal(
+    "extend-chrome/storage__local--mmNotFound",
+    null
+  );
 
   useEffect(() => {
-    chrome.runtime.sendMessage({
-      message: FETCH_BALANCE,
-    });
-  }, []);
+    if (address) {
+      chrome.runtime.sendMessage({
+        message: FETCH_BALANCE,
+      });
+      chrome.runtime.sendMessage({
+        message: CHECK_METAMASK,
+      });
+    }
+  }, [address]);
 
   useEffect(() => {
     if (!balanceRes) {
@@ -55,15 +70,26 @@ const Popup = () => {
     }
   }, [balanceRes]);
 
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
+    if (!document.getElementById("welcome")) {
+      return;
+    }
     const welcomeModal = new bootstrap.Modal(
       document.getElementById("welcome")
     );
     if (searchParams.get("onboarding") === "true") {
       welcomeModal.show();
     }
+    document
+      .getElementById("welcome")
+      ?.addEventListener("hidden.bs.modal", () => {
+        setSearchParams([]);
+      });
+    return () => {
+      welcomeModal.dispose();
+    };
   }, [searchParams]);
 
   const [currentStreams, , ,]: [Array<Stream>, any, any, any] =
@@ -190,7 +216,13 @@ const Popup = () => {
 
   return (
     <div className="App mx-2 my-3 p-0">
-      {!addressSet || !cwInitializedSet ? <Navigate to="/welcome" /> : null}
+      {metamaskNotFound ? <Navigate to="/metamask/not-found" /> : null}
+      {address &&
+      cwInitialized != null &&
+      !cwInitialized &&
+      !searchParams.get("onboarding") ? (
+        <Navigate to="/welcome" />
+      ) : null}
       <div className="container">
         <div className="d-flex justify-content-between align-items-start">
           <h1 className="display" style={{ fontSize: 40, fontWeight: 200 }}>
@@ -221,7 +253,7 @@ const Popup = () => {
                     {TOKEN_MAP.ETH.name}
                   </p>
                 </div>
-                <ProfilePic width={40} address={address} />
+                <ProfilePic width={40} address={address ?? ""} />
               </div>
             </FadedPill>
           </div>
@@ -395,6 +427,7 @@ const Popup = () => {
       <DropdownModal id="welcome" title="Welcome to CobWeb!">
         <Onboarding />
       </DropdownModal>
+      <ToastHandler />
     </div>
   );
 };

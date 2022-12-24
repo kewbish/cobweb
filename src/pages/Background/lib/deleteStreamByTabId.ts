@@ -44,6 +44,10 @@ const deleteStreamByTabId = async ({
 
   const { streams } = await storage.local.get("streams");
 
+  if (!streams) {
+    return;
+  }
+
   const stream = streams.find((stream: Stream) => stream.tabId === tabId);
 
   if (!stream) {

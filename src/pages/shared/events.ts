@@ -12,3 +12,4 @@ export const DOWNGRADE_TOKEN = "tokens/downgrade";
 export const UPGRADE_TOKEN = "tokens/upgrade";
 export const NEW_TOAST = "toast/new";
 export const FETCH_SIGNATURE = "settings/signature";
+export const CHECK_METAMASK = "metamask/check";

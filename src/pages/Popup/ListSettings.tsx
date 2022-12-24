@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useChromeStorageLocal } from "use-chrome-storage";
 import { useState } from "react";
 import { PayRates, Rate, RateSettings, Stream } from "../shared/types";
@@ -13,6 +13,7 @@ import CobwebPage from "./components/CobwebPage";
 import bootstrap from "bootstrap/dist/js/bootstrap.bundle";
 import { toast } from "../shared/toast";
 import verifySignature from "../shared/verifySignature";
+import ToastHandler from "./components/ToastHandler";
 
 const ListSettings = () => {
   const [rateSettings, setRateSettings, ,]: [RateSettings, any, any, any] =
@@ -66,15 +67,21 @@ const ListSettings = () => {
     oldKey,
     newKey,
     rateAmt,
+    payWhen,
   }: {
     oldKey: string;
     newKey: string;
     rateAmt: BigNumber;
+    payWhen: PayRates;
   }) => {
     try {
       setRateSettings((prevSettings: RateSettings) => {
         delete prevSettings[oldKey];
-        prevSettings[newKey] = { ...prevSettings[newKey], rateAmount: rateAmt };
+        prevSettings[newKey] = {
+          ...prevSettings[newKey],
+          rateAmount: rateAmt,
+          payWhen,
+        };
         return prevSettings;
       });
 
@@ -98,157 +105,163 @@ const ListSettings = () => {
   };
 
   return (
-    <CobwebPage>
-      <>
-        <h2 className="mb-0">Settings List</h2>
-        <hr className="my-1" />
-        <div className="container overflow-auto" style={{ maxHeight: 300 }}>
-          <div className="accordion mb-2" id="settingsAccordion">
-            {Object.keys(rateSettings).length ? (
-              Object.entries(rateSettings).map(
-                ([key, value]: [string, Rate], i: number) => (
-                  <div
-                    className="accordion-item"
-                    key={key}
-                    style={
-                      i === 0
-                        ? { borderRadius: "0.5rem 0.5rem 0 0" }
-                        : undefined
-                    }
-                  >
+    <>
+      <CobwebPage>
+        <>
+          <h2 className="mb-0">Settings List</h2>
+          <hr className="my-1" />
+          <div className="container overflow-auto" style={{ maxHeight: 300 }}>
+            <div className="accordion mb-2" id="settingsAccordion">
+              {Object.keys(rateSettings).length ? (
+                Object.entries(rateSettings).map(
+                  ([key, value]: [string, Rate], i: number) => (
                     <div
-                      className="accordion-header"
+                      className="accordion-item"
+                      key={key}
                       style={
                         i === 0
                           ? { borderRadius: "0.5rem 0.5rem 0 0" }
                           : undefined
                       }
                     >
-                      <button
-                        className={
-                          "btn glassy-cw-btn" + (i !== 0 ? " collapsed" : "")
+                      <div
+                        className="accordion-header"
+                        style={
+                          i === 0
+                            ? { borderRadius: "0.5rem 0.5rem 0 0" }
+                            : undefined
                         }
-                        type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target={`#collapse${i}`}
-                        aria-expanded="true"
-                        aria-controls={`collapse${i}`}
-                        style={{
-                          borderRadius: i !== 0 ? "0" : "0.5rem 0.5rem 0 0",
-                          width: "100%",
-                        }}
                       >
-                        <p>
-                          {key.split(":").length > 1 &&
-                          key.split(":")[1].split("&").length > 1
-                            ? key.split(":")[1].split("&")[0]
-                            : "[invalid Cobweb Tag]"}
-                        </p>
-                        :{" "}
-                        <span>
-                          {(+utils.formatUnits(value.rateAmount)).toFixed(4)}
-                        </span>{" "}
-                        ETH per second
-                      </button>
-                    </div>
-                    <div
-                      id={`collapse${i}`}
-                      className={
-                        "accordion-collapse collapse" + (i === 0 ? " show" : "")
-                      }
-                      data-bs-parent="#settingsAccordion"
-                    >
-                      <div className="accordion-body">
-                        <Setting
-                          skey={key}
-                          value={value}
-                          setSetting={updateSetting}
-                          deleteSetting={deleteSetting}
-                        />
+                        <button
+                          className={
+                            "btn glassy-cw-btn" + (i !== 0 ? " collapsed" : "")
+                          }
+                          type="button"
+                          data-bs-toggle="collapse"
+                          data-bs-target={`#collapse${i}`}
+                          aria-expanded="true"
+                          aria-controls={`collapse${i}`}
+                          style={{
+                            borderRadius: i !== 0 ? "0" : "0.5rem 0.5rem 0 0",
+                            width: "100%",
+                          }}
+                        >
+                          <p style={{ fontSize: 16 }} className="mb-0">
+                            {verifySignature(key) ?? "[invalid Cobweb Tag]"} :{" "}
+                            <span className="blue">
+                              {(+utils.formatUnits(value.rateAmount)).toFixed(
+                                4
+                              )}
+                              ETH per second
+                            </span>{" "}
+                          </p>
+                        </button>
+                      </div>
+                      <div
+                        id={`collapse${i}`}
+                        className={
+                          "accordion-collapse collapse" +
+                          (i === 0 ? " show" : "")
+                        }
+                        data-bs-parent="#settingsAccordion"
+                      >
+                        <div className="accordion-body">
+                          <Setting
+                            skey={key}
+                            value={value}
+                            setSetting={updateSetting}
+                            deleteSetting={deleteSetting}
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  )
                 )
-              )
-            ) : (
-              <p className="blue">No settings.</p>
-            )}
-            <div className="accordion-item">
-              <h2 className="accordion-header">
-                <button
-                  className="btn glassy-cw-btn"
-                  type="button"
-                  data-bs-toggle="collapse"
-                  data-bs-target="#newRate"
-                  aria-expanded="true"
-                  aria-controls="newRate"
-                  style={{
-                    borderRadius: Object.keys(rateSettings).length
-                      ? "0 0 0.5rem 0.5rem"
-                      : "0.5rem",
-                    width: "100%",
-                  }}
+              ) : (
+                <p className="blue">No settings.</p>
+              )}
+              <div className="accordion-item">
+                <h2 className="accordion-header">
+                  <button
+                    className="btn glassy-cw-btn"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#newRate"
+                    aria-expanded="true"
+                    aria-controls="newRate"
+                    style={{
+                      borderRadius: Object.keys(rateSettings).length
+                        ? "0 0 0.5rem 0.5rem"
+                        : "0.5rem",
+                      width: "100%",
+                    }}
+                  >
+                    Add a new user setting
+                  </button>
+                </h2>
+                <div
+                  id="newRate"
+                  className="accordion-collapse collapse"
+                  data-bs-parent="#settingsAccordion"
                 >
-                  Add a new site setting
-                </button>
-              </h2>
-              <div
-                id="newRate"
-                className="accordion-collapse collapse"
-                data-bs-parent="#settingsAccordion"
-              >
-                <div className="accordion-body">
-                  <div className="d-flex flex-column gap-1">
-                    <input
-                      type="text"
-                      className="form-control p-1"
-                      placeholder="Cobweb Tag"
-                      id="inputDefault"
-                      value={newSettingTag}
-                      onChange={(e) => setNewSettingTag(e.target.value)}
-                      style={{ borderRadius: 16 }}
-                    />
-                    <div className="d-flex align-space-between justify-center gap-1 mb-1">
-                      <TokenInput
-                        value={newSettingRateAmt}
-                        setValue={setNewSettingRateAmt}
+                  <div className="accordion-body">
+                    <div className="d-flex flex-column gap-1">
+                      <input
+                        type="text"
+                        className="form-control p-1"
+                        placeholder="Cobweb Tag"
+                        id="inputDefault"
+                        value={newSettingTag}
+                        onChange={(e) => setNewSettingTag(e.target.value)}
+                        style={{ borderRadius: 16 }}
                       />
-                      <button
-                        type="button"
-                        className="btn glassy-cw-btn"
-                        onClick={addNewSetting}
-                        style={{ padding: 10 }}
-                      >
-                        <i className="bi bi-plus"></i>
-                      </button>
-                      {/* TODO - catch more 'edited' possibilities below */}
-                      {newSettingTag !== "" ? (
+                      <div className="d-flex align-space-between justify-center gap-1 mb-1">
+                        <TokenInput
+                          value={newSettingRateAmt}
+                          setValue={setNewSettingRateAmt}
+                        />
                         <button
                           type="button"
                           className="btn glassy-cw-btn"
+                          onClick={addNewSetting}
                           style={{ padding: 10 }}
-                          onClick={resetNewSetting}
+                          title="Add new setting"
                         >
-                          <i className="bi bi-arrow-clockwise"></i>
+                          <i className="bi bi-plus"></i>
                         </button>
-                      ) : null}
+                        {/* TODO - catch more 'edited' possibilities below */}
+                        {newSettingTag !== "" ? (
+                          <button
+                            type="button"
+                            className="btn glassy-cw-btn"
+                            style={{ padding: 10 }}
+                            onClick={resetNewSetting}
+                            title="Reset setting"
+                          >
+                            <i className="bi bi-arrow-clockwise"></i>
+                          </button>
+                        ) : null}
+                      </div>
                     </div>
+                    {newSettingTag && !verifySignature(newSettingTag) ? (
+                      <p className="blue">This Cobweb tag is invalid.</p>
+                    ) : null}
+                    {newSettingTag && verifySignature(newSettingTag) ? (
+                      <p className="text-muted mb-0" style={{ fontSize: 12 }}>
+                        This amount will be streamed to{" "}
+                        {verifySignature(newSettingTag)} every second. A
+                        recommended setting is 1e8 wei, or ~0.00000001 USD.
+                      </p>
+                    ) : null}
                   </div>
-                  {newSettingTag && !verifySignature(newSettingTag) ? (
-                    <p className="blue">This Cobweb tag is invalid.</p>
-                  ) : null}
-                  <p className="text-muted mb-0" style={{ fontSize: 12 }}>
-                    This amount will be streamed to {newSettingTag} every
-                    second. A recommended setting is 1e8 wei, or ~0.00000001
-                    USD.
-                  </p>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </>
-    </CobwebPage>
+        </>
+      </CobwebPage>
+      <ToastHandler />
+    </>
   );
 };
 

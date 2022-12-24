@@ -1,4 +1,4 @@
-import ethers from ethers;
+import { ethers } from "ethers";
 
 const verifySignature = (signature: string) => {
   try {
@@ -6,7 +6,7 @@ const verifySignature = (signature: string) => {
     const addy = splitSignature[0];
     const signy = splitSignature[1];
     const signerAddr = ethers.utils.verifyMessage(addy, signy);
-    if (signerAddr !== addy) {
+    if (signerAddr.toLowerCase() !== addy.toLowerCase()) {
       return null;
     } else {
       return signerAddr;

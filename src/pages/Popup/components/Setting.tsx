@@ -59,6 +59,7 @@ const Setting = ({
             className="btn glassy-cw-btn"
             onClick={() => deleteSetting(skey)}
             style={{ padding: 10 }}
+            title="Delete setting"
           >
             <i className="bi bi-trash-fill text-danger"></i>
           </button>
@@ -85,7 +86,7 @@ const Setting = ({
         {value.payWhen === PayRates.BLOCKED ? (
           <>
             <div className="d-flex flex-row justify-content-between gap-1">
-              <p className="purple" style={{ fontSize: 14 }}>
+              <p className="blue mb-0" style={{ fontSize: 14 }}>
                 This site is currently blocked.
               </p>
               <button

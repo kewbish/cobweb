@@ -2,7 +2,15 @@ import React from "react";
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
 import { useNavigate } from "react-router-dom";
 
-const ProfilePic = ({ width, address }: { width: number; address: string }) => {
+const ProfilePic = ({
+  width,
+  address,
+  noNav = false,
+}: {
+  width: number;
+  address: string;
+  noNav?: boolean;
+}) => {
   const navigate = useNavigate();
 
   return (
@@ -12,7 +20,11 @@ const ProfilePic = ({ width, address }: { width: number; address: string }) => {
         marginBottom: "-6px",
         cursor: "pointer",
       }}
-      onClick={() => navigate("/settings/about")}
+      onClick={() => {
+        if (!noNav) {
+          navigate("/settings/about");
+        }
+      }}
     >
       <Jazzicon diameter={width} seed={jsNumberForAddress(address)} />
     </div>

@@ -21,9 +21,10 @@ const fetchAndUpdateBalance = async ({
 
     // check address is valid
     if (
-      !addressRes ||
-      !utils.getAddress(addressRes) ||
-      !(await mmProvider.resolveName(addressRes))
+      cwInitialized &&
+      (!addressRes ||
+        !utils.getAddress(addressRes) ||
+        !(await mmProvider.resolveName(addressRes)))
     ) {
       toast("Wallet address is invalid");
       return;
@@ -36,13 +37,16 @@ const fetchAndUpdateBalance = async ({
       address = utils.getAddress(addressRes);
     }
 
-    if (!cwInitialized) {
-      const balance = await mmProvider.getBalance(address);
-      storage.local.set({ balance: BigNumber.from(balance) });
+    const balance = await mmProvider.getBalance(address);
+    storage.local.set({ balance: BigNumber.from(balance) });
 
+    if (!cwInitialized) {
       return;
     }
+  } catch {}
 
+  // TODO - below is superfluid token amt, let's display that in a different way later
+  /*
     ({ availableBalance, deposit } = await sfToken.realtimeBalanceOf({
       account: address,
       providerOrSigner: mmProvider,
@@ -77,7 +81,7 @@ const fetchAndUpdateBalance = async ({
     }
   } catch (e) {
     errorToast(e as Error);
-  }
+  }*/
 };
 
 export default fetchAndUpdateBalance;

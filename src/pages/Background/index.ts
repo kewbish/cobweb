@@ -1,6 +1,7 @@
 // remember to patch MetaMaskInpageProvider
 // https://github.com/tsarpaul/citadelnfts-extension/blob/master/patch_metamask_provider.py
 import createMetaMaskProvider from "metamask-extension-provider";
+import { MetaMaskInpageProvider } from "@metamask/inpage-provider";
 import { BigNumber, ethers, constants, Signer } from "ethers";
 import { Framework } from "@superfluid-finance/sdk-core";
 import {
@@ -24,6 +25,7 @@ import {
   UPGRADE_TOKEN,
   NEW_TOAST,
   FETCH_SIGNATURE,
+  CHECK_METAMASK,
 } from "../shared/events";
 import TOKEN_MAP from "../shared/tokens";
 import { Wallet } from "../shared/types";
@@ -43,39 +45,39 @@ import errorToast, { toast } from "../shared/toast";
 import generateSignature from "./lib/generateSignature";
 import verifySignature from "../shared/verifySignature";
 
-const metamaskProvider = createMetaMaskProvider();
+chrome.runtime.onInstalled.addListener((details) => {
+  if (details.reason === chrome.runtime.OnInstalledReason.INSTALL) {
+    console.log("INSTALLED");
+    setDefaultSettings();
+  }
+});
 
-if (!metamaskProvider) {
-  throw new Error("Metamask not detected");
-}
+let metamaskProvider: MetaMaskInpageProvider | null = null;
+metamaskProvider = createMetaMaskProvider();
+storage.local.set({ mmNotFound: false });
+
+metamaskProvider?.on("error", (error) => {
+  storage.local.set({ mmNotFound: true });
+});
+
+metamaskProvider.on("accountsChanged", (accounts) => {
+  setNewAddress({
+    address: (accounts as Array<string>)[0],
+    provider: mmProvider,
+  });
+});
 
 export const mmProvider = new ethers.providers.Web3Provider(
   metamaskProvider as any
 );
 
-let walletRes: ethers.Wallet | null = null;
-try {
-  await storage.local.get("wallet").then(({ wallet }: { wallet: Wallet }) => {
-    walletRes = new ethers.Wallet(
-      new ethers.utils.SigningKey(wallet.pkey),
-      mmProvider
-    );
-  });
-} catch (e) {
-  const newWallet = ethers.Wallet.createRandom();
-  storage.local.set({
-    wallet: {
-      address: newWallet.address,
-      mnemonic: newWallet.mnemonic,
-      pkey: newWallet.privateKey,
-    },
-  });
-  walletRes = new ethers.Wallet(
-    new ethers.utils.SigningKey(newWallet.privateKey),
-    mmProvider
-  );
-  errorToast(e as Error);
-  throw e;
+storage.local.set({ toasts: [] });
+
+let { address: addressTry } = (await storage.local.get("address")) as {
+  address: string | null;
+};
+if (!addressTry) {
+  storage.local.set({ address: metamaskProvider.selectedAddress });
 }
 
 let infuraProvider: InfuraProvider | null = null;
@@ -100,22 +102,6 @@ try {
   throw e;
 }
 
-let sfSigner: Signer | null = null;
-try {
-  if (!walletRes || !sf || !infuraProvider) {
-    toast("Error - expected wallet.");
-    throw new Error("Error - expected wallet.");
-  } else {
-    sfSigner = sf.createSigner({
-      privateKey: (walletRes as ethers.Wallet).privateKey,
-      provider: infuraProvider as InfuraProvider,
-    });
-  }
-} catch (e) {
-  errorToast(e as Error);
-  throw e;
-}
-
 let sfToken: SuperToken | null = null;
 try {
   if (sf) {
@@ -126,6 +112,45 @@ try {
   throw e;
 }
 
+const getWalletAndSigner = async (): Promise<{
+  wallet: ethers.Wallet | null;
+  signer: Signer | null;
+}> => {
+  let walletRes: ethers.Wallet | null = null;
+  try {
+    const { wallet } = (await storage.local.get("wallet")) as {
+      wallet: Wallet | null;
+    };
+    if (wallet) {
+      walletRes = new ethers.Wallet(
+        new ethers.utils.SigningKey(wallet.pkey),
+        mmProvider
+      );
+    }
+  } catch {
+    // silently fail
+    // throw new Error("Wallet not found, redirecting to onboarding");
+    return { wallet: null, signer: null };
+  }
+  let sfSigner: Signer | null = null;
+  try {
+    if (!walletRes || !sf || !infuraProvider) {
+      // toast("Error - expected wallet.");
+      // throw new Error("Error - expected wallet. (H)");
+      return { wallet: null, signer: null };
+    } else {
+      sfSigner = sf.createSigner({
+        privateKey: (walletRes as ethers.Wallet).privateKey,
+        provider: infuraProvider as InfuraProvider,
+      });
+    }
+  } catch (e) {
+    errorToast(e as Error);
+    throw e;
+  }
+  return { wallet: walletRes, signer: sfSigner };
+};
+
 const montagFound = async ({
   request,
   sender,
@@ -135,18 +160,12 @@ const montagFound = async ({
   sender: chrome.runtime.MessageSender;
   sendResponse?: Function;
 }) => {
-  if (
-    !sf ||
-    !sfSigner ||
-    !sfToken ||
-    !infuraProvider ||
-    !walletRes ||
-    !sender.tab
-  ) {
+  if (!sf || !sfToken || !infuraProvider || !sender.tab) {
     return;
   }
+  const { wallet: walletRes, signer: sfSigner } = await getWalletAndSigner();
   let address = verifySignature(request.options.address);
-  if (address) {
+  if (!address || !walletRes || !sfSigner) {
     return;
   }
   const tabId = sender.tab.id ?? 0;
@@ -166,6 +185,7 @@ const montagFound = async ({
 };
 
 const deleteStream = async ({ request }: { request: any }) => {
+  const { signer: sfSigner } = await getWalletAndSigner();
   if (!sf || !sfSigner || !sfToken) {
     return;
   }
@@ -199,6 +219,7 @@ const updateSetting = async ({ request }: { request: any }) => {
 };
 
 const editCurrentStream = async ({ request }: { request: any }) => {
+  const { signer: sfSigner } = await getWalletAndSigner();
   if (!sf || !sfSigner || !sfToken) {
     return;
   }
@@ -221,6 +242,7 @@ const fetchBalance = async () => {
 };
 
 const approveAmount = async ({ request }: { request: any }) => {
+  const { signer: sfSigner } = await getWalletAndSigner();
   if (!sf || !sfToken || !sfSigner) {
     return;
   }
@@ -228,6 +250,7 @@ const approveAmount = async ({ request }: { request: any }) => {
 };
 
 const downgradeTokenAmount = async ({ request }: { request: any }) => {
+  const { signer: sfSigner } = await getWalletAndSigner();
   if (!sf || !sfToken || !sfSigner) {
     return;
   }
@@ -239,6 +262,7 @@ const downgradeTokenAmount = async ({ request }: { request: any }) => {
 };
 
 const upgradeTokenAmount = async ({ request }: { request: any }) => {
+  const { signer: sfSigner } = await getWalletAndSigner();
   if (!sf || !sfToken || !sfSigner) {
     return;
   }
@@ -334,6 +358,11 @@ const handleMessaging = async (
       const signature = await fetchSignature({ request });
       sendResponse(signature);
       return;
+    case CHECK_METAMASK:
+      metamaskProvider = createMetaMaskProvider();
+      storage.local.set({ mmNotFound: false }); // optimistically reset
+      sendResponse();
+      return;
     default:
       sendResponse();
       return;
@@ -343,26 +372,18 @@ const handleMessaging = async (
 chrome.runtime.onMessage.addListener(handleMessaging);
 
 chrome.tabs.onRemoved.addListener(async (tabId, _) => {
+  const { signer: sfSigner } = await getWalletAndSigner();
   if (sf && sfSigner && sfToken) {
     deleteStreamByTabId({ tabId, sf, sfSigner, sfToken });
   }
 });
 
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, _) => {
+  if (changeInfo.status !== "complete") {
+    return;
+  }
+  const { signer: sfSigner } = await getWalletAndSigner();
   if (changeInfo.url && sf && sfSigner && sfToken) {
     deleteStreamByTabId({ tabId, sf, sfSigner, sfToken });
   }
-});
-
-chrome.runtime.onInstalled.addListener((details) => {
-  if (details.reason === chrome.runtime.OnInstalledReason.INSTALL) {
-    setDefaultSettings();
-  }
-});
-
-metamaskProvider.on("accountsChanged", (accounts) => {
-  setNewAddress({
-    address: (accounts as Array<string>)[0],
-    provider: mmProvider,
-  });
 });
