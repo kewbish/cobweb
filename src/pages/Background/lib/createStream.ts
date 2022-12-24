@@ -1,9 +1,3 @@
-import {
-  Monetization,
-  MonetizationStart,
-  MonetizationPending,
-  MonetizationStop,
-} from "../../shared/monetization";
 // @ts-expect-error
 import { v5 as fromString } from "uuid";
 import NAMESPACE from "./secrets.uuid";
@@ -13,6 +7,11 @@ import { storage } from "@extend-chrome/storage";
 import { Framework, SuperToken } from "@superfluid-finance/sdk-core";
 import { InfuraProvider } from "@ethersproject/providers";
 import errorToast from "../../shared/toast";
+import {
+  pendingMonetization,
+  startMonetization,
+  stopMonetization,
+} from "../../shared/monetization";
 
 const createStream = async ({
   from,
@@ -56,17 +55,15 @@ const createStream = async ({
     return;
   }
 
-  document.monetization.state = "pending";
   const uuid = fromString(
     to + tabId.toString() + new Date().toString(),
     NAMESPACE
   );
-  document.monetization.dispatchEvent(
-    new MonetizationPending({
-      paymentPointer: to,
-      requestId: uuid,
-    })
-  );
+  chrome.scripting.executeScript({
+    args: [to, uuid],
+    target: { tabId },
+    func: pendingMonetization,
+  });
 
   let newStream = null;
 
@@ -80,14 +77,11 @@ const createStream = async ({
     });
     newStream = await newStreamOperation.exec(sfSigner);
   } catch (e) {
-    document.monetization.state = "stopped";
-    document.monetization.dispatchEvent(
-      new MonetizationStop({
-        paymentPointer: to,
-        requestId: uuid,
-        finalized: true,
-      })
-    );
+    chrome.scripting.executeScript({
+      args: [to, uuid],
+      target: { tabId },
+      func: stopMonetization,
+    });
     errorToast(e as Error);
   }
 
@@ -111,13 +105,11 @@ const createStream = async ({
       },
     ],
   });
-  document.monetization.state = "started";
-  document.monetization.dispatchEvent(
-    new MonetizationStart({
-      paymentPointer: to,
-      requestId: uuid,
-    })
-  );
+  chrome.scripting.executeScript({
+    args: [to, uuid],
+    target: { tabId },
+    func: startMonetization,
+  });
   return newStream;
 };
 
@@ -138,17 +130,15 @@ export const updateStream = async ({
   sfSigner: Signer;
   sfToken: SuperToken;
 }) => {
-  document.monetization = new Monetization("pending");
   const uuid = fromString(
     to + tabId.toString() + new Date().toString(),
     NAMESPACE
   );
-  document.monetization.dispatchEvent(
-    new MonetizationPending({
-      paymentPointer: to,
-      requestId: uuid,
-    })
-  );
+  chrome.scripting.executeScript({
+    args: [to, uuid],
+    target: { tabId },
+    func: pendingMonetization,
+  });
 
   let updateStream;
   try {
@@ -173,13 +163,11 @@ export const updateStream = async ({
       ),
     ],
   });
-  document.monetization.state = "started";
-  document.monetization.dispatchEvent(
-    new MonetizationStart({
-      paymentPointer: to,
-      requestId: uuid,
-    })
-  );
+  chrome.scripting.executeScript({
+    args: [to, uuid],
+    target: { tabId },
+    func: (to, uuid) => startMonetization,
+  });
   return updateStream;
 };
 

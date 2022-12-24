@@ -1,12 +1,9 @@
-import {
-  MonetizationPending,
-  MonetizationStop,
-} from "../../shared/monetization";
 import { PayRates, Stream, Wallet } from "../../shared/types";
 import { storage } from "@extend-chrome/storage";
 import { Framework, SuperToken } from "@superfluid-finance/sdk-core";
 import { Signer } from "ethers";
 import errorToast from "../../shared/toast";
+import { stopMonetization } from "../../shared/monetization";
 
 const deleteStreamByTabId = async ({
   tabId,
@@ -31,13 +28,11 @@ const deleteStreamByTabId = async ({
       });
       await deleteStreamOperation.exec(sfSigner);
     } catch (e) {
-      document.monetization = "pending";
-      document.monetization.dispatchEvent(
-        new MonetizationPending({
-          paymentPointer: stream.recipient,
-          requestId: stream.requestId,
-        })
-      );
+      chrome.scripting.executeScript({
+        args: [stream.recipient, stream.requestId],
+        target: { tabId },
+        func: stopMonetization,
+      });
       errorToast(e as Error);
     }
   };
@@ -64,14 +59,11 @@ const deleteStreamByTabId = async ({
 
   cancelStream(stream.recipient);
 
-  document.monetization = "stopped";
-  document.monetization.dispatchEvent(
-    new MonetizationStop({
-      paymentPointer: stream.recipient,
-      requestId: stream.requestId,
-      finalized: true,
-    })
-  );
+  chrome.scripting.executeScript({
+    args: [stream.recipient, stream.requestId],
+    target: { tabId },
+    func: stopMonetization,
+  });
 };
 
 export default deleteStreamByTabId;

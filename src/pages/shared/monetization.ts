@@ -1,170 +1,101 @@
-import { BigNumber } from "ethers";
+// @ts-ignore
+const pendingMonetization = (to, uuid) => {
+  class Monetization extends EventTarget {
+    state = "stopped";
 
-class Monetization extends EventTarget {
-  _state: string | undefined;
-
-  constructor(newValue: string) {
-    super();
-    this._state = newValue ?? undefined;
+    // @ts-ignore
+    constructor(newValue) {
+      super();
+      this.state = newValue ?? "stopped";
+    }
   }
 
-  get state() {
-    return this._state;
-  }
-  set state(newValue) {
-    this._state = newValue;
-  }
-}
+  class MonetizationPending extends Event {
+    paymentPointer;
+    requestId;
 
-class MonetizationPending extends Event {
-  _pp: string | undefined;
-  _rId: string | undefined;
-
-  constructor({
-    paymentPointer,
-    requestId,
-  }: {
-    paymentPointer: string;
-    requestId: string;
-  }) {
-    super("pending");
-    this._pp = paymentPointer;
-    this._rId = requestId;
+    // @ts-ignore
+    constructor({ paymentPointer, requestId }) {
+      super("pending");
+      this.paymentPointer = paymentPointer;
+      this.requestId = requestId;
+    }
   }
-
-  get paymentPointer() {
-    return this._pp;
-  }
-
-  get requestId() {
-    return this._rId;
-  }
-}
-
-class MonetizationStart extends Event {
-  _pp: string | undefined;
-  _rId: string | undefined;
-  constructor({
-    paymentPointer,
-    requestId,
-  }: {
-    paymentPointer: string;
-    requestId: string;
-  }) {
-    super("started");
-    this._pp = paymentPointer;
-    this._rId = requestId;
-  }
-
-  get paymentPointer() {
-    return this._pp;
-  }
-
-  get requestId() {
-    return this._rId;
-  }
-}
-
-class MonetizationStop extends Event {
-  _pp: string | undefined;
-  _rId: string | undefined;
-  _fin: boolean | undefined;
-  constructor({
-    paymentPointer,
-    requestId,
-    finalized,
-  }: {
-    paymentPointer: string;
-    requestId: string;
-    finalized: boolean;
-  }) {
-    super("stopped");
-    this._pp = paymentPointer;
-    this._rId = requestId;
-    this._fin = finalized ?? false;
-  }
-
-  get paymentPointer() {
-    return this._pp;
-  }
-
-  get requestId() {
-    return this._rId;
-  }
-
-  get finalized() {
-    return this._fin;
-  }
-
-  set finalized(_) {
-    this._fin = true;
-  }
-}
-
-class MonetizationProgress extends Event {
-  _pp: string | undefined;
-  _rId: string | undefined;
-  _amt: BigNumber | undefined;
-  _assC: string | undefined;
-  _assS: number | undefined;
-  _rec: string | undefined;
-  constructor({
-    paymentPointer,
-    requestId,
-    amount,
-    assetCode,
-    assetScale,
-    receipt,
-  }: {
-    paymentPointer: string;
-    requestId: string;
-    amount: BigNumber;
-    assetCode: string;
-    assetScale: number;
-    receipt: string;
-  }) {
-    super("monetizationprogress");
-    this._pp = paymentPointer;
-    this._rId = requestId;
-    this._amt = amount;
-    this._assC = assetCode;
-    this._assS = assetScale;
-    this._rec = receipt;
-  }
-
-  get paymentPointer() {
-    return this._pp;
-  }
-
-  get requestId() {
-    return this._rId;
-  }
-
-  get amount() {
-    return this._amt;
-  }
-
-  get assetCode() {
-    return this._assC;
-  }
-
-  get assetScale() {
-    return this._assS;
-  }
-
-  get receipt() {
-    return this._rec;
-  }
-
-  set receipt(newValue) {
-    this._rec = newValue;
-  }
-}
-
-export {
-  Monetization,
-  MonetizationStart,
-  MonetizationPending,
-  MonetizationProgress,
-  MonetizationStop,
+  document.monetization = new Monetization("pending");
+  document.monetization.dispatchEvent(
+    new MonetizationPending({
+      paymentPointer: to,
+      requestId: uuid,
+    })
+  );
 };
+
+// @ts-ignore
+const startMonetization = (to, uuid) => {
+  class Monetization extends EventTarget {
+    state = "stopped";
+
+    // @ts-ignore
+    constructor(newValue) {
+      super();
+      this.state = newValue ?? "stopped";
+    }
+  }
+
+  class MonetizationStart extends Event {
+    paymentPointer;
+    requestId;
+
+    // @ts-ignore
+    constructor({ paymentPointer, requestId }) {
+      super("started");
+      this.paymentPointer = paymentPointer;
+      this.requestId = requestId;
+    }
+  }
+
+  document.monetization = new Monetization("started");
+  document.monetization.dispatchEvent(
+    new MonetizationStart({
+      paymentPointer: to,
+      requestId: uuid,
+    })
+  );
+};
+
+// @ts-ignore
+const stopMonetization = (to, uuid) => {
+  class Monetization extends EventTarget {
+    state = "stopped";
+
+    // @ts-ignore
+    constructor(newValue) {
+      super();
+      this.state = newValue ?? "stopped";
+    }
+  }
+
+  class MonetizationStop extends Event {
+    paymentPointer;
+    requestId;
+    finalized;
+    // @ts-ignore
+    constructor({ paymentPointer, requestId, finalized }) {
+      super("stopped");
+      this.paymentPointer = paymentPointer;
+      this.requestId = requestId;
+      this.finalized = finalized ?? false;
+    }
+  }
+
+  document.monetization = new Monetization("stopped");
+  document.monetization.dispatchEvent(
+    new MonetizationStop({
+      paymentPointer: to,
+      requestId: uuid,
+      finalized: true,
+    })
+  );
+};
+
+export { pendingMonetization, startMonetization, stopMonetization };
