@@ -1,3 +1,13 @@
+class Monetization extends EventTarget {
+  state = "stopped";
+
+  // @ts-ignore
+  constructor(newValue) {
+    super();
+    this.state = newValue ?? "stopped";
+  }
+}
+
 // @ts-ignore
 const pendingMonetization = (to, uuid) => {
   class Monetization extends EventTarget {
@@ -98,4 +108,25 @@ const stopMonetization = (to, uuid) => {
   );
 };
 
-export { pendingMonetization, startMonetization, stopMonetization };
+// @ts-ignore
+const stopMonetizationStateOnly = (to, uuid) => {
+  class Monetization extends EventTarget {
+    state = "stopped";
+
+    // @ts-ignore
+    constructor(newValue) {
+      super();
+      this.state = newValue ?? "stopped";
+    }
+  }
+
+  document.monetization = new Monetization("stopped");
+};
+
+export {
+  Monetization,
+  pendingMonetization,
+  startMonetization,
+  stopMonetization,
+  stopMonetizationStateOnly,
+};

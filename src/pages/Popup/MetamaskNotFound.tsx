@@ -15,7 +15,7 @@ const MetamaskNotFound = () => {
               never before.
             </p>
             <p style={{ fontSize: 16 }}>
-              Metamask not found. Please install{" "}
+              Metamask not found. Please make sure{" "}
               <a
                 href="https://metamask.io/"
                 target="_blank"
@@ -23,8 +23,9 @@ const MetamaskNotFound = () => {
               >
                 Metamask
               </a>{" "}
-              and try again. (You may need to disable and reenable the extension
-              on the <code>chrome://extensions</code> page.
+              is installed and try again. You may need to log into Metamask's
+              extension. (You may also need to disable and reenable the
+              extension on the <code>chrome://extensions</code> page.)
             </p>
             <div className="d-flex justify-content-center">
               <div style={{ cursor: "pointer", width: "fit-content" }}></div>

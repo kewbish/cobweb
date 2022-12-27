@@ -50,7 +50,10 @@ const ListStreamsOut = () => {
           >
             {currentStreams.length ? (
               currentStreams.map((stream: Stream) => (
-                <CurrentStreamComponent stream={stream} key={stream.tabId} />
+                <CurrentStreamComponent
+                  stream={stream}
+                  key={stream.requestId}
+                />
               ))
             ) : (
               <p className="blue mb-1">No streams found.</p>

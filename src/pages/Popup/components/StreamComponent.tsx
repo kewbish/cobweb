@@ -14,7 +14,7 @@ const StreamComponent = ({
 }) => {
   useEffect(() => {
     const until = new bootstrap.Popover(
-      document.getElementById("streamed-until")
+      document.getElementById(`streamed-until-${stream.id}`)
     );
     return () => {
       until.dispose();
@@ -29,7 +29,7 @@ const StreamComponent = ({
       <p
         className="display mb-0"
         style={{ fontSize: 400 / stream.token.decimals }}
-        id="streamed-until"
+        id={"streamed-until-" + stream.id}
         data-bs-toggle="popover"
         data-bs-trigger="hover focus"
         data-bs-placement="bottom"

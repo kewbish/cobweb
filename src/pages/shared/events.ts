@@ -8,6 +8,7 @@ export const UPDATE_SETTING = "settings/update";
 export const EDIT_CURRENT_STREAM = "streams/patch";
 export const FETCH_BALANCE = "user/fetch-balance";
 export const APPROVE_AMT = "user/approve-amt";
+export const APPROVE_FULL = "user/approve-full";
 export const DOWNGRADE_TOKEN = "tokens/downgrade";
 export const UPGRADE_TOKEN = "tokens/upgrade";
 export const NEW_TOAST = "toast/new";

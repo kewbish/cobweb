@@ -8,7 +8,7 @@ import { ethers } from "ethers";
 const StreamComponent = ({ stream }: { stream: Stream }) => {
   useEffect(() => {
     const until = new bootstrap.Popover(
-      document.getElementById("streamed-until")
+      document.getElementById(`streamed-until-${stream.requestId}`)
     );
     return () => {
       until.dispose();
@@ -16,21 +16,23 @@ const StreamComponent = ({ stream }: { stream: Stream }) => {
   }, []);
 
   return (
-    <div className="form-control" style={{ cursor: "auto" }}>
+    <div className="form-control mb-1" style={{ cursor: "auto" }}>
       <p
         className="display mb-0"
         style={{ fontSize: 400 / 18 }}
-        id="streamed-until"
+        id={"streamed-until-" + stream.requestId}
         data-bs-toggle="popover"
         data-bs-trigger="hover focus"
         data-bs-placement="bottom"
-        data-bs-content={ethers.utils.formatUnits(streamedUntilNow(stream))}
+        data-bs-content={
+          ethers.utils.formatUnits(streamedUntilNow(stream)) + " ETHx"
+        }
         data-bs-template={
           '<div class="popover" role="tooltip"><div class="popover-arrow popover-arrow-override"></div><p class="popover-header"></p><div class="popover-body"></div></div>'
         }
       >
         {(+ethers.utils.formatUnits(streamedUntilNow(stream))).toFixed(4)}
-        ETH
+        ETHx
       </p>
       <p
         style={{
@@ -38,8 +40,8 @@ const StreamComponent = ({ stream }: { stream: Stream }) => {
           fontSize: 14,
         }}
       >
-        streamed so far to <span className="blue">{stream.recipient}</span>, on{" "}
-        {stream.url}
+        streamed so far to <span className="blue">{stream.recipient}</span>,{" "}
+        {stream.url ? "on " + stream.url : null}
       </p>
     </div>
   );

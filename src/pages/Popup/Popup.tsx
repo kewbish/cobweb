@@ -63,11 +63,15 @@ const Popup = () => {
     }
     setBalance(BigNumber.from(balanceRes));
     const popover = document.getElementById("balance-popover");
+    let updatedPopover: any = null;
     if (popover) {
       popover.title =
         ethers.utils.formatUnits(balanceRes) + " " + TOKEN_MAP.ETH.name;
-      new bootstrap.Popover(popover);
+      updatedPopover = new bootstrap.Popover(popover);
     }
+    return () => {
+      updatedPopover?.dispose();
+    };
   }, [balanceRes]);
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -93,7 +97,7 @@ const Popup = () => {
   }, [searchParams]);
 
   const [currentStreams, , ,]: [Array<Stream>, any, any, any] =
-    useChromeStorageLocal("streams", []);
+    useChromeStorageLocal("extend-chrome/storage__local--streams", []);
 
   const [tabId, setTabId] = useState(0);
   const [url, setUrl] = useState("");
@@ -129,6 +133,22 @@ const Popup = () => {
       currentStreams.filter((stream: Stream) => stream.tabId === tabId)[0]
     );
   }, [tabId, currentStreams]);
+
+  useEffect(() => {
+    const popover = document.getElementById("streamed-until");
+    console.log(popover);
+    let updatedPopover: any = null;
+    if (popover && currentStream) {
+      popover.title =
+        ethers.utils.formatEther(streamedUntilNow(currentStream)) +
+        " " +
+        TOKEN_MAP.ETH.name;
+      updatedPopover = new bootstrap.Popover(popover);
+    }
+    return () => {
+      updatedPopover?.dispose();
+    };
+  }, [currentStream]);
 
   const editStream = async ({
     oldKey,
@@ -216,7 +236,10 @@ const Popup = () => {
 
   return (
     <div className="App mx-2 my-3 p-0">
-      {metamaskNotFound ? <Navigate to="/metamask/not-found" /> : null}
+      {metamaskNotFound ||
+      (address !== null && (!address || address === "NO_ADDRESS")) ? (
+        <Navigate to="/metamask/not-found" />
+      ) : null}
       {address &&
       cwInitialized != null &&
       !cwInitialized &&
@@ -276,13 +299,23 @@ const Popup = () => {
                   data-bs-toggle="popover"
                   data-bs-trigger="hover focus"
                   data-bs-placement="bottom"
-                  data-bs-content={ethers.utils.formatUnits(
-                    streamedUntilNow(currentStream)
-                  )}
+                  title={
+                    ethers.utils.formatEther(streamedUntilNow(currentStream)) +
+                    " " +
+                    TOKEN_MAP.ETH.name
+                  }
+                  data-bs-template={
+                    '<div class="popover" role="tooltip"><div class="popover-arrow popover-arrow-override"></div><p class="popover-header"></p><div class="popover-body"></div></div>'
+                  }
                 >
-                  {(+streamedUntilNow(currentStream)).toFixed(4)} ETH
+                  {ethers.utils.formatUnits(
+                    streamedUntilNow(currentStream).sub(
+                      streamedUntilNow(currentStream).mod(1e12)
+                    )
+                  )}{" "}
+                  ETHx
                 </p>
-                <p>
+                <p style={{ fontSize: 16 }}>
                   streamed so far to{" "}
                   <span className="blue">{currentStream.url}</span>
                 </p>

@@ -1,4 +1,4 @@
-import { Monetization } from "./pages/Background/monetization";
+import { Monetization } from "./pages/shared/monetization";
 
 declare global {
   interface Document {

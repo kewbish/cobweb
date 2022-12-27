@@ -12,15 +12,15 @@ if (monetizationTag) {
 } else {
   // TODO - replace with more efficient search algorithms
   const bodyText = document.body.innerText;
-  const monetizationTagGroups = bodyText.match(/COBWEB:(\s)?(?<address>(\w)+)/)
-    ?.groups as { address: string } | null;
+  const monetizationTagGroups = bodyText.match(/(?<tag>COBWEB:\w+&\w+)/)
+    ?.groups as { tag: string } | null;
   if (monetizationTagGroups) {
     console.log(
-      `COBWEB: Monetization Tag Found - ${monetizationTagGroups.address}`
+      `COBWEB: Monetization Tag Found - ${monetizationTagGroups.tag}`
     );
     chrome.runtime.sendMessage({
       message: MONTAG_FOUND,
-      options: { address: monetizationTagGroups.address },
+      options: { address: monetizationTagGroups.tag },
     });
   }
 }

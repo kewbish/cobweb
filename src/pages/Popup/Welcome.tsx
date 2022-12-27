@@ -5,7 +5,6 @@ import BackgroundBox from "./components/BackgroundBox";
 import ProfilePic from "./components/ProfilePic";
 import FadedPill from "./components/FadedPill";
 import { createSearchParams, useNavigate } from "react-router-dom";
-import { USER_SET_WALLET } from "../shared/events";
 import { toast } from "../shared/toast";
 import { Wallet } from "../shared/types";
 
@@ -16,7 +15,8 @@ const Welcome = () => {
   );
   const [balance, setBalance] = useState(constants.Zero);
   const [balanceRes, , ,]: [any, any, any, any] = useChromeStorageLocal(
-    "extend-chrome/storage__local--balance",
+    // use Metamask balance on welcome page
+    "extend-chrome/storage__local--mmBalance",
     null
   );
   const [, setCwInitialized, ,]: [

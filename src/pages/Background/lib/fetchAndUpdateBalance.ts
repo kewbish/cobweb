@@ -1,13 +1,20 @@
 import { storage } from "@extend-chrome/storage";
 import { Web3Provider } from "@ethersproject/providers";
-import { SuperToken } from "@superfluid-finance/sdk-core";
-import { BigNumber, constants, utils } from "ethers";
+import { Framework, SuperToken } from "@superfluid-finance/sdk-core";
+import { BigNumber, constants, Signer, utils } from "ethers";
 import errorToast, { toast } from "../../shared/toast";
+import { DELETE_STREAM } from "../../shared/events";
+import { Rate } from "../../shared/types";
+import cleanUpStreams from "./cleanUpStreams";
 
 const fetchAndUpdateBalance = async ({
+  sf,
+  sfSigner,
   sfToken,
   mmProvider,
 }: {
+  sf: Framework;
+  sfSigner: Signer;
   sfToken: SuperToken;
   mmProvider: Web3Provider;
 }) => {
@@ -38,22 +45,28 @@ const fetchAndUpdateBalance = async ({
     }
 
     const balance = await mmProvider.getBalance(address);
-    storage.local.set({ balance: BigNumber.from(balance) });
+    storage.local.set({ mmBalance: BigNumber.from(balance) });
 
     if (!cwInitialized) {
       return;
     }
-  } catch {}
 
-  // TODO - below is superfluid token amt, let's display that in a different way later
-  /*
     ({ availableBalance, deposit } = await sfToken.realtimeBalanceOf({
       account: address,
       providerOrSigner: mmProvider,
     }));
     balanceRes = BigNumber.from(availableBalance);
   } catch (e) {
-    // document.monetization = "stopped";
+    const queryOptions = { active: true, lastFocusedWindow: true };
+    const [tab] = await chrome.tabs.query(queryOptions);
+    if (tab?.id) {
+      chrome.runtime.sendMessage({
+        message: DELETE_STREAM,
+        options: {
+          tabId: tab.id,
+        },
+      });
+    }
     errorToast(e as Error);
   }
   if (!balanceRes || !deposit) {
@@ -68,20 +81,28 @@ const fetchAndUpdateBalance = async ({
   if (balanceRes.gt(constants.Zero) && balanceRes.lte(deposit)) {
     // critical balance
     toast("Balance is critically low");
+    if (sf && sfSigner) {
+      cleanUpStreams({ sf, sfToken, sfSigner, all: true });
+    }
     return;
   }
 
-  let defaultRate: BigNumber | null = null;
+  let defaultRate: Rate | null = null;
   try {
-    // low balance == less than 12h's worth of default stream rate
+    // low balance == less than 3h's worth of default stream rate
     ({ defaultRate } = await storage.local.get("defaultRate"));
-    if (balanceRes.lte(BigNumber.from(defaultRate).mul(BigNumber.from(12)))) {
+    if (
+      defaultRate?.rateAmount &&
+      balanceRes.lte(
+        BigNumber.from(defaultRate.rateAmount).mul(BigNumber.from(3))
+      )
+    ) {
       toast("Balance is low.");
       return;
     }
   } catch (e) {
     errorToast(e as Error);
-  }*/
+  }
 };
 
 export default fetchAndUpdateBalance;

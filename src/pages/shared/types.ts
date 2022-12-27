@@ -12,8 +12,8 @@ export interface Stream {
   recipient: string;
   rateAmount: BigNumber;
   requestId: string;
-  startTime: Date;
-  stopTime?: Date;
+  startTime: number;
+  stopTime?: number;
   token?: Token;
 }
 

@@ -23,5 +23,6 @@
       "matches": []
     }
   ],
-  "permissions": ["storage"]
+  "permissions": ["storage", "alarms", "scripting"],
+  "host_permissions": ["<all_urls>"]
 }

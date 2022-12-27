@@ -3,7 +3,6 @@ import { storage } from "@extend-chrome/storage";
 import { Framework, SuperToken } from "@superfluid-finance/sdk-core";
 import { Signer } from "ethers";
 import errorToast from "../../shared/toast";
-import { stopMonetization } from "../../shared/monetization";
 
 const deleteStreamByTabId = async ({
   tabId,
@@ -21,19 +20,15 @@ const deleteStreamByTabId = async ({
   const cancelStream = async (recipient: string) => {
     const { wallet }: { wallet: Wallet } = await storage.local.get("wallet");
     try {
-      const deleteStreamOperation = sf.cfaV1.deleteFlow({
+      const deleteStreamOperation = sf.cfaV1.deleteFlowByOperator({
         sender: wallet.address,
         receiver: recipient,
         superToken: sfToken.address,
       });
       await deleteStreamOperation.exec(sfSigner);
     } catch (e) {
-      chrome.scripting.executeScript({
-        args: [stream.recipient, stream.requestId],
-        target: { tabId },
-        func: stopMonetization,
-      });
       errorToast(e as Error);
+      return;
     }
   };
 
@@ -57,13 +52,7 @@ const deleteStreamByTabId = async ({
     streams: streams.filter((stream: Stream) => stream.tabId !== tabId),
   });
 
-  cancelStream(stream.recipient);
-
-  chrome.scripting.executeScript({
-    args: [stream.recipient, stream.requestId],
-    target: { tabId },
-    func: stopMonetization,
-  });
+  // cancelStream(stream.recipient);
 };
 
 export default deleteStreamByTabId;

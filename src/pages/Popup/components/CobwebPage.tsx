@@ -36,11 +36,15 @@ const CobwebPage = ({ children }: { children: React.ReactNode }) => {
 
     setBalance(BigNumber.from(balanceRes));
     const popover = document.getElementById("popover");
+    let updatedPopover: any = null;
     if (popover) {
       popover.title =
         ethers.utils.formatUnits(balanceRes) + " " + TOKEN_MAP.ETH.name;
-      new bootstrap.Popover(popover);
+      updatedPopover = new bootstrap.Popover(popover);
     }
+    return () => {
+      updatedPopover?.dispose();
+    };
   }, [balanceRes]);
 
   const navigate = useNavigate();

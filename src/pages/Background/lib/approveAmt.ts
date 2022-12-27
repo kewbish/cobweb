@@ -21,16 +21,55 @@ const approveAmt = async ({
       toast("No wallet found");
       throw new Error("Expected wallet.");
     }
-    const updateFlowOperatorOperation = sf.cfaV1.updateFlowOperatorPermissions({
-      flowOperator: wallet.address,
-      permissions: 7,
-      flowRateAllowance: depositAmt.toString(),
-      superToken: sfToken.address,
-    });
-    await updateFlowOperatorOperation.exec(sfSigner);
+    try {
+      const updateFlowOperatorOperation =
+        sf.cfaV1.updateFlowOperatorPermissions({
+          flowOperator: wallet.address,
+          permissions: 7,
+          flowRateAllowance: BigNumber.from(depositAmt).toString(),
+          superToken: sfToken.address,
+        });
+      await updateFlowOperatorOperation.exec(sfSigner);
+      toast("Approved!");
+    } catch {
+      toast("Error: try a lower amount or try again later.");
+    }
   } catch (e) {
     errorToast(e as Error);
-    throw e;
+    // throw e;
+  }
+};
+
+export const approveAll = async ({
+  sf,
+  sfSigner,
+  sfToken,
+}: {
+  sf: Framework;
+  sfSigner: Signer;
+  sfToken: SuperToken;
+}) => {
+  try {
+    const { wallet }: { wallet: Wallet } = await storage.local.get("wallet");
+    if (!wallet) {
+      // throw new Error("Expected wallet.");
+      toast("No wallet found");
+      throw new Error("Expected wallet.");
+    }
+    try {
+      const updateFlowOperatorOperation =
+        sf.cfaV1.authorizeFlowOperatorWithFullControl({
+          flowOperator: wallet.address,
+          superToken: sfToken.address,
+        });
+      await updateFlowOperatorOperation.exec(sfSigner);
+      toast("Approved full authorization!");
+    } catch {
+      toast("Error: try again later.");
+    }
+  } catch (e) {
+    errorToast(e as Error);
+    // throw e;
   }
 };
 

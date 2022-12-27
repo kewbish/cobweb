@@ -11,9 +11,14 @@ import ToastHandler from "./components/ToastHandler";
 
 const UpgradingTokens = () => {
   const [balance, setBalance] = useState(constants.Zero);
+  const [mmBalance, setMMBalance] = useState(constants.Zero);
   const [upgrading, setUpgrading] = useState<BigNumber>(balance);
   const [balanceRes, , ,]: [any, any, any, any] = useChromeStorageLocal(
     "extend-chrome/storage__local--balance",
+    null
+  );
+  const [mmBalanceRes, , ,]: [any, any, any, any] = useChromeStorageLocal(
+    "extend-chrome/storage__local--mmBalance",
     null
   );
 
@@ -32,6 +37,14 @@ const UpgradingTokens = () => {
 
     setBalance(BigNumber.from(balanceRes));
   }, [balanceRes]);
+
+  useEffect(() => {
+    if (!mmBalanceRes) {
+      return;
+    }
+
+    setMMBalance(BigNumber.from(mmBalanceRes));
+  }, [mmBalanceRes]);
 
   const authorizeTransaction = async () => {
     chrome.runtime.sendMessage({
@@ -53,15 +66,18 @@ const UpgradingTokens = () => {
             </p>
             <TokenInput value={upgrading} setValue={setUpgrading} />
             <p className="mb-0 text-muted" style={{ fontSize: 14 }}>
-              ({ethers.utils.formatEther(balance)} {currency} available, total
-              would be {ethers.utils.formatEther(balance.add(upgrading))}{" "}
-              {currency} in wrapped tokens)
+              ({ethers.utils.formatEther(mmBalance)} {currency.slice(0, -1)}{" "}
+              available in Metamask wallet, total Cobweb wallet balance would be{" "}
+              {ethers.utils.formatEther(balance.add(upgrading))} {currency} in
+              wrapped tokens)
             </p>
             <button
               type="button"
               className="btn glassy-cw-btn p-1 px-2"
               onClick={authorizeTransaction}
-              disabled={upgrading.lte(constants.Zero)}
+              disabled={
+                upgrading.lte(constants.Zero) || upgrading.gt(mmBalance)
+              }
             >
               Authorize
             </button>
