@@ -6,7 +6,6 @@ import {
   BLOCK_SITE,
   UPDATE_SETTING,
   UPDATE_STREAM,
-  FETCH_BALANCE,
   CHECK_METAMASK,
 } from "../shared/events";
 import { useChromeStorageLocal } from "use-chrome-storage";
@@ -14,12 +13,11 @@ import { PayRates, Stream } from "../shared/types";
 import Setting from "./components/Setting";
 import DropdownModal from "./components/DropdownModal";
 import BackgroundBox from "./components/BackgroundBox";
-import ProfilePic from "./components/ProfilePic";
-import FadedPill from "./components/FadedPill";
 import streamedUntilNow from "./lib/streamedUntilNow";
 import { getRate } from "../Background/lib/getRate";
 import Onboarding from "./components/OnboardingCarousel";
 import ToastHandler from "./components/ToastHandler";
+import BalanceDisplay from "./components/BalanceDisplay";
 
 import "bootstrap-icons/font/bootstrap-icons.css";
 // @ts-expect-error
@@ -30,11 +28,6 @@ import { toast } from "../shared/toast";
 const Popup = () => {
   const [address, , ,]: [string, any, boolean, any] = useChromeStorageLocal(
     "extend-chrome/storage__local--address",
-    null
-  );
-  const [balance, setBalance] = useState(constants.Zero);
-  const [balanceRes, , ,]: [any, any, any, any] = useChromeStorageLocal(
-    "extend-chrome/storage__local--balance",
     null
   );
   const [cwInitialized, , ,]: [boolean, any, any, any] = useChromeStorageLocal(
@@ -49,30 +42,10 @@ const Popup = () => {
   useEffect(() => {
     if (address) {
       chrome.runtime.sendMessage({
-        message: FETCH_BALANCE,
-      });
-      chrome.runtime.sendMessage({
         message: CHECK_METAMASK,
       });
     }
   }, [address]);
-
-  useEffect(() => {
-    if (!balanceRes) {
-      return;
-    }
-    setBalance(BigNumber.from(balanceRes));
-    const popover = document.getElementById("balance-popover");
-    let updatedPopover: any = null;
-    if (popover) {
-      popover.title =
-        ethers.utils.formatUnits(balanceRes) + " " + TOKEN_MAP.ETH.name;
-      updatedPopover = new bootstrap.Popover(popover);
-    }
-    return () => {
-      updatedPopover?.dispose();
-    };
-  }, [balanceRes]);
 
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -136,7 +109,6 @@ const Popup = () => {
 
   useEffect(() => {
     const popover = document.getElementById("streamed-until");
-    console.log(popover);
     let updatedPopover: any = null;
     if (popover && currentStream) {
       popover.title =
@@ -215,25 +187,6 @@ const Popup = () => {
     }
   };
 
-  useEffect(() => {
-    var popoverTriggerList = [].slice.call(
-      document.querySelectorAll('[data-bs-toggle="popover"]')
-    );
-    var popoverList = popoverTriggerList.map(function (
-      popoverTriggerEl: HTMLElement
-    ) {
-      return new bootstrap.Popover(popoverTriggerEl);
-    });
-    for (const popover of popoverList) {
-      popover.enable();
-    }
-    return () => {
-      for (const popover of popoverList) {
-        popover.dispose();
-      }
-    };
-  }, [balance]);
-
   return (
     <div className="App mx-2 my-3 p-0">
       {metamaskNotFound ||
@@ -251,35 +204,7 @@ const Popup = () => {
           <h1 className="display" style={{ fontSize: 40, fontWeight: 200 }}>
             Cobweb
           </h1>
-          <div
-            style={{ marginTop: "-10px" }}
-            data-bs-toggle="popover"
-            title={
-              ethers.utils.formatUnits(balance, "ether") +
-              " " +
-              TOKEN_MAP.ETH.name
-            }
-            data-bs-trigger="hover focus"
-            data-bs-template={
-              '<div class="popover" role="tooltip"><div class="popover-arrow popover-arrow-override"></div><p class="popover-header"></p><div class="popover-body"></div></div>'
-            }
-            id="balance-popover"
-          >
-            <FadedPill>
-              <div className="d-flex justify-content-end align-items-center h-auto">
-                <div
-                  className="d-flex align-items-center"
-                  style={{ marginRight: "5px" }}
-                >
-                  <p className="align-self-center m-0">
-                    {ethers.utils.formatUnits(balance.sub(balance.mod(1e12)))}{" "}
-                    {TOKEN_MAP.ETH.name}
-                  </p>
-                </div>
-                <ProfilePic width={40} address={address ?? ""} />
-              </div>
-            </FadedPill>
-          </div>
+          <BalanceDisplay />
         </div>
         <BackgroundBox>
           <div>

@@ -446,6 +446,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
     if (!wallet || !address) {
       return;
     }
+    fetchBalance();
     fetchCobwebAllowance({
       sfToken,
       sfSigner,
