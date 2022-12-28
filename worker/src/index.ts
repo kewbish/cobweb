@@ -1,4 +1,5 @@
 import { ethers } from "ethers";
+import { Framework } from "@superfluid-finance/sdk-core";
 
 export interface Env {
   COBWEB_KV: KVNamespace;
@@ -74,30 +75,61 @@ const worker = {
               );
             }
           }
+          const sf = await Framework.create({
+            chainId: 5,
+            provider,
+          });
+          const sfToken = await sf.loadSuperToken(
+            "0x5943F705aBb6834Cad767e6E4bB258Bc48D9C947"
+          );
           const wallet = new ethers.Wallet(env.MASTER_WALLET_PKEY);
           const signer = wallet.connect(provider);
-          const tx = {
-            from: wallet.address,
-            to: address,
-            value: ethers.utils.parseUnits((0.2 / 500).toString(), "ether"), // TODO
-            nonce: provider.getTransactionCount(wallet.address, "latest"),
-            gasLimit: 0x100000,
-            gasPrice: provider.getGasPrice(),
-          };
-          signer.sendTransaction(tx).then((transaction) => {
-            if (env.ENVIRONMENT === "dev") {
-              logger(String(transaction), "ETH");
-            }
+          const transferOperation = sfToken.transfer({
+            receiver: address,
+            amount: ethers.utils.formatEther(0.2 / 500),
           });
-          return new Response(
-            JSON.stringify({
-              message: `Associated ${identifier} to ${address} and transferred starter ETH.`,
-            }),
-            {
-              ...HEADERS,
-              status: 200,
+          try {
+            transferOperation
+              .exec(signer)
+              .then((transaction) => transaction.wait())
+              .then((transaction) => {
+                if (env.ENVIRONMENT === "dev") {
+                  logger(String(transaction), "ETH");
+                }
+                return new Response(
+                  JSON.stringify({
+                    message: `Associated ${identifier} to ${address} and transferred starter ETH.`,
+                  }),
+                  {
+                    ...HEADERS,
+                    status: 200,
+                  }
+                );
+              })
+              .catch((err) => {
+                if (env.ENVIRONMENT === "dev") {
+                  logger("Error - " + err, "ERROR");
+                }
+                return new Response(
+                  JSON.stringify({ error: "Could not transfer" }),
+                  {
+                    ...HEADERS,
+                    status: 500,
+                  }
+                );
+              });
+          } catch (err) {
+            if (env.ENVIRONMENT === "dev") {
+              logger("Error - " + err, "ERROR");
             }
-          );
+            return new Response(
+              JSON.stringify({ error: "Could not transfer" }),
+              {
+                ...HEADERS,
+                status: 500,
+              }
+            );
+          }
         }
         if (env.ENVIRONMENT === "dev") {
           logger("Could not get params - " + params, "PARAMS");

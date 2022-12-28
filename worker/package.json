@@ -12,6 +12,7 @@
     "deploy": "wrangler publish"
   },
   "dependencies": {
+    "@superfluid-finance/sdk-core": "^0.6.1",
     "ethers": "^5.7.2"
   }
 }
