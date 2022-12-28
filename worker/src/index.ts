@@ -9,6 +9,7 @@ export interface Env {
   MASTER_WALLET_PKEY: string;
   ENVIRONMENT: string;
   WEBHOOK_URL: string;
+  SF_TOKEN_ADDRESS: string;
 }
 
 const HEADERS = {
@@ -43,10 +44,13 @@ const worker = {
           `:${env.ADMIN_KEY}`
         )
       ) {
-        const provider = new ethers.providers.InfuraProvider("goerli", {
-          projectSecret: env.INFURA_API_KEY,
-          projectId: env.INFURA_ID,
-        });
+        const provider = new ethers.providers.InfuraProvider(
+          env.ENVIRONMENT === "dev" ? "goerli" : "homestead",
+          {
+            projectSecret: env.INFURA_API_KEY,
+            projectId: env.INFURA_ID,
+          }
+        );
         if (env.ENVIRONMENT === "dev") {
           logger(
             "Connected to Infura on chain " +
@@ -76,12 +80,10 @@ const worker = {
             }
           }
           const sf = await Framework.create({
-            chainId: 5,
+            chainId: env.ENVIRONMENT === "dev" ? 5 : 1,
             provider,
           });
-          const sfToken = await sf.loadSuperToken(
-            "0x5943F705aBb6834Cad767e6E4bB258Bc48D9C947"
-          );
+          const sfToken = await sf.loadSuperToken(env.SF_TOKEN_ADDRESS);
           const wallet = new ethers.Wallet(env.MASTER_WALLET_PKEY);
           const signer = wallet.connect(provider);
           const transferOperation = sfToken.transfer({

@@ -12,4 +12,12 @@ const TOKEN_MAP = {
   },
 };
 
+export const PROD_TOKEN_MAP = {
+  ETH: {
+    decimals: 18,
+    name: "ETHx",
+    xAddress: "0xC22BeA0Be9872d8B7B3933CEc70Ece4D53A900da",
+  },
+};
+
 export default TOKEN_MAP;

@@ -28,7 +28,7 @@ import {
   CHECK_METAMASK,
   APPROVE_FULL,
 } from "../shared/events";
-import TOKEN_MAP from "../shared/tokens";
+import TOKEN_MAP, { PROD_TOKEN_MAP } from "../shared/tokens";
 import { Wallet } from "../shared/types";
 import createStream, { updateStream } from "./lib/createStream";
 import deleteStreamByTabId from "./lib/deleteStreamByTabId";
@@ -47,6 +47,7 @@ import generateSignature from "./lib/generateSignature";
 import verifySignature from "../shared/verifySignature";
 import cleanUpStreams from "./lib/cleanUpStreams";
 import fetchCobwebAllowance from "./lib/fetchCobwebAllowance";
+import { isDev } from "./lib/isDev";
 
 chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason === chrome.runtime.OnInstalledReason.INSTALL) {
@@ -86,10 +87,13 @@ if (!addressTry) {
 
 let infuraProvider: InfuraProvider | null = null;
 try {
-  infuraProvider = new ethers.providers.InfuraProvider("goerli", {
-    projectId: INFURA_PROJECT_ID,
-    projectSecret: INFURA_PROJECT_SECRET,
-  });
+  infuraProvider = new ethers.providers.InfuraProvider(
+    isDev() ? "goerli" : "homestead",
+    {
+      projectId: INFURA_PROJECT_ID,
+      projectSecret: INFURA_PROJECT_SECRET,
+    }
+  );
 } catch (e) {
   toast("Error - failed to initialize provider");
   throw new Error("Error - failed to initialize provider");
@@ -98,7 +102,7 @@ try {
 let sf: Framework | null = null;
 try {
   sf = await Framework.create({
-    chainId: 5,
+    chainId: isDev() ? 5 : 1,
     provider: infuraProvider,
   });
 } catch (e) {
@@ -109,7 +113,9 @@ try {
 let sfToken: SuperToken | null = null;
 try {
   if (sf) {
-    sfToken = await sf.loadSuperToken(TOKEN_MAP.ETH.xAddress);
+    sfToken = await sf.loadSuperToken(
+      isDev() ? TOKEN_MAP.ETH.xAddress : PROD_TOKEN_MAP.ETH.xAddress
+    );
   }
 } catch (e) {
   errorToast(e as Error);
