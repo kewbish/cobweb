@@ -6,7 +6,6 @@ import ProfilePic from "./components/ProfilePic";
 import FadedPill from "./components/FadedPill";
 import { createSearchParams, useNavigate } from "react-router-dom";
 import { toast } from "../shared/toast";
-import { Wallet } from "../shared/types";
 import { FETCH_BALANCE } from "../shared/events";
 import TOKEN_MAP from "../shared/tokens";
 
@@ -31,9 +30,6 @@ const Welcome = () => {
     null
   );
 
-  const [, setWallet, ,]: [any, (value: Wallet) => void, any, any] =
-    useChromeStorageLocal("extend-chrome/storage__local--wallet");
-
   useEffect(() => {
     if (!balanceRes) {
       return;
@@ -43,22 +39,8 @@ const Welcome = () => {
 
   const navigate = useNavigate();
 
-  const generateNewWallet = async () => {
-    try {
-      const wallet = ethers.Wallet.createRandom();
-      setWallet({
-        address: wallet.address,
-        mnemonic: wallet.mnemonic.phrase,
-        pkey: wallet.privateKey,
-      });
-    } catch {
-      toast("Couldn't generate wallet.");
-    }
-  };
-
   const initializeCobWeb = async () => {
     setCwInitialized(true);
-    await generateNewWallet();
     navigate({
       pathname: "/",
       search: createSearchParams({ onboarding: "true" }).toString(),

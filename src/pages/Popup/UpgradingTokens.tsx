@@ -67,7 +67,7 @@ const UpgradingTokens = () => {
             <TokenInput value={upgrading} setValue={setUpgrading} />
             <p className="mb-0 text-muted" style={{ fontSize: 14 }}>
               ({ethers.utils.formatEther(mmBalance)} {currency.slice(0, -1)}{" "}
-              available in Metamask wallet, total Cobweb wallet balance would be{" "}
+              available, total balance would be{" "}
               {ethers.utils.formatEther(balance.add(upgrading))} {currency} in
               wrapped tokens)
             </p>

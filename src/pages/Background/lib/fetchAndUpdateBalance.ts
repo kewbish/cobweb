@@ -9,12 +9,10 @@ import cleanUpStreams from "./cleanUpStreams";
 
 const fetchAndUpdateBalance = async ({
   sf,
-  sfSigner,
   sfToken,
   mmProvider,
 }: {
   sf: Framework;
-  sfSigner: Signer | null;
   sfToken: SuperToken;
   mmProvider: Web3Provider;
 }) => {
@@ -47,7 +45,9 @@ const fetchAndUpdateBalance = async ({
     const balance = await mmProvider.getBalance(address);
     storage.local.set({ mmBalance: BigNumber.from(balance) });
 
-    if (!cwInitialized || !sfSigner) {
+    const mmSigner = mmProvider.getSigner();
+
+    if (!cwInitialized || !mmSigner) {
       return;
     }
 
@@ -81,11 +81,10 @@ const fetchAndUpdateBalance = async ({
   if (balanceRes.gt(constants.Zero) && balanceRes.lte(deposit)) {
     // critical balance
     toast("Balance is critically low");
-    if (sf && sfSigner) {
+    if (sf && mmProvider) {
       cleanUpStreams({
         sf,
         sfToken,
-        sfSigner,
         all: true,
         mmSigner: mmProvider.getSigner(),
       });

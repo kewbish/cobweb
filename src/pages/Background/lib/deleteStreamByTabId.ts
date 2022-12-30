@@ -1,4 +1,4 @@
-import { PayRates, Stream, Wallet } from "../../shared/types";
+import { PayRates, Stream } from "../../shared/types";
 import { storage } from "@extend-chrome/storage";
 import { Framework, SuperToken } from "@superfluid-finance/sdk-core";
 import { Signer } from "ethers";
@@ -7,14 +7,12 @@ import errorToast from "../../shared/toast";
 const deleteStreamByTabId = async ({
   tabId,
   sf,
-  sfSigner,
   sfToken,
   checkFocus = false,
   mmSigner,
 }: {
   tabId: number;
   sf: Framework;
-  sfSigner: Signer;
   sfToken: SuperToken;
   checkFocus?: boolean;
   mmSigner: Signer;
@@ -27,7 +25,7 @@ const deleteStreamByTabId = async ({
       return;
     }
     try {
-      const deleteStreamOperation = sf.cfaV1.deleteFlowByOperator({
+      const deleteStreamOperation = sf.cfaV1.deleteFlow({
         sender: address,
         receiver: recipient,
         superToken: sfToken.address,

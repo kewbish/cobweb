@@ -21,7 +21,6 @@ const createStream = async ({
   url,
   rateAmount,
   sf,
-  sfSigner,
   sfToken,
   infuraProvider,
   mmSigner,
@@ -33,7 +32,6 @@ const createStream = async ({
   url: string;
   rateAmount: BigNumber;
   sf: Framework;
-  sfSigner: Signer;
   sfToken: SuperToken;
   infuraProvider: InfuraProvider;
   mmSigner: Signer;
@@ -80,13 +78,13 @@ const createStream = async ({
         await sf.cfaV1.getFlow({
           sender: from,
           receiver: to,
-          providerOrSigner: sfSigner,
+          providerOrSigner: mmSigner,
           superToken: sfToken.address,
         })
       ).flowRate === "0"
       // no other existing stream
     ) {
-      const newStreamOperation = sf.cfaV1.createFlowByOperator({
+      const newStreamOperation = sf.cfaV1.createFlow({
         sender: from,
         flowRate: BigNumber.from(rateAmount).toString(),
         receiver: to,
@@ -146,7 +144,6 @@ export const updateStream = async ({
   tabId,
   rateAmount,
   sf,
-  sfSigner,
   sfToken,
   mmSigner,
 }: {
@@ -155,7 +152,6 @@ export const updateStream = async ({
   tabId: number;
   rateAmount: BigNumber;
   sf: Framework;
-  sfSigner: Signer;
   sfToken: SuperToken;
   mmSigner: Signer;
 }) => {
@@ -172,7 +168,7 @@ export const updateStream = async ({
 
   let updateStream;
   try {
-    const updateStreamOperation = sf.cfaV1.updateFlowByOperator({
+    const updateStreamOperation = sf.cfaV1.updateFlow({
       sender: from,
       flowRate: BigNumber.from(rateAmount).toString(),
       receiver: to,

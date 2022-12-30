@@ -5,14 +5,12 @@ import { Framework, SuperToken } from "@superfluid-finance/sdk-core";
 import { Signer } from "ethers";
 
 const cleanUpStreams = async ({
-  sfSigner,
   sfToken,
   sf,
   all = false,
   mmSigner,
 }: {
   sf: Framework;
-  sfSigner: Signer;
   sfToken: SuperToken;
   all?: boolean;
   mmSigner: Signer;
@@ -30,7 +28,6 @@ const cleanUpStreams = async ({
       deleteStreamByTabId({
         tabId: stream.tabId,
         sf,
-        sfSigner,
         sfToken,
         mmSigner,
       });
@@ -42,7 +39,6 @@ const cleanUpStreams = async ({
       deleteStreamByTabId({
         tabId: stream.tabId,
         sf,
-        sfSigner,
         sfToken,
         mmSigner,
       });

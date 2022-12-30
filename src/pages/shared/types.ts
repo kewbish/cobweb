@@ -1,11 +1,5 @@
 import { BigNumber } from "ethers";
 
-export interface Wallet {
-  address: string;
-  mnemonic: string;
-  pkey: string;
-}
-
 export interface Stream {
   tabId: number;
   url: string;
