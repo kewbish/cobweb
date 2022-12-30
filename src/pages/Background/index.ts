@@ -16,7 +16,7 @@ import {
   MONTAG_FOUND,
   USER_SET_WALLET,
   DELETE_STREAM,
-  BLOCK_SITE,
+  BLOCK_TAG,
   UPDATE_SETTING,
   EDIT_CURRENT_STREAM,
   FETCH_BALANCE,
@@ -29,13 +29,13 @@ import {
   APPROVE_FULL,
 } from "../shared/events";
 import TOKEN_MAP, { PROD_TOKEN_MAP } from "../shared/tokens";
-import { Wallet } from "../shared/types";
+import { PayRates, Wallet } from "../shared/types";
 import createStream, { updateStream } from "./lib/createStream";
 import deleteStreamByTabId from "./lib/deleteStreamByTabId";
 import setNewWallet from "./lib/setNewWallet";
 import { getRate } from "./lib/getRate";
 import setDefaultSettings from "./lib/initializeCobweb";
-import blockSite from "./lib/blockSite";
+import blockTag from "./lib/blockTag";
 import updateRateSetting from "./lib/updateRateSetting";
 import fetchAndUpdateBalance from "./lib/fetchAndUpdateBalance";
 import setNewAddress from "./lib/updateAddress";
@@ -52,6 +52,7 @@ import { isDev } from "./lib/isDev";
 chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason === chrome.runtime.OnInstalledReason.INSTALL) {
     setDefaultSettings();
+    chrome.runtime.setUninstallURL("https://kewbi.sh/cobweb");
   }
 });
 
@@ -79,7 +80,7 @@ storage.local.set({ toasts: [] });
 let { address: addressTry } = (await storage.local.get("address")) as {
   address: string | null;
 };
-if (!addressTry) {
+if (!addressTry || addressTry === "NO_ADDRESS") {
   storage.local.set({
     address: metamaskProvider.selectedAddress ?? "NO_ADDRESS",
   });
@@ -156,7 +157,7 @@ const getWalletAndSigner = async (): Promise<{
     }
   } catch (e) {
     errorToast(e as Error);
-    throw e;
+    // throw e;
   }
   return { wallet: walletRes, signer: sfSigner };
 };
@@ -180,19 +181,21 @@ const montagFound = async ({
   }
   const tabId = sender.tab.id ?? 0;
   const rate = await getRate(address);
-  if (rate && rate.rateAmount !== constants.Zero) {
-    createStream({
-      from: walletRes.address,
-      to: address,
-      tabId,
-      url: sender.tab.url ?? "",
-      rateAmount: rate.rateAmount,
-      sf,
-      sfSigner,
-      sfToken,
-      infuraProvider: infuraProvider as InfuraProvider,
-    });
+  if (rate.payWhen === PayRates.BLOCKED) {
+    return;
   }
+  createStream({
+    from: walletRes.address,
+    toTag: request.options.address,
+    to: address,
+    tabId,
+    url: sender.tab.url ?? "",
+    rateAmount: rate.rateAmount,
+    sf,
+    sfSigner,
+    sfToken,
+    infuraProvider: infuraProvider as InfuraProvider,
+  });
 };
 
 const deleteStream = async ({ request }: { request: any }) => {
@@ -214,9 +217,9 @@ const setUserWallet = async ({ request }: { request: any }) => {
   setNewWallet(request.options.wallet);
 };
 
-const setBlockSite = async ({ request }: { request: any }) => {
-  blockSite({
-    site: request.options.site,
+const setBlockTag = async ({ request }: { request: any }) => {
+  blockTag({
+    address: request.options.address,
   });
 };
 
@@ -247,7 +250,10 @@ const editCurrentStream = async ({ request }: { request: any }) => {
 
 const fetchBalance = async () => {
   const { signer: sfSigner } = await getWalletAndSigner();
-  if (!sfToken || !mmProvider || !sf || !sfSigner) {
+  const { cwInitialized } = (await storage.local.get("cwInitialized")) as {
+    cwInitialized: boolean | null;
+  };
+  if (!sfToken || !mmProvider || !sf || (cwInitialized && !sfSigner)) {
     return;
   }
   fetchAndUpdateBalance({ sfToken, mmProvider, sfSigner, sf });
@@ -343,8 +349,8 @@ const handleMessaging = async (
       sendResponse();
       return;
     }
-    case BLOCK_SITE: {
-      setBlockSite({ request });
+    case BLOCK_TAG: {
+      setBlockTag({ request });
       sendResponse();
       return;
     }
@@ -431,34 +437,38 @@ chrome.alarms.create("cobwebAllowanceCheck" + alarmSuffix, {
   delayInMinutes: 5,
 });
 chrome.alarms.onAlarm.addListener(async (alarm) => {
-  var parsedName = alarm.name.match(/^([\S\s]*?)(\d+)$/);
-  let name = "";
-  let suffix = 0;
-  if (parsedName) {
-    name = parsedName[0];
-    suffix = +parsedName[1];
-  }
-  if (suffix !== alarmSuffix) {
-    return;
-  }
-  const { wallet, signer: sfSigner } = await getWalletAndSigner();
-  if (!sf || !sfSigner || !sfToken) {
-    return;
-  }
-  if (name === "cobwebStreamCleanup") {
-    cleanUpStreams({ sfSigner, sfToken, sf });
-  } else if (name === "cobwebAllowanceCheck") {
-    const { address } = await storage.local.get("address");
-    if (!wallet || !address) {
+  try {
+    var parsedName = alarm.name.match(/^([\S\s]*?)(\d+)$/);
+    let name = "";
+    let suffix = 0;
+    if (parsedName) {
+      name = parsedName[0];
+      suffix = +parsedName[1];
+    }
+    if (suffix !== alarmSuffix) {
       return;
     }
-    fetchBalance();
-    fetchCobwebAllowance({
-      sfToken,
-      sfSigner,
-      sf,
-      walletAddress: wallet.address,
-      mmAddress: address,
-    });
-  }
+    const { wallet, signer: sfSigner } = await getWalletAndSigner();
+    if (!sf || !sfSigner || !sfToken) {
+      return;
+    }
+    if (name === "cobwebStreamCleanup") {
+      cleanUpStreams({ sfSigner, sfToken, sf });
+    } else if (name === "cobwebAllowanceCheck") {
+      const { address } = await storage.local.get("address");
+      if (!wallet || !address) {
+        return;
+      }
+      fetchBalance();
+      fetchCobwebAllowance({
+        sfToken,
+        sfSigner,
+        sf,
+        walletAddress: wallet.address,
+        mmAddress: address,
+      });
+    }
+  } catch {}
 });
+
+chrome.runtime.onConnect.addListener(() => {});

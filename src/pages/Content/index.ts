@@ -24,3 +24,22 @@ if (monetizationTag) {
     });
   }
 }
+
+try {
+  const port = chrome.runtime.connect({ name: "content-script" });
+  const onPortDisconnect = () => {
+    try {
+      console.log(chrome.runtime.lastError);
+      setTimeout(() => {
+        if (!chrome.runtime?.id) {
+          document.body.insertAdjacentHTML(
+            "afterend",
+            "<a href='https://kewbi.sh/cobweb/removed' target='_blank' id='cobweb-removed-link' style='opacity: 0;line-height: 0;' />"
+          );
+          document.getElementById("cobweb-removed-link")?.click();
+        }
+      }, 1000);
+    } catch {}
+  };
+  port.onDisconnect.addListener(onPortDisconnect);
+} catch {}

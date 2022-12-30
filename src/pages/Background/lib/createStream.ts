@@ -17,6 +17,7 @@ import TOKEN_MAP from "../../shared/tokens";
 const createStream = async ({
   from,
   to,
+  toTag,
   tabId,
   url,
   rateAmount,
@@ -27,6 +28,7 @@ const createStream = async ({
 }: {
   from: string;
   to: string;
+  toTag: string;
   tabId: number;
   url: string;
   rateAmount: BigNumber;
@@ -115,6 +117,7 @@ const createStream = async ({
       ...streams,
       {
         recipient: to,
+        recipientTag: toTag,
         tabId,
         rateAmount,
         requestId: uuid,

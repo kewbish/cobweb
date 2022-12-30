@@ -17,8 +17,8 @@ const CobwebPage = ({ children }: { children: React.ReactNode }) => {
           >
             &lt;
           </h1>
+          <BalanceDisplay />
         </div>
-        <BalanceDisplay />
         <BackgroundBox>
           <>{children}</>
         </BackgroundBox>

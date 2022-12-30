@@ -14,7 +14,7 @@ const fetchAndUpdateBalance = async ({
   mmProvider,
 }: {
   sf: Framework;
-  sfSigner: Signer;
+  sfSigner: Signer | null;
   sfToken: SuperToken;
   mmProvider: Web3Provider;
 }) => {
@@ -47,7 +47,7 @@ const fetchAndUpdateBalance = async ({
     const balance = await mmProvider.getBalance(address);
     storage.local.set({ mmBalance: BigNumber.from(balance) });
 
-    if (!cwInitialized) {
+    if (!cwInitialized || !sfSigner) {
       return;
     }
 

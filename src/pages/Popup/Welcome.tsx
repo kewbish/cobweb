@@ -7,6 +7,8 @@ import FadedPill from "./components/FadedPill";
 import { createSearchParams, useNavigate } from "react-router-dom";
 import { toast } from "../shared/toast";
 import { Wallet } from "../shared/types";
+import { FETCH_BALANCE } from "../shared/events";
+import TOKEN_MAP from "../shared/tokens";
 
 const Welcome = () => {
   const [address, , ,]: [string, any, any, any] = useChromeStorageLocal(
@@ -63,6 +65,12 @@ const Welcome = () => {
     });
   };
 
+  useEffect(() => {
+    chrome.runtime.sendMessage({
+      message: FETCH_BALANCE,
+    });
+  }, []);
+
   return (
     <div className="App mx-2 my-3 p-0">
       <div className="container">
@@ -93,7 +101,7 @@ const Welcome = () => {
                         {ethers.utils.formatUnits(
                           balance.sub(balance.mod(1e12))
                         )}{" "}
-                        ETH
+                        {TOKEN_MAP.ETH.name}
                       </p>
                     </div>
                     <ProfilePic width={40} address={address} noNav={true} />

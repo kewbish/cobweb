@@ -37,7 +37,7 @@ const Setting = ({
         <input
           type="text"
           className="form-control p-1"
-          placeholder="Site URL (Regex supported)"
+          placeholder="Cobweb Tag"
           id="inputDefault"
           value={currentKey}
           onChange={(e) => setCurrentKey(e.target.value)}
@@ -87,7 +87,7 @@ const Setting = ({
           <>
             <div className="d-flex flex-row justify-content-between gap-1">
               <p className="blue mb-0" style={{ fontSize: 14 }}>
-                This site is currently blocked.
+                This tag is currently blocked.
               </p>
               <button
                 type="button"

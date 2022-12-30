@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Link, Navigate, useSearchParams } from "react-router-dom";
 import {
   DELETE_STREAM,
-  BLOCK_SITE,
+  BLOCK_TAG,
   UPDATE_SETTING,
   UPDATE_STREAM,
   CHECK_METAMASK,
@@ -122,6 +122,17 @@ const Popup = () => {
     };
   }, [currentStream]);
 
+  useEffect(() => {
+    const collapse = document.getElementById("collapse");
+    let newCollapse: bootstrap.Collapse | null = null;
+    if (collapse && currentStream) {
+      newCollapse = new bootstrap.Collapse(collapse);
+    }
+    return () => {
+      newCollapse?.dispose();
+    };
+  }, [currentStream]);
+
   const editStream = async ({
     oldKey,
     newKey,
@@ -175,13 +186,13 @@ const Popup = () => {
   const blockStream = async (stream: Stream) => {
     try {
       await cancelStream(stream);
-      const hostname = new URL(url).hostname;
       chrome.runtime.sendMessage({
-        message: BLOCK_SITE,
+        message: BLOCK_TAG,
         options: {
-          site: hostname,
+          address: stream.recipientTag,
         },
       });
+      setCurrentStream(null);
     } catch {
       toast("Couldn't block site");
     }
@@ -269,6 +280,45 @@ const Popup = () => {
                     Block this page
                   </button>
                 </div>
+                <button
+                  type="button"
+                  className="btn p-1 glassy-cw-btn w-100 mt-2"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#collapse"
+                  aria-expanded="false"
+                  aria-controls="collapse"
+                >
+                  More actions
+                </button>
+                <div id="collapse" className="collapse" data-bs-toggle="false">
+                  <div className="d-flex justify-content-evenly gap-2 mt-2">
+                    {rate.rateAmount === constants.Zero ? (
+                      <button
+                        type="button"
+                        className="btn p-1 glassy-cw-btn"
+                        data-bs-toggle="modal"
+                        data-bs-target="#unblockSite"
+                      >
+                        Unblock site
+                      </button>
+                    ) : null}
+                    <Link to="balance">
+                      <button type="button" className="btn p-1 glassy-cw-btn">
+                        Manage balances
+                      </button>
+                    </Link>
+                    <Link to="streams/out">
+                      <button type="button" className="btn p-1 glassy-cw-btn">
+                        See past streams
+                      </button>
+                    </Link>
+                    <Link to="settings/default">
+                      <button type="button" className="btn p-1 glassy-cw-btn">
+                        Edit stream settings
+                      </button>
+                    </Link>
+                  </div>
+                </div>
               </>
             ) : (
               <>
@@ -350,9 +400,8 @@ const Popup = () => {
             <button
               type="button"
               className={
-                "btn glassy-cw-btn p-1" + currentStream == null
-                  ? " disabled"
-                  : ""
+                "btn glassy-cw-btn p-1" +
+                (currentStream == null ? " disabled" : "")
               }
               onClick={() => {
                 if (currentStream) {
@@ -366,9 +415,8 @@ const Popup = () => {
             <button
               type="button"
               className={
-                "btn glassy-cw-btn p-1" + currentStream == null
-                  ? " disabled"
-                  : ""
+                "btn glassy-cw-btn p-1" +
+                (currentStream == null ? " disabled" : "")
               }
               onClick={() => {
                 if (currentStream) {

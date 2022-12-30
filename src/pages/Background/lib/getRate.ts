@@ -2,7 +2,7 @@ import { Rate, PayRates } from "../../shared/types";
 import { storage } from "@extend-chrome/storage";
 import { BigNumber } from "ethers";
 
-export const getRate = async (address: string): Promise<Rate | undefined> => {
+export const getRate = async (address: string): Promise<Rate> => {
   const { settings } = await storage.local.get("settings");
   const { defaultRate } = await storage.local.get("defaultRate");
   const fallbackRate = {
@@ -10,13 +10,17 @@ export const getRate = async (address: string): Promise<Rate | undefined> => {
     payWhen: PayRates.ANY,
   };
 
-  if (!settings || !settings.length) {
+  if (!settings || !Object.keys(settings).length) {
     return defaultRate ?? fallbackRate;
   }
 
   const tryAddress = Object.keys(settings).filter((k) =>
-    k.startsWith(`COBWEB:${address}`)
+    k.toLowerCase().startsWith(`cobweb:${address.toLowerCase()}`)
   );
 
-  return settings.get(tryAddress) ?? defaultRate ?? fallbackRate;
+  return (
+    (tryAddress.length > 0 ? settings[tryAddress[0]] : null) ??
+    defaultRate ??
+    fallbackRate
+  );
 };

@@ -10,6 +10,7 @@ export interface Stream {
   tabId: number;
   url: string;
   recipient: string;
+  recipientTag: string;
   rateAmount: BigNumber;
   requestId: string;
   startTime: number;

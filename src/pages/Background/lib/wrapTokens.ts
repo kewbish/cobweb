@@ -35,7 +35,6 @@ export const upgradeTokens = async ({
     const upgradeTokenOperation = (sfToken as WrapperSuperToken).upgrade({
       amount: BigNumber.from(upgrading).toString(),
     });
-    console.log(upgradeTokenOperation);
     await upgradeTokenOperation.exec(sfSigner);
     toast("Upgraded!");
   } catch (e) {

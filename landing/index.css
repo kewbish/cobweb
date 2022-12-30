@@ -198,3 +198,18 @@ code {
 #differences-content-javascript {
   display: none;
 }
+
+.fp-container {
+  width: max(40%, 300px);
+  height: 100vh;
+}
+
+.fp-container img {
+  width: 64px;
+  height: 64px;
+  margin-top: -5rem;
+}
+
+.fp-container .card {
+  max-height: max-content;
+}
