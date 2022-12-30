@@ -18,7 +18,7 @@ import {
   DELETE_STREAM,
   BLOCK_TAG,
   UPDATE_SETTING,
-  EDIT_CURRENT_STREAM,
+  UPDATE_STREAM,
   FETCH_BALANCE,
   APPROVE_AMT,
   DOWNGRADE_TOKEN,
@@ -52,7 +52,7 @@ import { isDev } from "./lib/isDev";
 chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason === chrome.runtime.OnInstalledReason.INSTALL) {
     setDefaultSettings();
-    chrome.runtime.setUninstallURL("https://kewbi.sh/cobweb");
+    chrome.runtime.setUninstallURL("https://kewbi.sh/cobweb/removed");
   }
 });
 
@@ -61,6 +61,10 @@ metamaskProvider = createMetaMaskProvider();
 storage.local.set({ mmNotFound: false });
 
 metamaskProvider?.on("error", (error) => {
+  storage.local.set({ mmNotFound: true });
+});
+
+metamaskProvider.on("disconnect", () => {
   storage.local.set({ mmNotFound: true });
 });
 
@@ -99,7 +103,6 @@ try {
   toast("Error - failed to initialize provider");
   throw new Error("Error - failed to initialize provider");
 }
-
 let sf: Framework | null = null;
 try {
   sf = await Framework.create({
@@ -184,8 +187,11 @@ const montagFound = async ({
   if (rate.payWhen === PayRates.BLOCKED) {
     return;
   }
+  const { address: mmAddress } = (await storage.local.get("address")) ?? {
+    address: "",
+  };
   createStream({
-    from: walletRes.address,
+    from: mmAddress,
     toTag: request.options.address,
     to: address,
     tabId,
@@ -195,7 +201,9 @@ const montagFound = async ({
     sfSigner,
     sfToken,
     infuraProvider: infuraProvider as InfuraProvider,
+    mmSigner: mmProvider.getSigner(),
   });
+  cleanUpStreams({ sfSigner, sfToken, sf, mmSigner: mmProvider.getSigner() });
 };
 
 const deleteStream = async ({ request }: { request: any }) => {
@@ -209,6 +217,7 @@ const deleteStream = async ({ request }: { request: any }) => {
       sf,
       sfSigner,
       sfToken,
+      mmSigner: mmProvider.getSigner(),
     });
   }
 };
@@ -245,6 +254,7 @@ const editCurrentStream = async ({ request }: { request: any }) => {
     sf,
     sfSigner,
     sfToken,
+    mmSigner: mmProvider.getSigner(),
   });
 };
 
@@ -359,7 +369,7 @@ const handleMessaging = async (
       sendResponse();
       return;
     }
-    case EDIT_CURRENT_STREAM: {
+    case UPDATE_STREAM: {
       editCurrentStream({ request });
       sendResponse();
       return;
@@ -412,7 +422,13 @@ chrome.runtime.onMessage.addListener(handleMessaging);
 chrome.tabs.onRemoved.addListener(async (tabId, _) => {
   const { signer: sfSigner } = await getWalletAndSigner();
   if (sf && sfSigner && sfToken) {
-    deleteStreamByTabId({ tabId, sf, sfSigner, sfToken });
+    deleteStreamByTabId({
+      tabId,
+      sf,
+      sfSigner,
+      sfToken,
+      mmSigner: mmProvider.getSigner(),
+    });
   }
 });
 
@@ -422,7 +438,14 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, _) => {
   }
   const { signer: sfSigner } = await getWalletAndSigner();
   if (changeInfo.url && sf && sfSigner && sfToken) {
-    deleteStreamByTabId({ tabId, sf, sfSigner, sfToken, checkFocus: true });
+    deleteStreamByTabId({
+      tabId,
+      sf,
+      sfSigner,
+      sfToken,
+      checkFocus: true,
+      mmSigner: mmProvider.getSigner(),
+    });
   }
 });
 
@@ -453,7 +476,12 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
       return;
     }
     if (name === "cobwebStreamCleanup") {
-      cleanUpStreams({ sfSigner, sfToken, sf });
+      cleanUpStreams({
+        sfSigner,
+        sfToken,
+        sf,
+        mmSigner: mmProvider.getSigner(),
+      });
     } else if (name === "cobwebAllowanceCheck") {
       const { address } = await storage.local.get("address");
       if (!wallet || !address) {

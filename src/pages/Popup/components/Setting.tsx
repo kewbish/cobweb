@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-import { BigNumber } from "ethers";
+import { BigNumber, constants } from "ethers";
 import TokenInput from "./TokenInput";
 import { PayRates, Rate } from "../../shared/types";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import fallbackRate from "../../shared/fallbackRate";
+import { useChromeStorageLocal } from "use-chrome-storage";
 
 const Setting = ({
   skey,
@@ -10,6 +12,7 @@ const Setting = ({
   setSetting,
   deleteSetting,
   onBlur = true,
+  showTag = true,
 }: {
   skey: string;
   value: Rate;
@@ -26,33 +29,40 @@ const Setting = ({
   }) => void;
   deleteSetting?: (key: string) => void;
   onBlur?: boolean;
+  showTag?: boolean;
 }) => {
   const [currentKey, setCurrentKey] = useState<string>(skey);
   const [currentRateAmt, setCurrentRateAmt] = useState<BigNumber>(
     BigNumber.from(value.rateAmount)
   );
+  const [defaultRate, , ,]: [Rate, any, any, any] = useChromeStorageLocal(
+    "extend-chrome/storage__local--defaultRate",
+    fallbackRate
+  );
   return (
     <div className="d-flex flex-column align-items-start gap-1">
       <div className="d-flex flex-row justify-content-between gap-1">
-        <input
-          type="text"
-          className="form-control p-1"
-          placeholder="Cobweb Tag"
-          id="inputDefault"
-          value={currentKey}
-          onChange={(e) => setCurrentKey(e.target.value)}
-          style={{ borderRadius: 16 }}
-          onBlur={() => {
-            if (onBlur) {
-              setSetting({
-                oldKey: skey,
-                newKey: currentKey,
-                rateAmt: currentRateAmt,
-                payWhen: value.payWhen,
-              });
-            }
-          }}
-        />
+        {showTag ? (
+          <input
+            type="text"
+            className="form-control p-1"
+            placeholder="Cobweb Tag"
+            id="inputDefault"
+            value={currentKey}
+            onChange={(e) => setCurrentKey(e.target.value)}
+            style={{ borderRadius: 16 }}
+            onBlur={() => {
+              if (onBlur) {
+                setSetting({
+                  oldKey: skey,
+                  newKey: currentKey,
+                  rateAmt: currentRateAmt,
+                  payWhen: value.payWhen,
+                });
+              }
+            }}
+          />
+        ) : null}
         {deleteSetting ? (
           <button
             type="button"
@@ -62,23 +72,6 @@ const Setting = ({
             title="Delete setting"
           >
             <i className="bi bi-trash-fill text-danger"></i>
-          </button>
-        ) : null}
-        {!onBlur ? (
-          <button
-            type="button"
-            className="btn glassy-cw-btn"
-            onClick={() => {
-              setSetting({
-                oldKey: skey,
-                newKey: currentKey,
-                rateAmt: currentRateAmt,
-                payWhen: value.payWhen,
-              });
-            }}
-            style={{ padding: 10 }}
-          >
-            <i className="bi bi-save text-danger"></i>
           </button>
         ) : null}
       </div>
@@ -92,14 +85,15 @@ const Setting = ({
               <button
                 type="button"
                 className="btn glassy-cw-btn"
-                onClick={() =>
+                onClick={() => {
                   setSetting({
                     oldKey: skey,
-                    newKey: currentKey,
-                    rateAmt: value.rateAmount,
+                    newKey: skey,
+                    rateAmt: defaultRate.rateAmount,
                     payWhen: PayRates.ANY,
-                  })
-                }
+                  });
+                  setCurrentRateAmt(defaultRate.rateAmount);
+                }}
                 style={{ padding: 10 }}
               >
                 Unblock
@@ -114,7 +108,7 @@ const Setting = ({
               if (onBlur) {
                 setSetting({
                   oldKey: skey,
-                  newKey: currentKey,
+                  newKey: skey,
                   rateAmt: currentRateAmt,
                   payWhen: value.payWhen,
                 });
@@ -123,6 +117,24 @@ const Setting = ({
             small={true}
           />
         )}
+        {!onBlur ? (
+          <button
+            type="button"
+            className="btn glassy-cw-btn"
+            title="Save"
+            onClick={() => {
+              setSetting({
+                oldKey: skey,
+                newKey: skey,
+                rateAmt: currentRateAmt,
+                payWhen: value.payWhen,
+              });
+            }}
+            style={{ padding: 10 }}
+          >
+            <i className="bi bi-save"></i>
+          </button>
+        ) : null}
       </div>
       {value.payWhen !== PayRates.BLOCKED ? (
         <>
@@ -139,7 +151,7 @@ const Setting = ({
               onChange={() =>
                 setSetting({
                   oldKey: skey,
-                  newKey: currentKey,
+                  newKey: skey,
                   rateAmt: currentRateAmt,
                   payWhen: PayRates.ANY,
                 })
@@ -164,7 +176,7 @@ const Setting = ({
               onChange={() =>
                 setSetting({
                   oldKey: skey,
-                  newKey: currentKey,
+                  newKey: skey,
                   rateAmt: currentRateAmt,
                   payWhen: PayRates.FOCUS,
                 })
@@ -190,8 +202,8 @@ const Setting = ({
               onChange={() =>
                 setSetting({
                   oldKey: skey,
-                  newKey: currentKey,
-                  rateAmt: currentRateAmt,
+                  newKey: skey,
+                  rateAmt: constants.Zero,
                   payWhen: PayRates.BLOCKED,
                 })
               }

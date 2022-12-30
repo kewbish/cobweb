@@ -2,7 +2,7 @@ import { storage } from "@extend-chrome/storage";
 import { PayRates, RateSettings } from "../../shared/types";
 import { BigNumber } from "ethers";
 
-const updateRateSetting = ({
+const updateRateSetting = async ({
   oldKey,
   newKey,
   rateAmt,
@@ -16,7 +16,7 @@ const updateRateSetting = ({
   storage.local.set(({ settings }: { settings: RateSettings }) => {
     delete settings[oldKey];
     settings[newKey] = { rateAmount: rateAmt, payWhen };
-    return settings;
+    return { settings };
   });
 };
 

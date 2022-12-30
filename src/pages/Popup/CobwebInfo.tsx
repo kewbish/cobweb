@@ -70,12 +70,14 @@ const CobwebInfo = () => {
       message: APPROVE_AMT,
       options: { depositAmt: approveAmt },
     });
+    setApproveAmtShow(false);
   };
 
   const approveFull = () => {
     chrome.runtime.sendMessage({
       message: APPROVE_FULL,
     });
+    setApproveAmtShow(false);
   };
 
   return (

@@ -14,7 +14,6 @@ import Popup from "./Popup";
 import DowngradingTokens from "./DowngradingTokens";
 import UpgradingTokens from "./UpgradingTokens";
 import ListStreamsOut from "./ListStreamsOut";
-import ListStreamsIn from "./ListStreamsIn";
 import CobwebInfo from "./CobwebInfo";
 import Welcome from "./Welcome";
 import MetamaskNotFound from "./MetamaskNotFound";
@@ -30,7 +29,6 @@ render(
       <Route path="balance/downgrade" element={<DowngradingTokens />} />
       <Route path="balance/upgrade" element={<UpgradingTokens />} />
       <Route path="streams/out" element={<ListStreamsOut />} />
-      <Route path="streams/in" element={<ListStreamsIn />} />
       <Route path="welcome" element={<Welcome />} />
       <Route path="metamask/not-found" element={<MetamaskNotFound />} />
     </Routes>

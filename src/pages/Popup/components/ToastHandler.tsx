@@ -21,7 +21,10 @@ const ToastHandler = () => {
   });
 
   return (
-    <div className="position-absolute end-0 bottom-0 pb-2 pe-2">
+    <div
+      className="position-absolute end-0 bottom-0 pb-2 pe-2"
+      style={{ zIndex: 1090 }}
+    >
       <div className="toast-container d-flex flex-column align-items-end">
         {toasts.map((toast) => (
           <div

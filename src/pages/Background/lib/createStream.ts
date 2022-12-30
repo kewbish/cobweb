@@ -12,7 +12,6 @@ import {
   startMonetization,
   stopMonetization,
 } from "../../shared/monetization";
-import TOKEN_MAP from "../../shared/tokens";
 
 const createStream = async ({
   from,
@@ -25,6 +24,7 @@ const createStream = async ({
   sfSigner,
   sfToken,
   infuraProvider,
+  mmSigner,
 }: {
   from: string;
   to: string;
@@ -36,8 +36,8 @@ const createStream = async ({
   sfSigner: Signer;
   sfToken: SuperToken;
   infuraProvider: InfuraProvider;
+  mmSigner: Signer;
 }) => {
-  /*
   const possibleName = await infuraProvider.resolveName(to);
   if (!possibleName || !utils.isAddress(to)) {
     return;
@@ -51,7 +51,7 @@ const createStream = async ({
 
   const response = await fetch(
     "https://cobweb-worker.kewbish.workers.dev/get?" +
-      new URLSearchParams({ address: to })
+      new URLSearchParams({ address: to.toLowerCase() }).toString()
   );
   const responseJson = await response.json();
   if (responseJson.error) {
@@ -60,7 +60,6 @@ const createStream = async ({
     // hasn't been added to Cobweb network
     return;
   }
-  */
 
   const uuid = fromString(
     to + tabId.toString() + new Date().toString(),
@@ -75,7 +74,6 @@ const createStream = async ({
 
   let newStream = null;
 
-  /*
   try {
     if (
       (
@@ -90,56 +88,56 @@ const createStream = async ({
     ) {
       const newStreamOperation = sf.cfaV1.createFlowByOperator({
         sender: from,
-        flowRate: rateAmount.toString(),
+        flowRate: BigNumber.from(rateAmount).toString(),
         receiver: to,
         superToken: sfToken.address,
-        userData: `${to} ${new Date()}`,
+        userData: utils.hexlify(utils.toUtf8Bytes(`${to} ${new Date()}`)),
       });
-      newStream = await newStreamOperation.exec(sfSigner);
+      newStream = await newStreamOperation.exec(mmSigner);
+
+      const { streams } = await storage.local.get("streams");
+
+      storage.local.set({
+        streams: [
+          ...streams,
+          {
+            recipient: to,
+            recipientTag: toTag,
+            tabId,
+            rateAmount: BigNumber.from(rateAmount),
+            requestId: uuid,
+            startTime: new Date().getTime(),
+            token: {
+              name: sfToken.name,
+              decimals: 18, // TODO - hardcoding for now
+              symbol: sfToken.symbol,
+              xAddress: sfToken.address,
+            },
+            url,
+          },
+        ],
+      });
+
+      chrome.scripting.executeScript({
+        args: [to, uuid],
+        target: { tabId },
+        func: startMonetization,
+        world: "MAIN",
+      });
+      return newStream;
     }
   } catch (e) {
     chrome.scripting.executeScript({
       args: [to, uuid],
       target: { tabId },
       func: stopMonetization,
-    world: "MAIN",
+      world: "MAIN",
     });
     errorToast(e as Error);
     toast(
       "Check that you've approved enough spending tokens in your account page."
     );
-  }*/
-
-  const { streams } = await storage.local.get("streams");
-
-  storage.local.set({
-    streams: [
-      ...streams,
-      {
-        recipient: to,
-        recipientTag: toTag,
-        tabId,
-        rateAmount,
-        requestId: uuid,
-        startTime: new Date().getTime(),
-        token: {
-          name: sfToken.name,
-          decimals: 18, // TODO - hardcoding for now
-          symbol: sfToken.symbol,
-          xAddress: sfToken.address,
-        },
-        url,
-      },
-    ],
-  });
-
-  chrome.scripting.executeScript({
-    args: [to, uuid],
-    target: { tabId },
-    func: startMonetization,
-    world: "MAIN",
-  });
-  return newStream;
+  }
 };
 
 export const updateStream = async ({
@@ -150,6 +148,7 @@ export const updateStream = async ({
   sf,
   sfSigner,
   sfToken,
+  mmSigner,
 }: {
   from: string;
   to: string;
@@ -158,6 +157,7 @@ export const updateStream = async ({
   sf: Framework;
   sfSigner: Signer;
   sfToken: SuperToken;
+  mmSigner: Signer;
 }) => {
   const uuid = fromString(
     to + tabId.toString() + new Date().toString(),
@@ -174,18 +174,17 @@ export const updateStream = async ({
   try {
     const updateStreamOperation = sf.cfaV1.updateFlowByOperator({
       sender: from,
-      flowRate: rateAmount.toString(),
+      flowRate: BigNumber.from(rateAmount).toString(),
       receiver: to,
       superToken: sfToken.address,
       userData: `${to} ${new Date()}`,
     });
-    updateStream = await updateStreamOperation.exec(sfSigner);
+    updateStream = await updateStreamOperation.exec(mmSigner);
   } catch (e) {
     errorToast(e as Error);
   }
 
   const { streams } = await storage.local.get("streams");
-
   storage.local.set({
     streams: [
       ...streams.map((stream: Stream) =>

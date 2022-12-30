@@ -24,6 +24,7 @@ const ListStreamsOut = () => {
         if (!res) {
           throw new Error("Expected streams");
         } else {
+          console.log(res);
           setStreams(res);
         }
       } catch {

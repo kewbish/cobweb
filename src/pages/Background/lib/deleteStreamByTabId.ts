@@ -10,22 +10,29 @@ const deleteStreamByTabId = async ({
   sfSigner,
   sfToken,
   checkFocus = false,
+  mmSigner,
 }: {
   tabId: number;
   sf: Framework;
   sfSigner: Signer;
   sfToken: SuperToken;
   checkFocus?: boolean;
+  mmSigner: Signer;
 }) => {
   const cancelStream = async (recipient: string) => {
-    const { wallet }: { wallet: Wallet } = await storage.local.get("wallet");
+    const { address }: { address: string | null } = await storage.local.get(
+      "address"
+    );
+    if (!address) {
+      return;
+    }
     try {
       const deleteStreamOperation = sf.cfaV1.deleteFlowByOperator({
-        sender: wallet.address,
+        sender: address,
         receiver: recipient,
         superToken: sfToken.address,
       });
-      await deleteStreamOperation.exec(sfSigner);
+      await deleteStreamOperation.exec(mmSigner);
     } catch (e) {
       errorToast(e as Error);
       return;
@@ -52,7 +59,7 @@ const deleteStreamByTabId = async ({
     streams: streams.filter((stream: Stream) => stream.tabId !== tabId),
   });
 
-  // cancelStream(stream.recipient);
+  cancelStream(stream.recipient);
 };
 
 export default deleteStreamByTabId;

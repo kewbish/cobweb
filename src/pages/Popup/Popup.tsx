@@ -9,7 +9,7 @@ import {
   CHECK_METAMASK,
 } from "../shared/events";
 import { useChromeStorageLocal } from "use-chrome-storage";
-import { PayRates, Stream } from "../shared/types";
+import { Rate, PayRates, Stream } from "../shared/types";
 import Setting from "./components/Setting";
 import DropdownModal from "./components/DropdownModal";
 import BackgroundBox from "./components/BackgroundBox";
@@ -18,6 +18,7 @@ import { getRate } from "../Background/lib/getRate";
 import Onboarding from "./components/OnboardingCarousel";
 import ToastHandler from "./components/ToastHandler";
 import BalanceDisplay from "./components/BalanceDisplay";
+import fallbackRate from "../shared/fallbackRate";
 
 import "bootstrap-icons/font/bootstrap-icons.css";
 // @ts-expect-error
@@ -73,11 +74,13 @@ const Popup = () => {
     useChromeStorageLocal("extend-chrome/storage__local--streams", []);
 
   const [tabId, setTabId] = useState(0);
-  const [url, setUrl] = useState("");
-  const [rate, setRate] = useState({
-    rateAmount: constants.Zero,
-    payWhen: PayRates.ANY,
-  });
+  const [defaultRate, , ,]: [Rate, any, any, any] = useChromeStorageLocal(
+    "extend-chrome/storage__local--defaultRate",
+    fallbackRate
+  );
+  const [rate, setRate] = useState(defaultRate);
+
+  const [currentStream, setCurrentStream] = useState<Stream | null>(null);
 
   useEffect(() => {
     try {
@@ -86,20 +89,14 @@ const Popup = () => {
           return;
         }
         setTabId(tabs[0].id ?? 0);
-        setUrl(tabs[0].url ?? tabs[0].pendingUrl ?? "");
-        setRate(
-          (await getRate(url)) ?? {
-            rateAmount: constants.Zero,
-            payWhen: PayRates.ANY,
-          }
-        );
+        if (currentStream) {
+          setRate((await getRate(currentStream?.recipient)) ?? defaultRate);
+        }
       });
     } catch (e) {
       toast("Couldn't get current tab rate");
     }
-  }, [url]);
-
-  const [currentStream, setCurrentStream] = useState<Stream | null>(null);
+  }, [currentStream]);
 
   useEffect(() => {
     setCurrentStream(
@@ -137,10 +134,12 @@ const Popup = () => {
     oldKey,
     newKey,
     rateAmt,
+    payWhen,
   }: {
     oldKey: string;
     newKey: string;
     rateAmt: BigNumber;
+    payWhen: PayRates;
   }) => {
     if (!currentStream) {
       toast("Couldn't find stream");
@@ -154,17 +153,19 @@ const Popup = () => {
           oldKey,
           newKey,
           rateAmt,
+          payWhen,
         },
       });
       chrome.runtime.sendMessage({
         message: UPDATE_STREAM,
         options: {
+          from: address,
           rateAmount: rateAmt,
           to: currentStream.recipient,
           tabId,
-          url,
         },
       });
+      setRate({ rateAmount: rateAmt, payWhen });
     } catch {
       toast("Could not update settings");
     }
@@ -244,6 +245,7 @@ const Popup = () => {
                     '<div class="popover" role="tooltip"><div class="popover-arrow popover-arrow-override"></div><p class="popover-header"></p><div class="popover-body"></div></div>'
                   }
                 >
+                  ~
                   {ethers.utils.formatUnits(
                     streamedUntilNow(currentStream).sub(
                       streamedUntilNow(currentStream).mod(1e12)
@@ -292,16 +294,6 @@ const Popup = () => {
                 </button>
                 <div id="collapse" className="collapse" data-bs-toggle="false">
                   <div className="d-flex justify-content-evenly gap-2 mt-2">
-                    {rate.rateAmount === constants.Zero ? (
-                      <button
-                        type="button"
-                        className="btn p-1 glassy-cw-btn"
-                        data-bs-toggle="modal"
-                        data-bs-target="#unblockSite"
-                      >
-                        Unblock site
-                      </button>
-                    ) : null}
                     <Link to="balance">
                       <button type="button" className="btn p-1 glassy-cw-btn">
                         Manage balances
@@ -327,16 +319,6 @@ const Popup = () => {
                 </h2>
                 <hr className="my-1 mb-2" />
                 <div className="d-flex justify-content-evenly gap-2">
-                  {rate.rateAmount === constants.Zero ? (
-                    <button
-                      type="button"
-                      className="btn p-1 glassy-cw-btn"
-                      data-bs-toggle="modal"
-                      data-bs-target="#unblockSite"
-                    >
-                      Unblock site
-                    </button>
-                  ) : null}
                   <Link to="balance">
                     <button type="button" className="btn p-1 glassy-cw-btn">
                       Manage balances
@@ -383,10 +365,12 @@ const Popup = () => {
         <>
           <p className="blue">This will instantly take effect.</p>
           <Setting
-            skey={url}
+            skey={currentStream?.recipientTag ?? ""}
             value={rate}
             setSetting={editStream}
             onBlur={false}
+            showTag={false}
+            key={BigNumber.from(rate.rateAmount).toString()}
           />
         </>
       </DropdownModal>

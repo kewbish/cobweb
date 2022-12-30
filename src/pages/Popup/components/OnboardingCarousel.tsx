@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useChromeStorageLocal } from "use-chrome-storage";
 import { toast } from "../../shared/toast";
 import InfoPopover from "../components/InfoPopover";
+// @ts-expect-error
+import bootstrap from "bootstrap/dist/js/bootstrap.bundle";
 
 const Onboarding = () => {
   const [hasJoined, setHasJoined] = useState(false);
@@ -14,15 +16,30 @@ const Onboarding = () => {
       toast("Couldn't fetch Metamask account.");
       return;
     }
-    const response = await fetch(
-      "https://cobweb-worker.kewbish.workers.dev/request?" +
-        new URLSearchParams({ address })
-    );
-    const responseJson = await response.json();
-    if (responseJson.success) {
-      toast("Successfully requested verification!");
-      setHasJoined(true);
-    } else {
+    try {
+      const response = await fetch(
+        "https://cobweb-worker.kewbish.workers.dev/request?" +
+          new URLSearchParams({ address }).toString()
+      );
+      const responseJson = await response.json();
+      if (responseJson.ok) {
+        toast("Thanks, and welcome!");
+        setHasJoined(true);
+        if (!document.getElementById("welcome")) {
+          return;
+        }
+        const welcomeModal = new bootstrap.Modal(
+          document.getElementById("welcome")
+        );
+        welcomeModal.hide();
+      } else {
+        console.log(responseJson);
+        toast(
+          "There was an issue with requesting verification. Please try again."
+        );
+      }
+    } catch (e) {
+      console.log(e);
       toast(
         "There was an issue with requesting verification. Please try again."
       );

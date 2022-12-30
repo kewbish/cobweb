@@ -9,11 +9,13 @@ const cleanUpStreams = async ({
   sfToken,
   sf,
   all = false,
+  mmSigner,
 }: {
   sf: Framework;
   sfSigner: Signer;
   sfToken: SuperToken;
   all?: boolean;
+  mmSigner: Signer;
 }) => {
   const { streams }: { streams: Array<Stream> } = await storage.local.get(
     "streams"
@@ -25,13 +27,25 @@ const cleanUpStreams = async ({
 
   for (const stream of streams) {
     if (all) {
-      deleteStreamByTabId({ tabId: stream.tabId, sf, sfSigner, sfToken });
+      deleteStreamByTabId({
+        tabId: stream.tabId,
+        sf,
+        sfSigner,
+        sfToken,
+        mmSigner,
+      });
       continue;
     }
     try {
       await chrome.tabs.get(stream.tabId);
     } catch {
-      deleteStreamByTabId({ tabId: stream.tabId, sf, sfSigner, sfToken });
+      deleteStreamByTabId({
+        tabId: stream.tabId,
+        sf,
+        sfSigner,
+        sfToken,
+        mmSigner,
+      });
     }
   }
 };

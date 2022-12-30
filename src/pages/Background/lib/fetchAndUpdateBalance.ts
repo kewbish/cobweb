@@ -82,7 +82,13 @@ const fetchAndUpdateBalance = async ({
     // critical balance
     toast("Balance is critically low");
     if (sf && sfSigner) {
-      cleanUpStreams({ sf, sfToken, sfSigner, all: true });
+      cleanUpStreams({
+        sf,
+        sfToken,
+        sfSigner,
+        all: true,
+        mmSigner: mmProvider.getSigner(),
+      });
     }
     return;
   }

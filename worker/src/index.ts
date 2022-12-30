@@ -60,12 +60,12 @@ const worker = {
           );
         }
 
-        const params = new URLSearchParams(request.url);
+        const params = new URLSearchParams(new URL(request.url).search);
         const identifier = params.get("identifier");
         const address = params.get("address");
 
         if (identifier && address && ethers.utils.isAddress(address)) {
-          await env.COBWEB_KV.put(identifier, address);
+          await env.COBWEB_KV.put(address.toLowerCase(), identifier);
           const total = await env.COBWEB_KV.get("total");
           if (!total) {
             await env.COBWEB_KV.put("total", String(100));
@@ -159,10 +159,10 @@ const worker = {
     };
 
     const returnUserInformation = async (): Promise<Response> => {
-      const params = new URLSearchParams(request.url);
+      const params = new URLSearchParams(new URL(request.url).search);
       const address = params.get("address");
       if (address) {
-        const valid = await env.COBWEB_KV.get(address);
+        const valid = (await env.COBWEB_KV.get(address.toLowerCase())) !== null;
         if (env.ENVIRONMENT === "dev") {
           logger("Requested " + address + ", is " + valid, "GET");
         }
@@ -176,7 +176,7 @@ const worker = {
     };
 
     const requestNewUser = async (): Promise<Response> => {
-      const params = new URLSearchParams(request.url);
+      const params = new URLSearchParams(new URL(request.url).search);
       const address = params.get("address");
       if (address) {
         const valid = await env.COBWEB_KV.get(address);
@@ -194,6 +194,7 @@ const worker = {
               ],
               attachments: [],
             }),
+            headers: { "Content-Type": "application/json" },
           });
           if (env.ENVIRONMENT === "dev") {
             logger("Sent request for " + address + ".", "VERIF");
@@ -217,13 +218,20 @@ const worker = {
       logger("Request URL:" + request.url, "REQ");
     }
 
-    const url = new URL(request.url);
-    if (url.pathname === "/add") {
-      return addNewUser();
-    } else if (url.pathname === "/request") {
-      return requestNewUser();
-    } else {
-      return returnUserInformation();
+    try {
+      const url = new URL(request.url);
+      if (url.pathname === "/add") {
+        return addNewUser();
+      } else if (url.pathname === "/request") {
+        return requestNewUser();
+      } else {
+        return returnUserInformation();
+      }
+    } catch {
+      return new Response(JSON.stringify({ error: "Unknown error" }), {
+        ...HEADERS,
+        status: 500,
+      });
     }
   },
 };

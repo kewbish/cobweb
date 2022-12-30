@@ -19,7 +19,7 @@ const StreamComponent = ({ stream }: { stream: Stream }) => {
     <div className="form-control mb-1" style={{ cursor: "auto" }}>
       <p
         className="display mb-0"
-        style={{ fontSize: 400 / 18 }}
+        style={{ fontSize: 20 }}
         id={"streamed-until-" + stream.requestId}
         data-bs-toggle="popover"
         data-bs-trigger="hover focus"

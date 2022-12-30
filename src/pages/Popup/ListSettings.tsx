@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useChromeStorageLocal } from "use-chrome-storage";
 import { useState } from "react";
 import { PayRates, Rate, RateSettings, Stream } from "../shared/types";
-import { BigNumber, utils } from "ethers";
+import { BigNumber, constants, utils } from "ethers";
 import fallbackRate from "../shared/fallbackRate";
 import TokenInput from "./components/TokenInput";
 import Setting from "./components/Setting";
@@ -147,12 +147,14 @@ const ListSettings = () => {
                           }}
                         >
                           <p style={{ fontSize: 16 }} className="mb-0">
-                            {verifySignature(key) ?? "[invalid Cobweb Tag]"} :{" "}
+                            {verifySignature(key) ?? "[invalid Cobweb Tag]"}:{" "}
                             <span className="blue">
-                              {(+utils.formatUnits(value.rateAmount)).toFixed(
-                                4
-                              )}
-                              ETH per second
+                              {BigNumber.from(value.rateAmount) !==
+                              constants.Zero
+                                ? (+utils.formatUnits(
+                                    value.rateAmount
+                                  )).toFixed(4) + " ETH per second"
+                                : "[blocked]"}
                             </span>{" "}
                           </p>
                         </button>
