@@ -1,0 +1,128 @@
+html {
+  width: 450px;
+  height: fit-content;
+  margin: 0;
+  position: relative;
+  overflow-x: scroll;
+  overflow-y: hidden;
+}
+
+body {
+  background-image: linear-gradient(
+    140deg,
+    var(--bs-primary),
+    var(--bs-secondary)
+  );
+}
+
+h1,
+h2 {
+  font-weight: 400;
+}
+
+p {
+  font-size: 18px;
+}
+
+.blue {
+  color: var(--bs-blue);
+}
+
+.glassy-cw-btn {
+  backdrop-filter: blur(5px);
+  box-shadow: inset 1px 1px rgba(255, 255, 255, 0.2),
+    inset -1px -1px rgba(255, 255, 255, 0.1),
+    1px 3px 24px -1px rgba(0, 0, 0, 0.15);
+  transition: 0.3s;
+  background-color: transparent;
+  background-image: linear-gradient(
+    125deg,
+    rgba(255, 255, 255, 0.15),
+    rgba(255, 255, 255, 0.05) 70%
+  );
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+  --bs-secondary-rgb: transparent;
+  border: none;
+}
+
+.glassy-cw-btn-checked {
+  backdrop-filter: blur(5px);
+  box-shadow: inset 1px 1px rgba(255, 255, 255, 0.2),
+    inset -1px -1px rgba(255, 255, 255, 0.1),
+    1px 3px 14px -1px rgba(0, 0, 0, 0.15);
+  transition: 0.3s;
+  background-color: transparent;
+  background-image: linear-gradient(
+    125deg,
+    rgba(30, 30, 30, 0.15),
+    rgba(30, 30, 30, 0.05) 70%
+  );
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+  --bs-secondary-rgb: transparent;
+  border: none;
+}
+
+.glassy-cw-btn:hover {
+  box-shadow: inset 1px 1px rgba(255, 255, 255, 0.5),
+    inset -1px -1px rgba(255, 255, 255, 0.4),
+    1px 3px 20px -1px rgba(0, 0, 0, 0.15);
+}
+
+.popover-header {
+  padding: 0.5rem 1rem;
+  border-bottom: none;
+  border-bottom-color: unset;
+}
+
+.popover {
+  border-radius: 100px;
+}
+
+.popover-squarer {
+  border-radius: 16px;
+}
+
+.popover-arrow-override {
+  display: none !important;
+}
+
+.dropdown-item {
+  color: "white";
+  padding: 0.5rem 1rem;
+}
+
+.cobweb-link {
+  transition: ease-in-out 0.2s;
+}
+
+.cobweb-link:hover {
+  color: var(--bs-blue);
+}
+
+.accordion-item {
+  background-image: none;
+}
+
+.cobweb-dropdown {
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+
+  max-height: 0;
+  display: block;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.cobweb-dropdown.open {
+  max-height: 300px;
+  opacity: 1;
+}
+
+.carousel-indicators {
+  margin-bottom: 0rem;
+}
