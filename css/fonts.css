@@ -1,0 +1,14 @@
+@font-face {
+  font-family: 'Brasika';
+  src: url('../fonts/Brasika-Display.otf');
+}
+@font-face {
+  font-family: 'Avenir';
+  src: url('../fonts/Avenir.otf');
+}
+:root {
+  --bs-font-sans-serif: 'Avenir';
+}
+.display {
+  font-family: 'Brasika';
+}
