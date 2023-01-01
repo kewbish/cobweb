@@ -17,6 +17,7 @@ import ListStreamsOut from "./ListStreamsOut";
 import CobwebInfo from "./CobwebInfo";
 import Welcome from "./Welcome";
 import MetamaskNotFound from "./MetamaskNotFound";
+import Report from "./Report";
 
 render(
   <Router>
@@ -31,6 +32,7 @@ render(
       <Route path="streams/out" element={<ListStreamsOut />} />
       <Route path="welcome" element={<Welcome />} />
       <Route path="metamask/not-found" element={<MetamaskNotFound />} />
+      <Route path="report" element={<Report />} />
     </Routes>
   </Router>,
   window.document.querySelector("#app-container")

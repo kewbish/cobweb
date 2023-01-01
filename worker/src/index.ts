@@ -175,6 +175,42 @@ const worker = {
       }
     };
 
+    const reportUser = async (): Promise<Response> => {
+      const params = new URLSearchParams(new URL(request.url).search);
+      const address = params.get("address");
+      const url = params.get("url");
+      if (address) {
+        if (env.ENVIRONMENT === "dev") {
+          logger(
+            "Report received for: " + address + (url ? " with URL " + url : ""),
+            "REPT"
+          );
+        }
+        fetch(env.WEBHOOK_URL, {
+          method: "POST",
+          body: JSON.stringify({
+            content: null,
+            embeds: [
+              {
+                title: "New Cobweb User Report",
+                description:
+                  `Tag: \`${address}\`` + (url ? `\nURL: ${url}` : ""),
+                color: 14367074,
+              },
+            ],
+            attachments: [],
+          }),
+          headers: { "Content-Type": "application/json" },
+        });
+        return new Response(JSON.stringify({ success: true }), HEADERS);
+      } else {
+        return new Response(JSON.stringify({ error: "No tag provided." }), {
+          ...HEADERS,
+          status: 400,
+        });
+      }
+    };
+
     const requestNewUser = async (): Promise<Response> => {
       const params = new URLSearchParams(new URL(request.url).search);
       const address = params.get("address");
@@ -224,6 +260,8 @@ const worker = {
         return addNewUser();
       } else if (url.pathname === "/request") {
         return requestNewUser();
+      } else if (url.pathname === "/report") {
+        return reportUser();
       } else {
         return returnUserInformation();
       }

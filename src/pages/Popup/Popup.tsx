@@ -359,6 +359,16 @@ const Popup = () => {
               get help
             </a>
           </p>
+          <Link to="/report">
+            <button
+              type="button"
+              className="btn glassy-cw-btn"
+              style={{ fontSize: 16, padding: "0.25rem 0.4rem", height: 27 }}
+              title="Report user"
+            >
+              <i className="bi bi-flag-fill"></i>
+            </button>
+          </Link>
         </div>
       </div>
       <DropdownModal id="editingStream" title="Edit stream">

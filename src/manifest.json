@@ -2,6 +2,7 @@
   "manifest_version": 3,
   "name": "Cobweb",
   "description": "A Web3-based Web Monetization tool enabling one-click content monetization for creative teens.",
+  "version": "0.0.2",
   "background": { "service_worker": "background.bundle.js" },
   "action": {
     "default_popup": "popup.html",
