@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useChromeStorageLocal } from "use-chrome-storage";
 import { useState } from "react";
 import { PayRates, Rate, RateSettings, Stream } from "../shared/types";
@@ -9,8 +9,6 @@ import Setting from "./components/Setting";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { UPDATE_STREAM } from "../shared/events";
 import CobwebPage from "./components/CobwebPage";
-// @ts-expect-error
-import bootstrap from "bootstrap/dist/js/bootstrap.bundle";
 import { toast } from "../shared/toast";
 import verifySignature from "../shared/verifySignature";
 import ToastHandler from "./components/ToastHandler";

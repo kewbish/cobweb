@@ -2,7 +2,7 @@
 // https://github.com/tsarpaul/citadelnfts-extension/blob/master/patch_metamask_provider.py
 import createMetaMaskProvider from "metamask-extension-provider";
 import { MetaMaskInpageProvider } from "@metamask/inpage-provider";
-import { BigNumber, ethers, constants, Signer } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { Framework } from "@superfluid-finance/sdk-core";
 import {
   INFURA_PROJECT_ID,
@@ -62,16 +62,28 @@ metamaskProvider.on("disconnect", () => {
   storage.local.set({ mmNotFound: true });
 });
 
-metamaskProvider.on("accountsChanged", (accounts) => {
-  setNewAddress({
-    address: (accounts as Array<string>)[0],
-    provider: mmProvider,
-  });
+metamaskProvider.on("connect", async () => {
+  try {
+    storage.local.set({
+      mmNotFound: (await mmProvider.listAccounts()).length === 0,
+    });
+  } catch {
+    storage.local.set({ mmNotFound: true });
+  }
 });
 
-export const mmProvider = new ethers.providers.Web3Provider(
-  metamaskProvider as any
-);
+metamaskProvider.on("accountsChanged", (accounts) => {
+  if ((accounts as Array<String>).length === 0) {
+    storage.local.set({ mmNotFound: true });
+  } else {
+    setNewAddress({
+      address: (accounts as Array<string>)[0],
+      provider: mmProvider,
+    });
+  }
+});
+
+const mmProvider = new ethers.providers.Web3Provider(metamaskProvider as any);
 
 storage.local.set({ toasts: [] });
 
@@ -82,6 +94,9 @@ if (!addressTry || addressTry === "NO_ADDRESS") {
   storage.local.set({
     address: metamaskProvider.selectedAddress ?? "NO_ADDRESS",
   });
+  if (!metamaskProvider.selectedAddress) {
+    storage.local.set({ mmNotFound: true });
+  }
 }
 
 let infuraProvider: InfuraProvider | null = null;
@@ -378,5 +393,3 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
     }
   } catch {}
 });
-
-chrome.runtime.onConnect.addListener(() => {});

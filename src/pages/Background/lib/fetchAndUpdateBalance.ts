@@ -1,7 +1,7 @@
 import { storage } from "@extend-chrome/storage";
 import { Web3Provider } from "@ethersproject/providers";
 import { Framework, SuperToken } from "@superfluid-finance/sdk-core";
-import { BigNumber, constants, Signer, utils } from "ethers";
+import { BigNumber, constants, utils } from "ethers";
 import errorToast, { toast } from "../../shared/toast";
 import { DELETE_STREAM } from "../../shared/events";
 import { Rate } from "../../shared/types";
