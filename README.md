@@ -6,6 +6,8 @@ Created by [Kewbish](https://github.com/kewbish).
 
 ![Cobweb Logo](./landing/cobweb.png)
 
+Download the Chrome extension [here](https://chrome.google.com/webstore/detail/cobweb/agdomcadfhkpkcjceenogkiglbhgpclg)
+
 See [documentation here](https://github.com/kewbish/cobweb/wiki) for an installation guide and troubleshooting tips.
 
 --- 
@@ -22,5 +24,5 @@ As well, teens looking to explore the vast world of decentralized technology lik
 
 ---
 
-Cobweb is MIT-licensed and fully open source. It's available as a free Chrome extension, and can be packed as an extension from this source code should you wish to do so.
+Cobweb is MIT-licensed and fully open source. It's available as a free [Chrome extension](https://chrome.google.com/webstore/detail/cobweb/agdomcadfhkpkcjceenogkiglbhgpclg), and can be packed as an extension from this source code should you wish to do so.
 
