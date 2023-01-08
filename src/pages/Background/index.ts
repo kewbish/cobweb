@@ -52,6 +52,9 @@ chrome.runtime.onInstalled.addListener((details) => {
 
 let metamaskProvider: MetaMaskInpageProvider | null = null;
 metamaskProvider = createMetaMaskProvider();
+const mmProvider = new ethers.providers.Web3Provider(metamaskProvider as any);
+await mmProvider.send("eth_requestAccounts", []);
+
 storage.local.set({ mmNotFound: false });
 
 metamaskProvider?.on("error", (error) => {
@@ -82,8 +85,6 @@ metamaskProvider.on("accountsChanged", (accounts) => {
     });
   }
 });
-
-const mmProvider = new ethers.providers.Web3Provider(metamaskProvider as any);
 
 storage.local.set({ toasts: [] });
 

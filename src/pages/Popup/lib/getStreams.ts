@@ -1,10 +1,13 @@
 import { BigNumber } from "ethers";
 import { gql, ApolloClient, InMemoryCache } from "@apollo/client";
 import { GraphQlStream } from "../../shared/types";
+import { isDev } from "../../Background/lib/isDev";
 
 const getStreamsDeepOut = async (address: string) => {
   const client = new ApolloClient({
-    uri: "https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-goerli",
+    uri: isDev()
+      ? "https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-goerli"
+      : "https://subgraph.satsuma-prod.com/superfluid/eth-mainnet/version/v0.0.1/api",
     cache: new InMemoryCache(),
   });
   const QUERY = gql`

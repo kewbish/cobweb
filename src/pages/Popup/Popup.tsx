@@ -1,4 +1,4 @@
-import { ethers, BigNumber } from "ethers";
+import { ethers, BigNumber, constants } from "ethers";
 import React, { useEffect, useState } from "react";
 import { Link, Navigate, useSearchParams } from "react-router-dom";
 import {
@@ -37,6 +37,10 @@ const Popup = () => {
   );
   const [metamaskNotFound, ,]: [boolean, any, any, any] = useChromeStorageLocal(
     "extend-chrome/storage__local--mmNotFound",
+    null
+  );
+  const [balanceRes, , ,]: [any, any, any, any] = useChromeStorageLocal(
+    "extend-chrome/storage__local--balance",
     null
   );
 
@@ -129,6 +133,22 @@ const Popup = () => {
       newCollapse?.dispose();
     };
   }, [currentStream]);
+
+  useEffect(() => {
+    const noETHx = document.getElementById("no-ethx");
+    let popover: bootstrap.Popover | null = null;
+    if (
+      searchParams.get("onboarding") &&
+      balanceRes &&
+      BigNumber.from(balanceRes).eq(constants.Zero)
+    ) {
+      popover = new bootstrap.Popover(noETHx);
+      popover.show();
+    }
+    return () => {
+      popover?.dispose();
+    };
+  }, [balanceRes]);
 
   const editStream = async ({
     oldKey,
@@ -235,7 +255,7 @@ const Popup = () => {
                   id="streamed-until"
                   data-bs-toggle="popover"
                   data-bs-trigger="hover focus"
-                  data-bs-placement="bottom"
+                  data-bs-placement="top"
                   title={
                     ethers.utils.formatEther(streamedUntilNow(currentStream)) +
                     " " +
@@ -295,7 +315,17 @@ const Popup = () => {
                 <div id="collapse" className="collapse" data-bs-toggle="false">
                   <div className="d-flex justify-content-evenly gap-2 mt-2">
                     <Link to="balance">
-                      <button type="button" className="btn p-1 glassy-cw-btn">
+                      <button
+                        className="btn p-1 glassy-cw-btn"
+                        data-bs-toggle="popover"
+                        title="You don't have any ETHx. Click here to upgrade more!"
+                        id="no-ethx"
+                        data-bs-template={
+                          '<div class="popover popover-squarer" role="tooltip"><div class="popover-arrow popover-arrow-override"></div><p class="popover-header text-small"></p><div class="popover-body"></div></div>'
+                        }
+                        data-bs-placement="bottom"
+                        data-bs-container="body"
+                      >
                         Manage balances
                       </button>
                     </Link>
@@ -320,7 +350,17 @@ const Popup = () => {
                 <hr className="my-1 mb-2" />
                 <div className="d-flex justify-content-evenly gap-2">
                   <Link to="balance">
-                    <button type="button" className="btn p-1 glassy-cw-btn">
+                    <button
+                      className="btn p-1 glassy-cw-btn"
+                      data-bs-toggle="popover"
+                      title="You don't have any ETHx. Click here to upgrade more!"
+                      id="no-ethx"
+                      data-bs-template={
+                        '<div class="popover popover-squarer" role="tooltip"><div class="popover-arrow"></div><p class="popover-header text-small"></p><div class="popover-body"></div></div>'
+                      }
+                      data-bs-container="body"
+                      data-bs-placement="bottom"
+                    >
                       Manage balances
                     </button>
                   </Link>
