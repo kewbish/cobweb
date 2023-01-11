@@ -26,3 +26,7 @@ As well, teens looking to explore the vast world of decentralized technology lik
 
 Cobweb is MIT-licensed and fully open source. It's available as a free [Chrome extension](https://chrome.google.com/webstore/detail/cobweb/agdomcadfhkpkcjceenogkiglbhgpclg), and can be packed as an extension from this source code should you wish to do so.
 
+---
+
+Test Cobweb out by navigating to this page! You should begin streaming to my Cobweb tag.
+`COBWEB:0x0118fc62ff93bb7570009e146808e1dba1f0bdd4&0x5367306d39a21900351c01cd7fa348cd2ca8fa73f3c4a6ac3199df827d22f84c765cbad78a9d46bb6e0f6117279dd62e52f6a82e8cbf34d696c26e64bfd56be71b`
