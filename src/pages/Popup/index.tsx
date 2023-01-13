@@ -18,6 +18,7 @@ import CobwebInfo from "./CobwebInfo";
 import Welcome from "./Welcome";
 import MetamaskNotFound from "./MetamaskNotFound";
 import Report from "./Report";
+import Help from "./Help";
 
 render(
   <Router>
@@ -33,6 +34,7 @@ render(
       <Route path="welcome" element={<Welcome />} />
       <Route path="metamask/not-found" element={<MetamaskNotFound />} />
       <Route path="report" element={<Report />} />
+      <Route path="help" element={<Help />} />
     </Routes>
   </Router>,
   window.document.querySelector("#app-container")
