@@ -41,14 +41,18 @@ const BalanceDisplay = () => {
       updatedPopover = bootstrap.Popover.getOrCreateInstance(popover);
     }
     return () => {
-      updatedPopover?.dispose();
+      try {
+        updatedPopover?.dispose();
+      } catch {}
     };
   }, [balanceRes]);
 
   useEffect(() => {
     const popover = new bootstrap.Popover(document.getElementById("popover"));
     return () => {
-      popover.dispose();
+      try {
+        popover.dispose();
+      } catch {}
     };
   }, []);
 

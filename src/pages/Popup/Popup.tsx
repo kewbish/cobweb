@@ -19,6 +19,7 @@ import Onboarding from "./components/OnboardingCarousel";
 import ToastHandler from "./components/ToastHandler";
 import BalanceDisplay from "./components/BalanceDisplay";
 import fallbackRate from "../shared/fallbackRate";
+import InfoPopover from "./components/InfoPopover";
 
 import "bootstrap-icons/font/bootstrap-icons.css";
 // @ts-expect-error
@@ -70,7 +71,9 @@ const Popup = () => {
         setSearchParams([]);
       });
     return () => {
-      welcomeModal.dispose();
+      try {
+        welcomeModal.dispose();
+      } catch {}
     };
   }, [searchParams]);
 
@@ -119,7 +122,9 @@ const Popup = () => {
       updatedPopover = bootstrap.Popover.getOrCreateInstance(popover);
     }
     return () => {
-      updatedPopover?.dispose();
+      try {
+        updatedPopover?.dispose();
+      } catch {}
     };
   }, [currentStream]);
 
@@ -130,25 +135,11 @@ const Popup = () => {
       newCollapse = new bootstrap.Collapse(collapse);
     }
     return () => {
-      newCollapse?.dispose();
+      try {
+        newCollapse?.dispose();
+      } catch {}
     };
   }, [currentStream]);
-
-  useEffect(() => {
-    const noETHx = document.getElementById("no-ethx");
-    let popover: bootstrap.Popover | null = null;
-    if (
-      searchParams.get("onboarding") &&
-      balanceRes &&
-      BigNumber.from(balanceRes).eq(constants.Zero)
-    ) {
-      popover = new bootstrap.Popover(noETHx);
-      popover.show();
-    }
-    return () => {
-      popover?.dispose();
-    };
-  }, [balanceRes]);
 
   const editStream = async ({
     oldKey,
@@ -315,22 +306,7 @@ const Popup = () => {
                 <div id="collapse" className="collapse" data-bs-toggle="false">
                   <div className="d-flex justify-content-evenly gap-2 mt-2">
                     <Link to="balance">
-                      <button
-                        className="btn p-1 glassy-cw-btn"
-                        data-bs-toggle="popover"
-                        title={
-                          balanceRes &&
-                          BigNumber.from(balanceRes).eq(constants.Zero)
-                            ? "You don't have any ETHx. Click here to upgrade more!"
-                            : undefined
-                        }
-                        id="no-ethx"
-                        data-bs-template={
-                          '<div class="popover popover-squarer" role="tooltip"><div class="popover-arrow popover-arrow-override"></div><p class="popover-header text-small"></p><div class="popover-body"></div></div>'
-                        }
-                        data-bs-placement="bottom"
-                        data-bs-container="body"
-                      >
+                      <button className="btn p-1 glassy-cw-btn">
                         Manage balances
                       </button>
                     </Link>
@@ -352,7 +328,10 @@ const Popup = () => {
                 <h2 style={{ fontWeight: 400, marginBottom: 0 }}>
                   Not Streaming
                 </h2>
-                <p className="mb-0" style={{ fontSize: 16, color: "#c6dcef" }}>
+                <p
+                  className="mb-1 d-inline"
+                  style={{ fontSize: 16, color: "#c6dcef" }}
+                >
                   Create a stream by going to any page with a{" "}
                   <a
                     href="https://github.com/kewbish/cobweb/wiki/Cobweb-Tags-&-Account-Page"
@@ -364,20 +343,23 @@ const Popup = () => {
                   </a>{" "}
                   on it!
                 </p>
+                <InfoPopover
+                  text="Please click confirm on any MetaMask popups - these allow Cobweb to create streams."
+                  moreSquare
+                />
+                {balanceRes && BigNumber.from(balanceRes).eq(constants.Zero) ? (
+                  <p
+                    className="mb-0 mt-1"
+                    style={{ fontSize: 16, color: "#c6dcef" }}
+                  >
+                    You also don't have any ETHx, so you can't make any streams.
+                    Click 'Manage balances' to upgrade some ETH into ETHx!
+                  </p>
+                ) : null}
                 <hr className="my-1 mb-2" />
                 <div className="d-flex justify-content-evenly gap-2">
                   <Link to="balance">
-                    <button
-                      className="btn p-1 glassy-cw-btn"
-                      data-bs-toggle="popover"
-                      title="You don't have any ETHx. Click here to upgrade more!"
-                      id="no-ethx"
-                      data-bs-template={
-                        '<div class="popover popover-squarer" role="tooltip"><div class="popover-arrow"></div><p class="popover-header text-small"></p><div class="popover-body"></div></div>'
-                      }
-                      data-bs-container="body"
-                      data-bs-placement="bottom"
-                    >
+                    <button className="btn p-1 glassy-cw-btn">
                       Manage balances
                     </button>
                   </Link>

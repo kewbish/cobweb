@@ -186,7 +186,7 @@ const worker = {
             "REPT"
           );
         }
-        fetch(env.WEBHOOK_URL, {
+        await fetch(env.WEBHOOK_URL, {
           method: "POST",
           body: JSON.stringify({
             content: null,
@@ -217,7 +217,7 @@ const worker = {
       if (address) {
         const valid = await env.COBWEB_KV.get(address);
         if (!valid) {
-          fetch(env.WEBHOOK_URL, {
+          await fetch(env.WEBHOOK_URL, {
             method: "POST",
             body: JSON.stringify({
               content: null,

@@ -20,7 +20,9 @@ const ManageBalances = () => {
   useEffect(() => {
     const balance = new bootstrap.Popover(document.getElementById("balance"));
     return () => {
-      balance.dispose();
+      try {
+        balance.dispose();
+      } catch {}
     };
   }, []);
 
@@ -44,7 +46,9 @@ const ManageBalances = () => {
       updatedPopover = bootstrap.Popover.getOrCreateInstance(popover);
     }
     return () => {
-      updatedPopover?.dispose();
+      try {
+        updatedPopover?.dispose();
+      } catch {}
     };
   }, [balanceRes]);
 

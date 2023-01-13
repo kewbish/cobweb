@@ -22,13 +22,14 @@ const Onboarding = () => {
           new URLSearchParams({ address }).toString()
       );
       const responseJson = await response.json();
+      console.log(responseJson);
       if (response.ok && responseJson.success) {
         toast("Thanks, and welcome!");
         setHasJoined(true);
         if (!document.getElementById("welcome")) {
           return;
         }
-        const welcomeModal = new bootstrap.Modal(
+        const welcomeModal = bootstrap.Modal.getOrCreateInstance(
           document.getElementById("welcome")
         );
         welcomeModal.hide();

@@ -19,7 +19,9 @@ const InfoPopover = ({
       document.getElementById("info-popover")
     );
     return () => {
-      popover.dispose();
+      try {
+        popover.dispose();
+      } catch {}
     };
   }, []);
 

@@ -28,10 +28,12 @@ const DefaultSettings = () => {
     const weeks = new bootstrap.Popover(document.getElementById("eth-weeks"));
     const months = new bootstrap.Popover(document.getElementById("eth-months"));
     return () => {
-      hours.dispose();
-      days.dispose();
-      weeks.dispose();
-      months.dispose();
+      try {
+        hours.dispose();
+        days.dispose();
+        weeks.dispose();
+        months.dispose();
+      } catch {}
     };
   }, []);
 
@@ -59,6 +61,7 @@ const DefaultSettings = () => {
             text={
               "This is the amount of ETHx streamed per second when no site-specific settings are found."
             }
+            darker
           />
           <div className="d-flex flex-row gap-1">
             <Link to="/settings/list">
@@ -95,7 +98,7 @@ const DefaultSettings = () => {
               </label>
               <p
                 className="mb-0"
-                style={{ fontSize: 18 }}
+                style={{ fontSize: 16 }}
                 id="eth-hours"
                 data-bs-toggle="popover"
                 data-bs-trigger="hover focus"
@@ -124,7 +127,7 @@ const DefaultSettings = () => {
               </p>
               <p
                 className="mb-0"
-                style={{ fontSize: 18 }}
+                style={{ fontSize: 16 }}
                 id="eth-days"
                 data-bs-toggle="popover"
                 data-bs-trigger="hover focus"
@@ -153,7 +156,7 @@ const DefaultSettings = () => {
               </p>
               <p
                 className="mb-0"
-                style={{ fontSize: 18 }}
+                style={{ fontSize: 16 }}
                 id="eth-weeks"
                 data-bs-toggle="popover"
                 data-bs-trigger="hover focus"
@@ -182,7 +185,7 @@ const DefaultSettings = () => {
               </p>
               <p
                 className="mb-0"
-                style={{ fontSize: 18 }}
+                style={{ fontSize: 16 }}
                 id="eth-months"
                 data-bs-toggle="popover"
                 data-bs-trigger="hover focus"
@@ -209,7 +212,7 @@ const DefaultSettings = () => {
                 )).toFixed(4)}{" "}
                 ETHx per month
               </p>
-              <p className="mb-0" style={{ fontSize: 18 }}>
+              <p className="mb-0" style={{ fontSize: 16 }}>
                 to the site.
               </p>
             </div>

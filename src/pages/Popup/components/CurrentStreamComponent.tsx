@@ -11,7 +11,9 @@ const StreamComponent = ({ stream }: { stream: Stream }) => {
       document.getElementById(`streamed-until-${stream.requestId}`)
     );
     return () => {
-      until.dispose();
+      try {
+        until.dispose();
+      } catch {}
     };
   }, []);
 

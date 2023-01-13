@@ -12,19 +12,19 @@ See [documentation here](https://github.com/kewbish/cobweb/wiki) for an installa
 
 --- 
 
-Cobweb is a [Web Monetization](https://webmonetization.org/)-inspired tool to make supporting other teen creators and getting paid for your content easier.
+Cobweb is a tool to make supporting other teen creators and getting paid for your content easier. Learn and interact directly with the blockchain, all while earning real tokens.
 
-Cobweb lets you stream micropayments from your browser to your favourite teen creators. For creators, this means you can add a single tag on your content to get paid. For fans, this means you can automatically support other teen creators by streaming tips in the background.
-
----
-
-Teens today have grown up in a world of endless content and possibility. We've witnessed the rise of the Internet, and have experienced first-hand how passive and addictive scrolling down social media can be. Cobweb aims to incentivize teens to create more content and to be compensated for their creativity.
-
-As well, teens looking to explore the vast world of decentralized technology like blockchain or Web3 DApps are often limited because of age or geographical restrictions. Cobweb helps teens get jump-started with the blockchain by granting them a base amount of crypto and empowering them to earn real tokens in real time.
+Cobweb lets you stream micropayments from your browser to your favourite creators. For creators, this means you can add a single tag on your content to earn Ethereum tokens. For fans, this means you can automatically support others by streaming tips in the background. It's a fun, supportive community to learn and earn with.
 
 ---
 
-Cobweb is MIT-licensed and fully open source. It's available as a free [Chrome extension](https://chrome.google.com/webstore/detail/cobweb/agdomcadfhkpkcjceenogkiglbhgpclg), and can be packed as an extension from this source code should you wish to do so.
+Teens today have grown up in a world of endless content and possibility. We've witnessed the rise of the Internet, and have experienced first-hand how passive and addictive scrolling down social media can be. Cobweb aims to incentivize teens to create more content and to be compensated for their hard work and creativity.
+
+As well, teens looking to explore the vast world of decentralized technology like blockchain or Web3 DApps are often limited because of age or geographical restrictions. Cobweb helps teens get jump-started with the blockchain by granting them a base amount of crypto and empowering them to earn real tokens in real time. Unlike other platforms that simulate the blockchain or only provide text tutorials, Cobweb lets teens have skin in the game by directly earning tokens and interacting with the blockchain.
+
+---
+
+Cobweb is MIT-licensed and fully open source. It's available as a free [Chrome extension](https://chrome.google.com/webstore/detail/cobweb/agdomcadfhkpkcjceenogkiglbhgpclg), and can be packed as an extension from this source code should you wish to do so. View the [privacy policy here](https://kewbi.sh/cobweb/privacy).
 
 ---
 
