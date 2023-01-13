@@ -7,10 +7,12 @@ import bootstrap from "bootstrap/dist/js/bootstrap.bundle";
 
 const InfoPopover = ({
   text,
-  moreSquare,
+  moreSquare = true,
+  darker,
 }: {
   text: string;
   moreSquare?: boolean;
+  darker?: boolean;
 }) => {
   useEffect(() => {
     const popover = new bootstrap.Popover(
@@ -34,7 +36,8 @@ const InfoPopover = ({
         data-bs-interval="false"
         data-bs-template={
           '<div class="popover ' +
-          (moreSquare ? "popover-squarer" : "") +
+          (moreSquare ? "popover-squarer " : "") +
+          (darker ? "popover-darker" : "") +
           '" role="tooltip"><div class="popover-arrow popover-arrow-override"></div><p class="popover-header"></p><div class="popover-body"></div></div>'
         }
       />

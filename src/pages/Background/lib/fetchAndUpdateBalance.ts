@@ -1,5 +1,5 @@
 import { storage } from "@extend-chrome/storage";
-import { Web3Provider } from "@ethersproject/providers";
+import { Web3Provider, InfuraProvider } from "@ethersproject/providers";
 import { Framework, SuperToken } from "@superfluid-finance/sdk-core";
 import { BigNumber, constants, utils } from "ethers";
 import errorToast, { toast } from "../../shared/toast";
@@ -11,10 +11,12 @@ const fetchAndUpdateBalance = async ({
   sf,
   sfToken,
   mmProvider,
+  infuraProvider,
 }: {
   sf: Framework;
   sfToken: SuperToken;
   mmProvider: Web3Provider;
+  infuraProvider: InfuraProvider;
 }) => {
   let availableBalance: string | null = null;
   let deposit: string | null = null;
@@ -42,7 +44,7 @@ const fetchAndUpdateBalance = async ({
       address = utils.getAddress(addressRes);
     }
 
-    const balance = await mmProvider.getBalance(address);
+    const balance = await infuraProvider.getBalance(address);
     storage.local.set({ mmBalance: BigNumber.from(balance) });
 
     const mmSigner = mmProvider.getSigner();

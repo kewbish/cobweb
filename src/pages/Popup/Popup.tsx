@@ -116,7 +116,7 @@ const Popup = () => {
         ethers.utils.formatEther(streamedUntilNow(currentStream)) +
         " " +
         TOKEN_MAP.ETH.name;
-      updatedPopover = new bootstrap.Popover(popover);
+      updatedPopover = bootstrap.Popover.getOrCreateInstance(popover);
     }
     return () => {
       updatedPopover?.dispose();
@@ -243,7 +243,7 @@ const Popup = () => {
             {currentStream ? (
               <>
                 <h2 style={{ fontWeight: 400, marginBottom: 0 }}>
-                  Web Monetization Enabled
+                  Currently Streaming
                 </h2>
                 <hr className="my-1" />
                 <p
@@ -318,7 +318,12 @@ const Popup = () => {
                       <button
                         className="btn p-1 glassy-cw-btn"
                         data-bs-toggle="popover"
-                        title="You don't have any ETHx. Click here to upgrade more!"
+                        title={
+                          balanceRes &&
+                          BigNumber.from(balanceRes).eq(constants.Zero)
+                            ? "You don't have any ETHx. Click here to upgrade more!"
+                            : undefined
+                        }
                         id="no-ethx"
                         data-bs-template={
                           '<div class="popover popover-squarer" role="tooltip"><div class="popover-arrow popover-arrow-override"></div><p class="popover-header text-small"></p><div class="popover-body"></div></div>'
@@ -345,8 +350,20 @@ const Popup = () => {
             ) : (
               <>
                 <h2 style={{ fontWeight: 400, marginBottom: 0 }}>
-                  Web Monetization Disabled
+                  Not Streaming
                 </h2>
+                <p className="mb-0" style={{ fontSize: 16, color: "#c6dcef" }}>
+                  Create a stream by going to any page with a{" "}
+                  <a
+                    href="https://github.com/kewbish/cobweb/wiki/Cobweb-Tags-&-Account-Page"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="cobweb-link"
+                  >
+                    Cobweb tag
+                  </a>{" "}
+                  on it!
+                </p>
                 <hr className="my-1 mb-2" />
                 <div className="d-flex justify-content-evenly gap-2">
                   <Link to="balance">
@@ -399,16 +416,28 @@ const Popup = () => {
               get help
             </a>
           </p>
-          <Link to="/report">
-            <button
-              type="button"
-              className="btn glassy-cw-btn"
-              style={{ fontSize: 16, padding: "0.25rem 0.4rem", height: 27 }}
-              title="Report user"
-            >
-              <i className="bi bi-flag-fill"></i>
-            </button>
-          </Link>
+          <div>
+            <Link to="/help">
+              <button
+                type="button"
+                className="btn glassy-cw-btn me-1"
+                style={{ fontSize: 16, padding: "0.25rem 0.4rem", height: 27 }}
+                title="Get help"
+              >
+                <i className="bi bi-question-lg"></i>
+              </button>
+            </Link>
+            <Link to="/report">
+              <button
+                type="button"
+                className="btn glassy-cw-btn"
+                style={{ fontSize: 16, padding: "0.25rem 0.4rem", height: 27 }}
+                title="Report user"
+              >
+                <i className="bi bi-flag-fill"></i>
+              </button>
+            </Link>
+          </div>
         </div>
       </div>
       <DropdownModal id="editingStream" title="Edit stream">

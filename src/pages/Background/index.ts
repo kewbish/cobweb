@@ -66,10 +66,15 @@ metamaskProvider.on("disconnect", () => {
 });
 
 metamaskProvider.on("connect", async () => {
+  const accounts = await mmProvider.listAccounts();
   try {
     storage.local.set({
-      mmNotFound: (await mmProvider.listAccounts()).length === 0,
+      mmNotFound: accounts.length === 0,
     });
+    if (!infuraProvider) {
+      return;
+    }
+    setNewAddress({ address: accounts[0], provider: infuraProvider });
   } catch {
     storage.local.set({ mmNotFound: true });
   }
@@ -79,9 +84,12 @@ metamaskProvider.on("accountsChanged", (accounts) => {
   if ((accounts as Array<String>).length === 0) {
     storage.local.set({ mmNotFound: true });
   } else {
+    if (!infuraProvider) {
+      return;
+    }
     setNewAddress({
       address: (accounts as Array<string>)[0],
-      provider: mmProvider,
+      provider: infuraProvider,
     });
   }
 });
@@ -220,10 +228,10 @@ const editCurrentStream = async ({ request }: { request: any }) => {
 };
 
 const fetchBalance = async () => {
-  if (!sfToken || !mmProvider || !sf) {
+  if (!sfToken || !mmProvider || !sf || !infuraProvider) {
     return;
   }
-  fetchAndUpdateBalance({ sfToken, mmProvider, sf });
+  fetchAndUpdateBalance({ sfToken, mmProvider, sf, infuraProvider });
 };
 
 const downgradeTokenAmount = async ({ request }: { request: any }) => {

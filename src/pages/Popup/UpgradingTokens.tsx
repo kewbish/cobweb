@@ -8,6 +8,7 @@ import { FETCH_BALANCE, UPGRADE_TOKEN } from "../shared/events";
 import TOKEN_MAP from "../shared/tokens";
 import CobwebPage from "./components/CobwebPage";
 import ToastHandler from "./components/ToastHandler";
+import InfoPopover from "./components/InfoPopover";
 
 const UpgradingTokens = () => {
   const [balance, setBalance] = useState(constants.Zero);
@@ -60,9 +61,18 @@ const UpgradingTokens = () => {
           <h2 className="mb-0">Upgrading Tokens</h2>
           <hr className="my-1" />
           <div className="d-flex flex-column align-items-center gap-1">
-            <p className="mb-0">
+            <p style={{ fontSize: 16 }}>
+              Upgraded or wrapped tokens are an extension of typical blockchain
+              tokens, but have the same value. You need them to create Cobweb
+              streams.
+            </p>
+            <p className="d-inline">
               from <span className="blue">{currency.slice(0, -1)}</span> to
               <span className="blue"> {currency}</span>
+              <InfoPopover
+                text="This will decrease your ETH balance, and increase your ETHx balance. ETHx tokens can be converted back to ETH via the 'Downgrade more tokens' page."
+                moreSquare
+              />
             </p>
             <TokenInput value={upgrading} setValue={setUpgrading} />
             <p className="mb-0 text-muted" style={{ fontSize: 14 }}>

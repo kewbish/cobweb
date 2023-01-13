@@ -5,9 +5,7 @@ import BackgroundBox from "./components/BackgroundBox";
 import ProfilePic from "./components/ProfilePic";
 import FadedPill from "./components/FadedPill";
 import { createSearchParams, useNavigate } from "react-router-dom";
-import { toast } from "../shared/toast";
 import { FETCH_BALANCE } from "../shared/events";
-import TOKEN_MAP from "../shared/tokens";
 
 const Welcome = () => {
   const [address, , ,]: [string, any, any, any] = useChromeStorageLocal(
@@ -82,8 +80,8 @@ const Welcome = () => {
                       <p className="align-self-center m-0">
                         {ethers.utils.formatUnits(
                           balance.sub(balance.mod(1e12))
-                        )}{" "}
-                        {TOKEN_MAP.ETH.name}
+                        )}
+                        {" ETH"}
                       </p>
                     </div>
                     <ProfilePic width={40} address={address} noNav={true} />

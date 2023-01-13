@@ -8,6 +8,7 @@ import CobwebPage from "./components/CobwebPage";
 import bootstrap from "bootstrap/dist/js/bootstrap.bundle";
 import TOKEN_MAP from "../shared/tokens";
 import ToastHandler from "./components/ToastHandler";
+import InfoPopover from "./components/InfoPopover";
 
 const ManageBalances = () => {
   const [balance, setBalance] = useState(constants.Zero);
@@ -40,7 +41,7 @@ const ManageBalances = () => {
     if (popover) {
       popover.title =
         ethers.utils.formatUnits(balanceRes) + " " + TOKEN_MAP.ETH.name;
-      updatedPopover = new bootstrap.Popover(popover);
+      updatedPopover = bootstrap.Popover.getOrCreateInstance(popover);
     }
     return () => {
       updatedPopover?.dispose();
@@ -74,8 +75,15 @@ const ManageBalances = () => {
             {(+ethers.utils.formatUnits(balance)).toFixed(4)}{" "}
             {/*sfToken.name*/ "ETHx"}
           </h1>
-          <p>available to spend.</p>
-          <div className="d-flex justify-content-evenly gap-2">
+          <p className="d-inline">available to spend.</p>
+          <InfoPopover
+            text="
+            This is your balance in wrapped cryptocurrency tokens, the
+            blockchain's unit of money. Tokens are like blockchain dollars or euros."
+            moreSquare
+            darker
+          />
+          <div className="d-flex justify-content-evenly gap-2 mt-2">
             <button
               type="button"
               className="btn p-1 glassy-cw-btn"

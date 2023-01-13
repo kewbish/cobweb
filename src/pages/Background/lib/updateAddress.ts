@@ -1,5 +1,5 @@
 import { storage } from "@extend-chrome/storage";
-import { Web3Provider } from "@ethersproject/providers";
+import { BaseProvider } from "@ethersproject/providers";
 import { BigNumber } from "ethers";
 import errorToast from "../../shared/toast";
 
@@ -8,7 +8,7 @@ const setNewAddress = async ({
   provider,
 }: {
   address: string;
-  provider: Web3Provider;
+  provider: BaseProvider;
 }) => {
   storage.local.set({ address });
   try {

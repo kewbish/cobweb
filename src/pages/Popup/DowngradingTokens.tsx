@@ -6,6 +6,7 @@ import { DOWNGRADE_TOKEN, FETCH_BALANCE } from "../shared/events";
 import TOKEN_MAP from "../shared/tokens";
 import CobwebPage from "./components/CobwebPage";
 import ToastHandler from "./components/ToastHandler";
+import InfoPopover from "./components/InfoPopover";
 
 const DowngradingTokens = () => {
   const [balance, setBalance] = useState(constants.Zero);
@@ -45,9 +46,17 @@ const DowngradingTokens = () => {
           <h2 className="mb-0">Downgrading Tokens</h2>
           <hr className="my-1" />
           <div className="d-flex flex-column align-items-center gap-1">
-            <p className="mb-0">
+            <p style={{ fontSize: 16 }}>
+              Downgrading tokens converts wrapped tokens (ETHx) into typical
+              blockchain tokens (ETH), which have the same value.
+            </p>
+            <p className="d-inline">
               from <span className="blue">{currency}</span> to
               <span className="blue"> {currency.slice(0, -1)}</span>
+              <InfoPopover
+                text="This will increase your ETH balance, and decrease your ETHx balance. ETH tokens can be converted back to ETHx via the 'Upgrade more tokens' page."
+                moreSquare
+              />
             </p>
             <TokenInput value={downgrading} setValue={setDowngrading} />
             <p className="mb-0 text-muted" style={{ fontSize: 14 }}>

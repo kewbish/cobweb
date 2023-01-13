@@ -20,7 +20,6 @@ const DropdownModal = ({
     aria-labelledby="cobwebModalLabel"
     aria-hidden="true"
     data-bs-backdrop={force ? "static" : undefined}
-    style={{ zIndex: 9999999 }}
   >
     <div className="modal-dialog modal-dialog-centered">
       <div

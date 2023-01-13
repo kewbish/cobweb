@@ -126,3 +126,11 @@ p {
 .carousel-indicators {
   margin-bottom: 0rem;
 }
+
+.popover-darker {
+  background: rgb(35, 102, 164, 0.5);
+}
+
+label {
+  font-size: 16px;
+}

@@ -147,11 +147,12 @@ const ListSettings = () => {
                           <p style={{ fontSize: 16 }} className="mb-0">
                             {verifySignature(key) ?? "[invalid Cobweb Tag]"}:{" "}
                             <span className="blue">
-                              {BigNumber.from(value.rateAmount) !==
-                              constants.Zero
+                              {!BigNumber.from(value.rateAmount).eq(
+                                constants.Zero
+                              )
                                 ? (+utils.formatUnits(
                                     value.rateAmount
-                                  )).toFixed(4) + " ETH per second"
+                                  )).toFixed(4) + " ETHx per second"
                                 : "[blocked]"}
                             </span>{" "}
                           </p>

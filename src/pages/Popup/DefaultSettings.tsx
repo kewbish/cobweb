@@ -54,10 +54,10 @@ const DefaultSettings = () => {
             setValue={setDefaultRate}
             disabled={!defaultRate}
           />
-          <p className="mt-1 d-inline-block">ETH per second</p>
+          <p className="mt-1 d-inline-block">ETHx per second</p>
           <InfoPopover
             text={
-              "This is the amount of ETH streamed per second when no site-specific settings are found."
+              "This is the amount of ETHx streamed per second when no site-specific settings are found."
             }
           />
           <div className="d-flex flex-row gap-1">
@@ -107,7 +107,7 @@ const DefaultSettings = () => {
                           BigNumber.from(Math.round((timeSpent / 24) * 60))
                         )
                       : constants.Zero
-                  ) + " ETH"
+                  ) + " ETHx"
                 }
                 data-bs-template={
                   '<div class="popover" role="tooltip"><div class="popover-arrow popover-arrow-override"></div><p class="popover-header"></p><div class="popover-body"></div></div>'
@@ -120,7 +120,7 @@ const DefaultSettings = () => {
                       )
                     : constants.Zero
                 )).toFixed(4)}{" "}
-                ETH per hour
+                ETHx per hour
               </p>
               <p
                 className="mb-0"
@@ -136,7 +136,7 @@ const DefaultSettings = () => {
                           BigNumber.from(Math.round(timeSpent * 60))
                         )
                       : constants.Zero
-                  ) + " ETH"
+                  ) + " ETHx"
                 }
                 data-bs-template={
                   '<div class="popover" role="tooltip"><div class="popover-arrow popover-arrow-override"></div><p class="popover-header"></p><div class="popover-body"></div></div>'
@@ -149,7 +149,7 @@ const DefaultSettings = () => {
                       )
                     : constants.Zero
                 )).toFixed(4)}{" "}
-                ETH per day
+                ETHx per day
               </p>
               <p
                 className="mb-0"
@@ -165,7 +165,7 @@ const DefaultSettings = () => {
                           BigNumber.from(Math.round(timeSpent * 60 * 7))
                         )
                       : constants.Zero
-                  ) + " ETH"
+                  ) + " ETHx"
                 }
                 data-bs-template={
                   '<div class="popover" role="tooltip"><div class="popover-arrow popover-arrow-override"></div><p class="popover-header"></p><div class="popover-body"></div></div>'
@@ -178,7 +178,7 @@ const DefaultSettings = () => {
                       )
                     : constants.Zero
                 )).toFixed(4)}{" "}
-                ETH per week
+                ETHx per week
               </p>
               <p
                 className="mb-0"
@@ -194,7 +194,7 @@ const DefaultSettings = () => {
                           BigNumber.from(Math.round(timeSpent * 60 * 30))
                         )
                       : constants.Zero
-                  ) + " ETH"
+                  ) + " ETHx"
                 }
                 data-bs-template={
                   '<div class="popover" role="tooltip"><div class="popover-arrow popover-arrow-override"></div><p class="popover-header"></p><div class="popover-body"></div></div>'
@@ -207,7 +207,7 @@ const DefaultSettings = () => {
                       )
                     : constants.Zero
                 )).toFixed(4)}{" "}
-                ETH per month
+                ETHx per month
               </p>
               <p className="mb-0" style={{ fontSize: 18 }}>
                 to the site.

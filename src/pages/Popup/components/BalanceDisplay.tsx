@@ -38,7 +38,7 @@ const BalanceDisplay = () => {
     if (popover) {
       popover.title =
         ethers.utils.formatUnits(balanceRes) + " " + TOKEN_MAP.ETH.name;
-      updatedPopover = new bootstrap.Popover(popover);
+      updatedPopover = bootstrap.Popover.getOrCreateInstance(popover);
     }
     return () => {
       updatedPopover?.dispose();
