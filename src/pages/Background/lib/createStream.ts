@@ -47,15 +47,19 @@ const createStream = async ({
     to = utils.getAddress(to);
   }
 
-  const response = await fetch(
-    "https://cobweb-worker.kewbish.workers.dev/get?" +
-      new URLSearchParams({ address: to.toLowerCase() }).toString()
-  );
-  const responseJson = await response.json();
-  if (responseJson.error) {
-    return;
-  } else if (!responseJson.valid) {
-    // hasn't been added to Cobweb network
+  try {
+    const response = await fetch(
+      "https://cobweb-worker.kewbish.workers.dev/get?" +
+        new URLSearchParams({ address: to.toLowerCase() }).toString()
+    );
+    const responseJson = await response.json();
+    if (responseJson.error) {
+      return;
+    } else if (!responseJson.valid) {
+      // hasn't been added to Cobweb network
+      return;
+    }
+  } catch {
     return;
   }
 

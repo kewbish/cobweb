@@ -11,6 +11,10 @@ const Onboarding = () => {
     "extend-chrome/storage__local--address",
     ""
   );
+  const [, setRequested, ,]: [any, any, any, any] = useChromeStorageLocal(
+    "extend-chrome/storage__local--requested",
+    ""
+  );
   const joinCobweb = async () => {
     if (!address) {
       toast("Couldn't fetch Metamask account.");
@@ -22,9 +26,9 @@ const Onboarding = () => {
           new URLSearchParams({ address }).toString()
       );
       const responseJson = await response.json();
-      console.log(responseJson);
       if (response.ok && responseJson.success) {
         toast("Thanks, and welcome!");
+        setRequested(true);
         setHasJoined(true);
         if (!document.getElementById("welcome")) {
           return;

@@ -6,11 +6,18 @@ import { useChromeStorageLocal } from "use-chrome-storage";
 import { toast } from "../shared/toast";
 
 const CobwebInfo = () => {
+  const [address, , ,]: [string, any, any, any] = useChromeStorageLocal(
+    "extend-chrome/storage__local--address",
+    ""
+  );
   const [signature, setSignature] = useState<string>("");
   const [signatureLocal, , ,]: [string, any, any, any] = useChromeStorageLocal(
     "extend-chrome/storage__local--signature",
     ""
   );
+  const [requested, setRequested, ,]: [any, any, any, any] =
+    useChromeStorageLocal("extend-chrome/storage__local--requested", null);
+  const [reactRequested, setReactRequested] = useState<boolean>(false);
 
   useEffect(() => {
     const getResponse = async () => {
@@ -22,6 +29,33 @@ const CobwebInfo = () => {
 
     getResponse();
   }, [signatureLocal]);
+
+  const requestVerification = async () => {
+    if (!address) {
+      toast("Couldn't fetch Metamask account.");
+      return;
+    }
+    try {
+      const response = await fetch(
+        "https://cobweb-worker.kewbish.workers.dev/request?" +
+          new URLSearchParams({ address }).toString()
+      );
+      const responseJson = await response.json();
+      if (response.ok && responseJson.success) {
+        toast("Requested!");
+        setRequested(true);
+        setReactRequested(true);
+      } else {
+        toast(
+          "There was an issue with requesting verification. Please try again."
+        );
+      }
+    } catch (e) {
+      toast(
+        "There was an issue with requesting verification. Please try again."
+      );
+    }
+  };
 
   return (
     <>
@@ -61,6 +95,18 @@ const CobwebInfo = () => {
               Copy this to the contents of any content you want to monetize.
             </label>
           </div>
+          {requested !== null && (!requested || reactRequested) ? (
+            <div className="mt-1">
+              <button
+                className="btn p-1 glassy-cw-btn"
+                type="button"
+                onClick={requestVerification}
+                disabled={reactRequested}
+              >
+                {!reactRequested ? "Request verification + ETH" : "Requested!"}
+              </button>
+            </div>
+          ) : null}
         </>
       </CobwebPage>
       <ToastHandler />

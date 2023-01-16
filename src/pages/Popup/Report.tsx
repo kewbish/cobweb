@@ -22,23 +22,25 @@ const Report = () => {
       toast("Tag already reported.");
       return;
     }
-    const response = await fetch(
-      "https://cobweb-worker.kewbish.workers.dev/report?" +
-        new URLSearchParams({
-          address: reportingTag,
-          url: reportingUrl,
-        }).toString()
-    );
-    const responseJson = await response.json();
-    if (!response.ok || !responseJson.success) {
-      toast("Couldn't report user, please try again.");
-      return;
-    }
-    setReported(true);
-    setOldReportingTag(reportingTag);
-    setOldReportingUrl(reportingUrl);
-    setReportingTag("");
-    setReportingUrl("");
+    try {
+      const response = await fetch(
+        "https://cobweb-worker.kewbish.workers.dev/report?" +
+          new URLSearchParams({
+            address: reportingTag,
+            url: reportingUrl,
+          }).toString()
+      );
+      const responseJson = await response.json();
+      if (!response.ok || !responseJson.success) {
+        toast("Couldn't report user, please try again.");
+        return;
+      }
+      setReported(true);
+      setOldReportingTag(reportingTag);
+      setOldReportingUrl(reportingUrl);
+      setReportingTag("");
+      setReportingUrl("");
+    } catch {}
   };
 
   return (

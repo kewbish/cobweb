@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Cobweb",
   "description": "A Web3-based tool enabling creative teens to learn and earn on the blockchain.",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "background": { "service_worker": "background.bundle.js" },
   "action": {
     "default_popup": "popup.html",

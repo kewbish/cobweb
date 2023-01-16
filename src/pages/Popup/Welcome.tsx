@@ -64,7 +64,7 @@ const Welcome = () => {
               blockchain easier for teens.
             </p>
             <p style={{ fontSize: 16 }} className="text-muted mb-1">
-              Switch accounts in Metamask, or proceed:
+              Switch connected accounts in Metamask, or proceed:
             </p>
             <div className="d-flex justify-content-center">
               <div

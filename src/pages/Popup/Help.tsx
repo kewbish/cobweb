@@ -113,6 +113,14 @@ const Help = () => {
               a user by clicking the flag on the home page if they're producing
               spammy content.
             </p>
+            <p style={{ fontSize: 16 }} className="mb-1">
+              <em>How do I change the wallet I use with Cobweb?</em> Open
+              Metamask, and open the wallet you currently use with Cobweb. Click
+              the three dots in the upper-right-hand corner, and click
+              'Connected sites'. Look for 'External Chrome extension' or
+              something similar, and remove it. Then open Cobweb again, which
+              will prompt you to connect your desired wallet.
+            </p>
           </div>
         </>
       </CobwebPage>
