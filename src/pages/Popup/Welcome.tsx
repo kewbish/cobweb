@@ -27,6 +27,12 @@ const Welcome = () => {
     "extend-chrome/storage__local--cwInitialized",
     null
   );
+  const [, setMMNotFound, ,]: [
+    boolean | null,
+    (value: boolean) => void,
+    any,
+    any
+  ] = useChromeStorageLocal("extend-chrome/storage__local--mmNotFound", null);
 
   useEffect(() => {
     if (!balanceRes) {
@@ -39,6 +45,7 @@ const Welcome = () => {
 
   const initializeCobWeb = async () => {
     setCwInitialized(true);
+    setMMNotFound(false);
     navigate({
       pathname: "/",
       search: createSearchParams({ onboarding: "true" }).toString(),

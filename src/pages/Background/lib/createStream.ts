@@ -6,7 +6,6 @@ import { Stream } from "../../shared/types";
 import { storage } from "@extend-chrome/storage";
 import { Framework, SuperToken } from "@superfluid-finance/sdk-core";
 import { InfuraProvider } from "@ethersproject/providers";
-import errorToast, { toast } from "../../shared/toast";
 import {
   pendingMonetization,
   startMonetization,
@@ -135,10 +134,6 @@ const createStream = async ({
       func: stopMonetization,
       world: "MAIN",
     });
-    errorToast(e as Error);
-    toast(
-      "Check that you've approved enough spending tokens in your account page."
-    );
   }
 };
 
@@ -180,9 +175,7 @@ export const updateStream = async ({
       userData: `${to} ${new Date()}`,
     });
     updateStream = await updateStreamOperation.exec(mmSigner);
-  } catch (e) {
-    errorToast(e as Error);
-  }
+  } catch (e) {}
 
   const { streams } = await storage.local.get("streams");
   storage.local.set({

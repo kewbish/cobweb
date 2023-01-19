@@ -2,7 +2,6 @@ import { storage } from "@extend-chrome/storage";
 import { Web3Provider, InfuraProvider } from "@ethersproject/providers";
 import { Framework, SuperToken } from "@superfluid-finance/sdk-core";
 import { BigNumber, constants, utils } from "ethers";
-import errorToast, { toast } from "../../shared/toast";
 import { DELETE_STREAM } from "../../shared/events";
 import { Rate } from "../../shared/types";
 import cleanUpStreams from "./cleanUpStreams";
@@ -33,7 +32,6 @@ const fetchAndUpdateBalance = async ({
         !utils.getAddress(addressRes) ||
         !(await mmProvider.resolveName(addressRes)))
     ) {
-      toast("Wallet address is invalid");
       return;
     }
 
@@ -69,10 +67,8 @@ const fetchAndUpdateBalance = async ({
         },
       });
     }
-    errorToast(e as Error);
   }
   if (!balanceRes || !deposit) {
-    toast("Wallet balance could not be fetched");
     return;
   } else {
     storage.local.set({ balance: balanceRes });
@@ -82,7 +78,6 @@ const fetchAndUpdateBalance = async ({
   }
   if (balanceRes.gt(constants.Zero) && balanceRes.lte(deposit)) {
     // critical balance
-    toast("Balance is critically low");
     if (sf && mmProvider) {
       cleanUpStreams({
         sf,
@@ -104,12 +99,9 @@ const fetchAndUpdateBalance = async ({
         BigNumber.from(defaultRate.rateAmount).mul(BigNumber.from(3))
       )
     ) {
-      toast("Balance is low.");
       return;
     }
-  } catch (e) {
-    errorToast(e as Error);
-  }
+  } catch (e) {}
 };
 
 export default fetchAndUpdateBalance;

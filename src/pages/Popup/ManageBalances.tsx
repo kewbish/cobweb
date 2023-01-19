@@ -41,9 +41,12 @@ const ManageBalances = () => {
     const popover = document.getElementById("balance");
     let updatedPopover: any = null;
     if (popover) {
-      popover.title =
-        ethers.utils.formatUnits(balanceRes) + " " + TOKEN_MAP.ETH.name;
+      popover.setAttribute(
+        "data-bs-title",
+        ethers.utils.formatUnits(balanceRes) + " " + TOKEN_MAP.ETH.name
+      );
       updatedPopover = bootstrap.Popover.getOrCreateInstance(popover);
+      updatedPopover = new bootstrap.Popover(popover);
     }
     return () => {
       try {
@@ -74,7 +77,9 @@ const ManageBalances = () => {
               '<div class="popover" role="tooltip"><div class="popover-arrow popover-arrow-override"></div><p class="popover-header"></p><div class="popover-body"></div></div>'
             }
             data-bs-placement="bottom"
-            title={ethers.utils.formatUnits(balance) + " " + TOKEN_MAP.ETH.name}
+            data-bs-title={
+              ethers.utils.formatUnits(balance) + " " + TOKEN_MAP.ETH.name
+            }
           >
             {(+ethers.utils.formatUnits(balance)).toFixed(4)}{" "}
             {/*sfToken.name*/ "ETHx"}

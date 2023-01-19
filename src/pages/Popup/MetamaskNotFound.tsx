@@ -24,8 +24,7 @@ const MetamaskNotFound = () => {
                 Metamask
               </a>{" "}
               is installed and try again. You may need to log into Metamask's
-              extension. (You may also need to disable and reenable the
-              extension on the <code>chrome://extensions</code> page.)
+              extension, or wait a minute for Cobweb to detect Metamask.{" "}
             </p>
             <div className="d-flex justify-content-center">
               <div style={{ cursor: "pointer", width: "fit-content" }}></div>

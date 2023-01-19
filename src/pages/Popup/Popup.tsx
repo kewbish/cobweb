@@ -115,10 +115,12 @@ const Popup = () => {
     const popover = document.getElementById("streamed-until");
     let updatedPopover: any = null;
     if (popover && currentStream) {
-      popover.title =
+      popover.setAttribute(
+        "data-bs-title",
         ethers.utils.formatEther(streamedUntilNow(currentStream)) +
-        " " +
-        TOKEN_MAP.ETH.name;
+          " " +
+          TOKEN_MAP.ETH.name
+      );
       updatedPopover = bootstrap.Popover.getOrCreateInstance(popover);
     }
     return () => {
@@ -247,7 +249,7 @@ const Popup = () => {
                   data-bs-toggle="popover"
                   data-bs-trigger="hover focus"
                   data-bs-placement="top"
-                  title={
+                  data-bs-title={
                     ethers.utils.formatEther(streamedUntilNow(currentStream)) +
                     " " +
                     TOKEN_MAP.ETH.name

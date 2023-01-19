@@ -36,9 +36,12 @@ const BalanceDisplay = () => {
     const popover = document.getElementById("popover");
     let updatedPopover: any = null;
     if (popover) {
-      popover.title =
-        ethers.utils.formatUnits(balanceRes) + " " + TOKEN_MAP.ETH.name;
+      popover.setAttribute(
+        "data-bs-title",
+        ethers.utils.formatUnits(balanceRes) + " " + TOKEN_MAP.ETH.name
+      );
       updatedPopover = bootstrap.Popover.getOrCreateInstance(popover);
+      updatedPopover = new bootstrap.Popover(popover);
     }
     return () => {
       try {
@@ -61,7 +64,9 @@ const BalanceDisplay = () => {
       style={{ marginTop: "-10px" }}
       id="popover"
       data-bs-toggle="popover"
-      title={ethers.utils.formatUnits(balance) + " " + TOKEN_MAP.ETH.name}
+      data-bs-title={
+        ethers.utils.formatUnits(balance) + " " + TOKEN_MAP.ETH.name
+      }
       data-bs-trigger="hover focus"
       data-bs-template={
         '<div class="popover" role="tooltip"><div class="popover-arrow popover-arrow-override"></div><p class="popover-header"></p><div class="popover-body"></div></div>'

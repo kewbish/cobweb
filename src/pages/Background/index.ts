@@ -37,7 +37,6 @@ import fetchAndUpdateBalance from "./lib/fetchAndUpdateBalance";
 import setNewAddress from "./lib/updateAddress";
 import { downgradeTokens, upgradeTokens } from "./lib/wrapTokens";
 import setNewToast, { deleteToast } from "./lib/setNewToast";
-import errorToast, { toast } from "../shared/toast";
 import generateSignature from "./lib/generateSignature";
 import verifySignature from "../shared/verifySignature";
 import cleanUpStreams from "./lib/cleanUpStreams";
@@ -50,49 +49,59 @@ chrome.runtime.onInstalled.addListener((details) => {
   }
 });
 
-let metamaskProvider: MetaMaskInpageProvider | null = null;
-metamaskProvider = createMetaMaskProvider();
-const mmProvider = new ethers.providers.Web3Provider(metamaskProvider as any);
-await mmProvider.send("eth_requestAccounts", []);
-
 storage.local.set({ mmNotFound: false });
 
-metamaskProvider?.on("error", (error) => {
-  storage.local.set({ mmNotFound: true });
-});
+let metamaskProvider: MetaMaskInpageProvider | null = null;
+metamaskProvider = createMetaMaskProvider();
+let mmProvider = new ethers.providers.Web3Provider(metamaskProvider as any);
 
-metamaskProvider.on("disconnect", () => {
-  storage.local.set({ mmNotFound: true });
-});
-
-metamaskProvider.on("connect", async () => {
-  const accounts = await mmProvider.listAccounts();
-  try {
-    storage.local.set({
-      mmNotFound: accounts.length === 0,
-    });
-    if (!infuraProvider) {
-      return;
-    }
-    setNewAddress({ address: accounts[0], provider: infuraProvider });
-  } catch {
+const resetHandlers = () => {
+  metamaskProvider?.on("error", (error) => {
     storage.local.set({ mmNotFound: true });
-  }
-});
+  });
 
-metamaskProvider.on("accountsChanged", (accounts) => {
-  if ((accounts as Array<String>).length === 0) {
+  metamaskProvider?.on("disconnect", () => {
     storage.local.set({ mmNotFound: true });
-  } else {
-    if (!infuraProvider) {
-      return;
+  });
+
+  metamaskProvider?.on("connect", async () => {
+    await mmProvider?.send("eth_requestAccounts", []);
+    const accounts = await mmProvider.listAccounts();
+    try {
+      if (accounts.length === 0) {
+        storage.local.set({
+          mmNotFound: true,
+        });
+      } else {
+        storage.local.set({
+          mmNotFound: false,
+        });
+        if (!infuraProvider) {
+          return;
+        }
+        setNewAddress({ address: accounts[0], provider: infuraProvider });
+      }
+    } catch {
+      storage.local.set({ mmNotFound: true });
     }
-    setNewAddress({
-      address: (accounts as Array<string>)[0],
-      provider: infuraProvider,
-    });
-  }
-});
+  });
+
+  metamaskProvider?.on("accountsChanged", (accounts) => {
+    if ((accounts as Array<String>).length === 0) {
+      storage.local.set({ mmNotFound: true });
+    } else {
+      if (!infuraProvider) {
+        return;
+      }
+      setNewAddress({
+        address: (accounts as Array<string>)[0],
+        provider: infuraProvider,
+      });
+    }
+  });
+};
+
+resetHandlers();
 
 storage.local.set({ toasts: [] });
 
@@ -117,10 +126,7 @@ try {
       projectSecret: INFURA_PROJECT_SECRET,
     }
   );
-} catch (e) {
-  toast("Error - failed to initialize provider");
-  throw new Error("Error - failed to initialize provider");
-}
+} catch (e) {}
 let sf: Framework | null = null;
 try {
   sf = await Framework.create({
@@ -128,7 +134,6 @@ try {
     provider: infuraProvider,
   });
 } catch (e) {
-  errorToast(e as Error);
   throw e;
 }
 
@@ -140,7 +145,6 @@ try {
     );
   }
 } catch (e) {
-  errorToast(e as Error);
   throw e;
 }
 
@@ -153,7 +157,14 @@ const montagFound = async ({
   sender: chrome.runtime.MessageSender;
   sendResponse?: Function;
 }) => {
-  if (!sf || !sfToken || !infuraProvider || !sender.tab) {
+  if (
+    !sf ||
+    !sfToken ||
+    !infuraProvider ||
+    !sender.tab ||
+    (metamaskProvider?.chainId === null &&
+      metamaskProvider?.selectedAddress == null)
+  ) {
     return;
   }
   let address = verifySignature(request.options.address);
@@ -184,7 +195,12 @@ const montagFound = async ({
 };
 
 const deleteStream = async ({ request }: { request: any }) => {
-  if (!sf || !sfToken) {
+  if (
+    !sf ||
+    !sfToken ||
+    (metamaskProvider?.chainId === null &&
+      metamaskProvider?.selectedAddress == null)
+  ) {
     return;
   }
   if (request.options.tabId) {
@@ -213,7 +229,12 @@ const updateSetting = async ({ request }: { request: any }) => {
 };
 
 const editCurrentStream = async ({ request }: { request: any }) => {
-  if (!sf || !sfToken) {
+  if (
+    !sf ||
+    !sfToken ||
+    (metamaskProvider?.chainId === null &&
+      metamaskProvider?.selectedAddress == null)
+  ) {
     return;
   }
   updateStream({
@@ -228,13 +249,26 @@ const editCurrentStream = async ({ request }: { request: any }) => {
 };
 
 const fetchBalance = async () => {
-  if (!sfToken || !mmProvider || !sf || !infuraProvider) {
+  if (
+    !sfToken ||
+    !mmProvider ||
+    !sf ||
+    !infuraProvider ||
+    (metamaskProvider?.chainId === null &&
+      metamaskProvider?.selectedAddress == null)
+  ) {
     return;
   }
   fetchAndUpdateBalance({ sfToken, mmProvider, sf, infuraProvider });
 };
 
 const downgradeTokenAmount = async ({ request }: { request: any }) => {
+  if (
+    metamaskProvider?.chainId === null &&
+    metamaskProvider?.selectedAddress == null
+  ) {
+    return;
+  }
   const sfSigner = mmProvider.getSigner();
   if (!sf || !sfToken || !sfSigner) {
     return;
@@ -247,6 +281,12 @@ const downgradeTokenAmount = async ({ request }: { request: any }) => {
 };
 
 const upgradeTokenAmount = async ({ request }: { request: any }) => {
+  if (
+    metamaskProvider?.chainId === null &&
+    metamaskProvider?.selectedAddress == null
+  ) {
+    return;
+  }
   const sfSigner = mmProvider.getSigner();
   if (!sf || !sfToken || !sfSigner) {
     return;
@@ -270,6 +310,12 @@ const fetchSignature = async ({
 }: {
   request: any;
 }): Promise<String> => {
+  if (
+    metamaskProvider?.chainId === null &&
+    metamaskProvider?.selectedAddress == null
+  ) {
+    return "";
+  }
   const signature = await generateSignature(mmProvider);
   return signature;
 };
@@ -334,8 +380,15 @@ const handleMessaging = async (
       sendResponse(signature);
       return;
     case CHECK_METAMASK:
-      metamaskProvider = createMetaMaskProvider();
-      storage.local.set({ mmNotFound: false }); // optimistically reset
+      if (metamaskProvider?.selectedAddress === null) {
+        metamaskProvider = createMetaMaskProvider();
+        resetHandlers();
+        storage.local.set({
+          mmNotFound:
+            metamaskProvider.chainId === null &&
+            metamaskProvider.selectedAddress === null,
+        }); // optimistically reset
+      }
       sendResponse();
       return;
     default:
@@ -346,7 +399,7 @@ const handleMessaging = async (
 chrome.runtime.onMessage.addListener(handleMessaging);
 
 chrome.tabs.onRemoved.addListener(async (tabId, _) => {
-  if (sf && sfToken) {
+  if (sf && sfToken && metamaskProvider?.chainId !== null) {
     deleteStreamByTabId({
       tabId,
       sf,
@@ -357,7 +410,7 @@ chrome.tabs.onRemoved.addListener(async (tabId, _) => {
 });
 
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, _) => {
-  if (changeInfo.status !== "complete") {
+  if (changeInfo.status !== "complete" || metamaskProvider?.chainId === null) {
     return;
   }
   if (changeInfo.url && sf && sfToken) {
@@ -378,6 +431,11 @@ chrome.runtime.onStartup.addListener(() => {
 chrome.alarms.create("cobwebStreamCleanup" + alarmSuffix, {
   delayInMinutes: 5,
 });
+if (metamaskProvider.chainId === null) {
+  chrome.alarms.create("metamaskRefresh" + alarmSuffix, {
+    delayInMinutes: 1,
+  });
+}
 chrome.alarms.onAlarm.addListener(async (alarm) => {
   try {
     var parsedName = alarm.name.match(/^([\S\s]*?)(\d+)$/);
@@ -393,12 +451,18 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
     if (!sf || !sfToken) {
       return;
     }
-    if (name === "cobwebStreamCleanup") {
+    if (name === "cobwebStreamCleanup" && metamaskProvider?.chainId !== null) {
       cleanUpStreams({
         sfToken,
         sf,
         mmSigner: mmProvider.getSigner(),
       });
+    } else if (
+      name === "metamaskRefresh" &&
+      metamaskProvider?.chainId === null
+    ) {
+      metamaskProvider = createMetaMaskProvider();
+      mmProvider = new ethers.providers.Web3Provider(metamaskProvider as any);
     }
   } catch {}
 });

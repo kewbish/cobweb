@@ -2,7 +2,6 @@ import { PayRates, Stream } from "../../shared/types";
 import { storage } from "@extend-chrome/storage";
 import { Framework, SuperToken } from "@superfluid-finance/sdk-core";
 import { Signer } from "ethers";
-import errorToast from "../../shared/toast";
 
 const deleteStreamByTabId = async ({
   tabId,
@@ -32,7 +31,7 @@ const deleteStreamByTabId = async ({
       });
       await deleteStreamOperation.exec(mmSigner);
     } catch (e) {
-      errorToast(e as Error);
+      // errorToast(e as Error);
       return;
     }
   };
