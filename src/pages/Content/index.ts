@@ -22,18 +22,19 @@ if (monetizationTag) {
   let bodyText = null;
   for (const patternString of Object.keys(websiteMap)) {
     const hostName = patternString.split("/")[0];
-    if (hostName === reducedHostName) {
-      let pathname = undefined;
-      if (patternString.includes("/")) {
-        pathname = "/" + patternString.split("/").slice(1).join("/");
-      }
-      // @ts-expect-error
-      const pattern = new URLPattern({ pathname });
-      if (pattern.match(url)) {
-        bodyText = document.querySelectorAll(websiteMap[patternString])[0]
-          ?.textContent;
-        break;
-      }
+    if (hostName !== reducedHostName) {
+      continue;
+    }
+    let pathname = undefined;
+    if (patternString.includes("/")) {
+      pathname = "/" + patternString.split("/").slice(1).join("/");
+    }
+    // @ts-expect-error
+    const pattern = new URLPattern({ pathname });
+    if (pattern.test(url)) {
+      bodyText = document.querySelectorAll(websiteMap[patternString])[0]
+        ?.textContent;
+      break;
     }
   }
   if (bodyText === null) {
