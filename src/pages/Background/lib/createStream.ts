@@ -87,6 +87,7 @@ const createStream = async ({
       ).flowRate === "0"
       // no other existing stream
     ) {
+      console.log(to);
       const newStreamOperation = sf.cfaV1.createFlow({
         sender: from,
         flowRate: BigNumber.from(rateAmount).toString(),

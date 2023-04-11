@@ -67,8 +67,8 @@ const Welcome = () => {
               Cobweb
             </h1>
             <p>
-              An Ethereum-based tool making learning and earning on the
-              blockchain easier for teens.
+              A Web3-based tool empowering teens to learn and earn on the
+              blockchain.
             </p>
             <p style={{ fontSize: 16 }} className="text-muted mb-1">
               Switch connected accounts in Metamask, or proceed:

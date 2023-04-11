@@ -213,3 +213,52 @@ code {
 .fp-container .card {
   max-height: max-content;
 }
+
+@media only screen and (max-width: 768px) {
+  nav.card {
+    flex-direction: column;
+    width: 90%;
+    background-color: #4fa2ee;
+  }
+  #nav-links {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 1rem;
+    margin: 0;
+  }
+  .card {
+    backdrop-filter: none;
+  }
+  .hero,
+  .container {
+    max-width: 100%;
+    padding: 5rem 1rem;
+  }
+  .mobile-top {
+    margin-top: 0.5rem;
+  }
+  .mobile-top-2 {
+    margin-top: 1rem;
+  }
+  .row {
+    flex-direction: column;
+  }
+  #getStarted .row.pt-4 {
+    padding: 16px 3rem 16px !important;
+  }
+  .text-end {
+    text-align: center !important;
+  }
+  .float-end {
+    float: none !important;
+    margin: 0 auto;
+    display: block;
+    width: fit-content;
+  }
+  #how .row {
+    row-gap: 1rem;
+  }
+  .col {
+    padding: 0 2rem;
+  }
+}
