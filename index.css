@@ -261,4 +261,12 @@ code {
   .col {
     padding: 0 2rem;
   }
+  .fp-container {
+    max-width: 100%;
+    height: unset;
+    padding-bottom: 2rem;
+  }
+  .fp-container.mobile-full {
+    height: 100vh;
+  }
 }
