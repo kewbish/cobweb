@@ -9,15 +9,15 @@ const InfoPopover = ({
   text,
   moreSquare = true,
   darker,
+  id = "info-popover",
 }: {
   text: string;
   moreSquare?: boolean;
   darker?: boolean;
+  id?: string;
 }) => {
   useEffect(() => {
-    const popover = new bootstrap.Popover(
-      document.getElementById("info-popover")
-    );
+    const popover = new bootstrap.Popover(document.getElementById(id));
     return () => {
       try {
         popover.dispose();
@@ -30,7 +30,7 @@ const InfoPopover = ({
       <img
         src={IconSvg}
         alt="Information icon"
-        id="info-popover"
+        id={id}
         data-bs-toggle="popover"
         data-bs-trigger="hover focus"
         data-bs-placement="bottom"

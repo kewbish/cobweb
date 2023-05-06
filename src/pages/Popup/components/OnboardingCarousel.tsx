@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useChromeStorageLocal } from "use-chrome-storage";
 import { toast } from "../../shared/toast";
-import InfoPopover from "../components/InfoPopover";
 // @ts-expect-error
 import bootstrap from "bootstrap/dist/js/bootstrap.bundle";
+import InfoPopover from "../components/InfoPopover";
 
 const Onboarding = () => {
   const [hasJoined, setHasJoined] = useState(false);
@@ -209,7 +209,7 @@ const Onboarding = () => {
               .
             </p>
             <p style={{ fontSize: 16 }}>
-              To get started, you'll need to have some Ether in your wallet, and
+              To get started, you'll need to have some ETH in your wallet, and
               upgrade it by clicking 'Manage balances'. Learn more{" "}
               <a
                 href="https://github.com/kewbish/cobweb/wiki/Balances-&-Balances-Pages"
@@ -228,15 +228,19 @@ const Onboarding = () => {
             style={{ height: 180, marginBottom: "0.75rem" }}
           >
             <p style={{ fontSize: 16 }} className="mb-1 d-inline">
-              To help you get started, we're offering a limited-time 0.003 ETH
-              (~$5) top-up to your account! Verify your account to request the
-              ETH tokens and get started.
+              We're excited for you to begin your blockchain journey with
+              Cobweb!
+              <br />
+              <br />
+              Verify your account to get started.
             </p>
             <InfoPopover
               text={
-                "Please note verification is performed manually. We reserve the right to not offer ETH but will always register you into the community."
+                "Please note verification is performed manually. We reserve the right to not register you into the Cobweb community."
               }
               moreSquare={true}
+              darker={true}
+              id={"verification-popover"}
             />
             <br />
             <div className="d-flex align-items-center">
@@ -246,9 +250,7 @@ const Onboarding = () => {
                 disabled={hasJoined}
                 onClick={joinCobweb}
               >
-                {hasJoined
-                  ? "Thanks, and welcome!"
-                  : "Request verification + ETHx"}
+                {hasJoined ? "Thanks, and welcome!" : "Request verification"}
               </button>
             </div>
           </div>

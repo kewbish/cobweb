@@ -103,7 +103,7 @@ const CobwebInfo = () => {
                 onClick={requestVerification}
                 disabled={reactRequested}
               >
-                {!reactRequested ? "Request verification + ETH" : "Requested!"}
+                {!reactRequested ? "Request verification" : "Requested!"}
               </button>
             </div>
           ) : null}
