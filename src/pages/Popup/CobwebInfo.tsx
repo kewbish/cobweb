@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import CobwebPage from "./components/CobwebPage";
 import ToastHandler from "./components/ToastHandler";
-import { FETCH_SIGNATURE } from "../shared/events";
+import { FETCH_SIGNATURE, RESET_TESTCHAINMODE } from "../shared/events";
 import { useChromeStorageLocal } from "use-chrome-storage";
 import { toast } from "../shared/toast";
+import "./info-accordion.css";
 
 const CobwebInfo = () => {
   const [address, , ,]: [string, any, any, any] = useChromeStorageLocal(
@@ -18,6 +19,8 @@ const CobwebInfo = () => {
   const [requested, setRequested, ,]: [any, any, any, any] =
     useChromeStorageLocal("extend-chrome/storage__local--requested", null);
   const [reactRequested, setReactRequested] = useState<boolean>(false);
+  const [testChainMode, setTestChainMode, ,]: [any, any, any, any] =
+    useChromeStorageLocal("extend-chrome/storage__local--testChainMode", false);
 
   useEffect(() => {
     const getResponse = async () => {
@@ -29,6 +32,18 @@ const CobwebInfo = () => {
 
     getResponse();
   }, [signatureLocal]);
+
+  useEffect(() => {
+    const getResponse = async () => {
+      if (testChainMode) {
+        chrome.runtime.sendMessage({
+          message: RESET_TESTCHAINMODE,
+        });
+      }
+    };
+
+    getResponse();
+  }, [testChainMode]);
 
   const requestVerification = async () => {
     if (!address) {
@@ -94,6 +109,66 @@ const CobwebInfo = () => {
             <label htmlFor="cobweb-signature" className="mt-2">
               Copy this to the contents of any content you want to monetize.
             </label>
+          </div>
+          <div className="mt-1">
+            <div className="accordion" id="accordionExample">
+              <div className="accordion-item">
+                <h2 className="accordion-header" id="headingOne">
+                  <button
+                    className="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapseOne"
+                    aria-expanded="true"
+                    aria-controls="collapseOne"
+                  >
+                    Testchain Mode
+                  </button>
+                </h2>
+                <div
+                  id="collapseOne"
+                  className={"accordion-collapse collapse"}
+                  aria-labelledby="headingOne"
+                  data-bs-parent="#accordionExample"
+                >
+                  <div className="accordion-body">
+                    <div
+                      className="form-check form-switch"
+                      style={{ height: "7.4rem" }}
+                    >
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        role="switch"
+                        id="flexSwitchCheckDefault"
+                        checked={testChainMode}
+                        onChange={(e) => setTestChainMode(e.target.value)}
+                      />
+                      <label
+                        className="form-check-label"
+                        htmlFor="flexSwitchCheckDefault"
+                        style={{
+                          textAlign: "left",
+                          float: "left",
+                          display: "inline-block",
+                        }}
+                      >
+                        Enable{" "}
+                        <a href="https://en.wikipedia.org/wiki/Testnet">
+                          testchain
+                        </a>{" "}
+                        mode. Change your MetaMask chain to the Goerli testnet
+                        and restart the extension on{" "}
+                        <pre style={{ display: "inline" }}>
+                          chrome://extensions
+                        </pre>{" "}
+                        for this to take effect.
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           {requested !== null && (!requested || reactRequested) ? (
             <div className="mt-1">

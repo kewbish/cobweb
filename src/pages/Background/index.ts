@@ -24,6 +24,7 @@ import {
   NEW_TOAST,
   FETCH_SIGNATURE,
   CHECK_METAMASK,
+  RESET_TESTCHAINMODE,
 } from "../shared/events";
 import TOKEN_MAP, { PROD_TOKEN_MAP } from "../shared/tokens";
 import { PayRates } from "../shared/types";
@@ -120,7 +121,7 @@ if (!addressTry || addressTry === "NO_ADDRESS") {
 let infuraProvider: InfuraProvider | null = null;
 try {
   infuraProvider = new ethers.providers.InfuraProvider(
-    isDev() ? "goerli" : "homestead",
+    (await isDev()) ? "goerli" : "homestead",
     {
       projectId: INFURA_PROJECT_ID,
       projectSecret: INFURA_PROJECT_SECRET,
@@ -130,7 +131,7 @@ try {
 let sf: Framework | null = null;
 try {
   sf = await Framework.create({
-    chainId: isDev() ? 5 : 1,
+    chainId: (await isDev()) ? 5 : 1,
     provider: infuraProvider,
   });
 } catch (e) {
@@ -141,7 +142,7 @@ let sfToken: SuperToken | null = null;
 try {
   if (sf) {
     sfToken = await sf.loadSuperToken(
-      isDev() ? TOKEN_MAP.ETH.xAddress : PROD_TOKEN_MAP.ETH.xAddress
+      (await isDev()) ? TOKEN_MAP.ETH.xAddress : PROD_TOKEN_MAP.ETH.xAddress
     );
   }
 } catch (e) {
@@ -388,6 +389,20 @@ const handleMessaging = async (
             metamaskProvider.chainId === null &&
             metamaskProvider.selectedAddress === null,
         }); // optimistically reset
+      }
+      sendResponse();
+      return;
+    case RESET_TESTCHAINMODE:
+      if (await isDev()) {
+        infuraProvider = new ethers.providers.InfuraProvider("goerli", {
+          projectId: INFURA_PROJECT_ID,
+          projectSecret: INFURA_PROJECT_SECRET,
+        });
+        sf = await Framework.create({
+          chainId: 5,
+          provider: infuraProvider,
+        });
+        sfToken = await sf.loadSuperToken(TOKEN_MAP.ETH.xAddress);
       }
       sendResponse();
       return;
