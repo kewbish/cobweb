@@ -11,6 +11,7 @@ import {
   startMonetization,
   stopMonetization,
 } from "../../shared/monetization";
+import { setBadge } from "./updateExtBadge";
 
 const createStream = async ({
   from,
@@ -192,6 +193,7 @@ export const updateStream = async ({
     func: (to, uuid) => startMonetization,
     world: "MAIN",
   });
+  await setBadge(tabId);
   return updateStream;
 };
 

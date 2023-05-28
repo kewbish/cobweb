@@ -2,6 +2,7 @@ import { PayRates, Stream } from "../../shared/types";
 import { storage } from "@extend-chrome/storage";
 import { Framework, SuperToken } from "@superfluid-finance/sdk-core";
 import { Signer } from "ethers";
+import { unsetBadge } from "./updateExtBadge";
 
 const deleteStreamByTabId = async ({
   tabId,
@@ -57,6 +58,8 @@ const deleteStreamByTabId = async ({
   });
 
   cancelStream(stream.recipient);
+
+  await unsetBadge(tabId);
 };
 
 export default deleteStreamByTabId;

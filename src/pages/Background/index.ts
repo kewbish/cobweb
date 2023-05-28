@@ -42,6 +42,7 @@ import generateSignature from "./lib/generateSignature";
 import verifySignature from "../shared/verifySignature";
 import cleanUpStreams from "./lib/cleanUpStreams";
 import { isDev } from "./lib/isDev";
+import updateExtBadge from "./lib/updateExtBadge";
 
 chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason === chrome.runtime.OnInstalledReason.INSTALL) {
@@ -148,6 +149,8 @@ try {
 } catch (e) {
   throw e;
 }
+
+updateExtBadge();
 
 const montagFound = async ({
   request,
@@ -472,6 +475,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
         sf,
         mmSigner: mmProvider.getSigner(),
       });
+      updateExtBadge();
     } else if (
       name === "metamaskRefresh" &&
       metamaskProvider?.chainId === null
