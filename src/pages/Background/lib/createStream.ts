@@ -76,19 +76,23 @@ const createStream = async ({
 
   let newStream = null;
 
+  let flowRate: string = "-";
+  try {
+    flowRate = (
+      await sf.cfaV1.getFlow({
+        sender: from,
+        receiver: to,
+        providerOrSigner: mmSigner,
+        superToken: sfToken.address,
+      })
+    ).flowRate;
+  } catch {}
+
   try {
     if (
-      (
-        await sf.cfaV1.getFlow({
-          sender: from,
-          receiver: to,
-          providerOrSigner: mmSigner,
-          superToken: sfToken.address,
-        })
-      ).flowRate === "0"
+      flowRate === "0"
       // no other existing stream
     ) {
-      console.log(to);
       const newStreamOperation = sf.cfaV1.createFlow({
         sender: from,
         flowRate: BigNumber.from(rateAmount).toString(),
