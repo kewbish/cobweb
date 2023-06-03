@@ -47,7 +47,7 @@ const Report = () => {
     <>
       <CobwebPage>
         <>
-          <h2 className="mb-0">Report User</h2>
+          <h1 className="h2 mb-0">Report User</h1>
           <hr className="my-1" />
           <p style={{ fontSize: 16 }} className="mb-0">
             Use this page to report spam, inappropriate Cobweb content, or other

@@ -43,7 +43,7 @@ const DowngradingTokens = () => {
     <>
       <CobwebPage>
         <>
-          <h2 className="mb-0">Downgrading Tokens</h2>
+          <h1 className="h2 mb-0">Downgrading Tokens</h1>
           <hr className="my-1" />
           <div className="d-flex flex-column align-items-center gap-1">
             <p style={{ fontSize: 16 }}>

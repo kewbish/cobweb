@@ -226,18 +226,24 @@ const Popup = () => {
       ) : null}
       <div className="container">
         <div className="d-flex justify-content-between align-items-start">
-          <h1 className="display" style={{ fontSize: 40, fontWeight: 200 }}>
+          <span
+            className="h1 display"
+            style={{
+              fontSize: 40,
+              fontWeight: 200,
+            }}
+          >
             Cobweb
-          </h1>
+          </span>
           <BalanceDisplay />
         </div>
         <BackgroundBox>
           <div>
             {currentStream ? (
               <>
-                <h2 style={{ fontWeight: 400, marginBottom: 0 }}>
+                <h1 className="h2" style={{ fontWeight: 400, marginBottom: 0 }}>
                   Currently Streaming
-                </h2>
+                </h1>
                 <hr className="my-1" />
                 <p
                   className="display"
@@ -329,9 +335,9 @@ const Popup = () => {
               </>
             ) : (
               <>
-                <h2 style={{ fontWeight: 400, marginBottom: 0 }}>
+                <h1 className="h2" style={{ fontWeight: 400, marginBottom: 0 }}>
                   Not Streaming
-                </h2>
+                </h1>
                 <p
                   className="mb-1 d-inline"
                   style={{ fontSize: 16, color: "#c6dcef" }}

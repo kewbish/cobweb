@@ -42,7 +42,7 @@ const ListStreamsOut = () => {
     <>
       <CobwebPage>
         <>
-          <h2 className="mb-0">Current Streams</h2>
+          <h1 className="h2 mb-0">Current Streams</h1>
           <hr className="my-1" />
           <div
             className="overflow-auto"

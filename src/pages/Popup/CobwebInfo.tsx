@@ -76,7 +76,7 @@ const CobwebInfo = () => {
     <>
       <CobwebPage>
         <>
-          <h2 className="mb-0">Cobweb Info</h2>
+          <h1 className="h2 mb-0">Cobweb Info</h1>
           <hr className="my-1" />
           <div className="input-group mt-2">
             <input
@@ -113,7 +113,7 @@ const CobwebInfo = () => {
           <div className="mt-1">
             <div className="accordion" id="accordionExample">
               <div className="accordion-item">
-                <h2 className="accordion-header" id="headingOne">
+                <span className="h2 accordion-header d-block" id="headingOne">
                   <button
                     className="accordion-button collapsed"
                     type="button"
@@ -125,7 +125,7 @@ const CobwebInfo = () => {
                   >
                     Testchain Mode
                   </button>
-                </h2>
+                </span>
                 <div
                   id="collapseOne"
                   className={"accordion-collapse collapse"}

@@ -106,7 +106,7 @@ const ListSettings = () => {
     <>
       <CobwebPage>
         <>
-          <h2 className="mb-0">Settings List</h2>
+          <h1 className="h2 mb-0">Settings List</h1>
           <hr className="my-1" />
           <div className="container overflow-auto" style={{ maxHeight: 300 }}>
             <div className="accordion mb-2" id="settingsAccordion" role="list">
@@ -186,7 +186,7 @@ const ListSettings = () => {
                 <p className="blue">No settings.</p>
               )}
               <div className="accordion-item">
-                <h2 className="accordion-header">
+                <span className="h2 accordion-header d-block">
                   <button
                     className="btn glassy-cw-btn"
                     type="button"
@@ -203,7 +203,7 @@ const ListSettings = () => {
                   >
                     Add a new user setting
                   </button>
-                </h2>
+                </span>
                 <div
                   id="newRate"
                   className="accordion-collapse collapse"

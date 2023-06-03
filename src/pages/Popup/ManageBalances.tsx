@@ -61,14 +61,15 @@ const ManageBalances = () => {
     <>
       <CobwebPage>
         <>
-          <h2 className="mb-0">Balance</h2>
+          <h1 className="h2 mb-0">Balance</h1>
           <hr className="my-1" />
-          <h1
+          <span
             className="display"
             style={{
               fontSize: "8vw",
               fontWeight: 200,
               marginBottom: 0,
+              display: "block",
             }}
             id="balance"
             data-bs-toggle="popover"
@@ -82,9 +83,8 @@ const ManageBalances = () => {
             }
             tabIndex={0}
           >
-            {(+ethers.utils.formatUnits(balance)).toFixed(4)}{" "}
-            {/*sfToken.name*/ "ETHx"}
-          </h1>
+            {(+ethers.utils.formatUnits(balance)).toFixed(4)} {"ETHx"}
+          </span>
           <p className="d-inline">available to spend.</p>
           <InfoPopover
             text="

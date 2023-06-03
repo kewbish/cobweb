@@ -42,7 +42,7 @@ const DefaultSettings = () => {
       {" "}
       <CobwebPage>
         <>
-          <h2 className="mb-0">Default Settings</h2>
+          <h1 className="h2 mb-0">Default Settings</h1>
           <hr className="my-1 mb-2" />
           <TokenInput
             value={

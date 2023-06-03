@@ -7,7 +7,7 @@ const Help = () => {
     <>
       <CobwebPage>
         <>
-          <h2 className="mb-0">Help</h2>
+          <h1 className="h2 mb-0">Help</h1>
           <hr className="my-1" />
           <p style={{ fontSize: 16 }} className="mb-1">
             More complete help docs are available{" "}

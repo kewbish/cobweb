@@ -26,9 +26,9 @@ const DropdownModal = ({
       >
         <div className="modal-body">
           <div className="d-flex flex-row justify-content-between align-items-top">
-            <h2 className="modal-title" id="cobwebModalLabel">
+            <span className="h2 modal-title d-block" id="cobwebModalLabel">
               {title}
-            </h2>
+            </span>
             <button
               type="button"
               className="btn py-0 pe-0"

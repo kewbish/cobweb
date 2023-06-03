@@ -19,9 +19,9 @@ const CobwebPage = ({ children }: { children: React.ReactNode }) => {
             onClick={() => navigate(-1)}
             aria-label="Navigate to previous page"
           >
-            <h1 className="display" style={{ fontSize: 40, fontWeight: 600 }}>
+            <span className="display" style={{ fontSize: 40, fontWeight: 600 }}>
               &lt;
-            </h1>
+            </span>
           </button>
           <BalanceDisplay />
         </div>
