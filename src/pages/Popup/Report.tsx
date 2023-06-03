@@ -62,7 +62,6 @@ const Report = () => {
               type="text"
               className="form-control"
               placeholder="Cobweb Tag to report"
-              aria-label="Cobweb Tag to report"
               style={{
                 padding: "0.5rem 1rem",
               }}
@@ -88,7 +87,6 @@ const Report = () => {
               type="text"
               className="form-control"
               placeholder="URL to report"
-              aria-label="URL to report"
               style={{
                 padding: "0.5rem 1rem",
               }}
@@ -108,6 +106,7 @@ const Report = () => {
                 reportingTag === oldReportingTag ||
                 reportingUrl === oldReportingUrl
               }
+              aria-label="Report Cobweb user"
             >
               {reported ? "Reported!" : "Report"}
             </button>

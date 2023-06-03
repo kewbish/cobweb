@@ -121,6 +121,7 @@ const CobwebInfo = () => {
                     data-bs-target="#collapseOne"
                     aria-expanded="true"
                     aria-controls="collapseOne"
+                    aria-label="Show testchain mode information"
                   >
                     Testchain Mode
                   </button>

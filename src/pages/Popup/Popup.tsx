@@ -303,6 +303,7 @@ const Popup = () => {
                   data-bs-target="#collapse"
                   aria-expanded="false"
                   aria-controls="collapse"
+                  aria-label="Show more actions"
                 >
                   More actions
                 </button>
@@ -408,6 +409,7 @@ const Popup = () => {
                 className="btn glassy-cw-btn me-1"
                 style={{ fontSize: 16, padding: "0.25rem 0.4rem", height: 27 }}
                 title="Get help"
+                aria-label="Show Cobweb FAQ"
               >
                 <i className="bi bi-question-lg"></i>
               </button>
@@ -418,6 +420,7 @@ const Popup = () => {
                 className="btn glassy-cw-btn"
                 style={{ fontSize: 16, padding: "0.25rem 0.4rem", height: 27 }}
                 title="Report user"
+                aria-label="Report user"
               >
                 <i className="bi bi-flag-fill"></i>
               </button>
@@ -457,6 +460,7 @@ const Popup = () => {
                 }
               }}
               data-bs-dismiss="modal"
+              aria-label="Block site once"
             >
               Once
             </button>
@@ -472,6 +476,7 @@ const Popup = () => {
                 }
               }}
               data-bs-dismiss="modal"
+              aria-label="Block site forever"
             >
               Forever
             </button>

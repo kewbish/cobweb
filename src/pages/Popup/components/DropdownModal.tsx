@@ -6,13 +6,11 @@ const DropdownModal = ({
   title,
   children,
   force = false,
-  actions,
 }: {
   id: string;
   title: string;
   children: JSX.Element;
   force?: boolean;
-  actions?: JSX.Element;
 }) => (
   <div
     id={id}
@@ -43,20 +41,6 @@ const DropdownModal = ({
           </div>
           {children}
         </div>
-        {actions ? (
-          <div className="modal-footer">
-            <button
-              type="button"
-              className="btn glassy-cw-btn p-1"
-              data-bs-dismiss="modal"
-            >
-              Close
-            </button>
-            <button type="button" className="btn glassy-cw-btn p-1">
-              Save changes
-            </button>
-          </div>
-        ) : null}
       </div>
     </div>
   </div>

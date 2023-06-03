@@ -16,6 +16,7 @@ const Help = () => {
               target="_blank"
               rel="noopener noreferrer"
               className="cobweb-link"
+              aria-label="Cobweb Wiki link"
             >
               here
             </a>

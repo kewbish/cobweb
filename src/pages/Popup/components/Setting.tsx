@@ -71,6 +71,7 @@ const Setting = ({
             onClick={() => deleteSetting(skey)}
             style={{ padding: 10 }}
             title="Delete setting"
+            aria-label="Delete setting"
           >
             <i className="bi bi-trash-fill text-danger"></i>
           </button>
@@ -96,6 +97,7 @@ const Setting = ({
                   setCurrentRateAmt(BigNumber.from(defaultRate.rateAmount));
                 }}
                 style={{ padding: 10 }}
+                aria-label="Unblock Cobweb user"
               >
                 Unblock
               </button>
@@ -124,6 +126,7 @@ const Setting = ({
             type="button"
             className="btn glassy-cw-btn"
             title="Save"
+            aria-label="Save"
             onClick={() => {
               setSetting({
                 oldKey: skey,

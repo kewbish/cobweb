@@ -55,6 +55,7 @@ const DefaultSettings = () => {
             }
             setValue={setDefaultRate}
             disabled={!defaultRate}
+            label="Default amount of ETHx tokens streamed per second"
           />
           <p className="mt-1 d-inline-block">ETHx per second</p>
           <InfoPopover

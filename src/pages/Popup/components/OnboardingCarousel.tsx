@@ -112,6 +112,7 @@ const Onboarding = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="cobweb-link"
+                  aria-label="Ethereum explainer website."
                 >
                   here
                 </a>{" "}
@@ -121,6 +122,7 @@ const Onboarding = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="cobweb-link"
+                  aria-label="Cobweb GitHub page."
                 >
                   here
                 </a>
@@ -160,6 +162,7 @@ const Onboarding = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="cobweb-link"
+                aria-label="Cobweb Wiki on Cobweb Tags and Accounts"
               >
                 here
               </a>

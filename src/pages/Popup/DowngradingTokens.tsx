@@ -87,6 +87,7 @@ const DowngradingTokens = () => {
               disabled={
                 downgrading.gt(balance) || downgrading.eq(constants.Zero)
               }
+              aria-label="Authorize token downgrade transaction"
             >
               Authorize
             </button>

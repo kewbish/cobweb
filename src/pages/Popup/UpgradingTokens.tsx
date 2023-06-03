@@ -92,6 +92,7 @@ const UpgradingTokens = () => {
               disabled={
                 upgrading.lte(constants.Zero) || upgrading.gt(mmBalance)
               }
+              aria-label="Authorize token upgrade transaction"
             >
               Authorize
             </button>

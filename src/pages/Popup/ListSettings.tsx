@@ -143,6 +143,9 @@ const ListSettings = () => {
                             borderRadius: i !== 0 ? "0" : "0.5rem 0.5rem 0 0",
                             width: "100%",
                           }}
+                          aria-label={`${
+                            verifySignature(key) ?? "[invalid Cobweb Tag]"
+                          } setting`}
                         >
                           <p style={{ fontSize: 16 }} className="mb-0">
                             {verifySignature(key) ?? "[invalid Cobweb Tag]"}:{" "}
@@ -215,11 +218,13 @@ const ListSettings = () => {
                         value={newSettingTag}
                         onChange={(e) => setNewSettingTag(e.target.value)}
                         style={{ borderRadius: 16 }}
+                        aria-label="Cobweb Tag"
                       />
                       <div className="d-flex align-space-between justify-center gap-1 mb-1">
                         <TokenInput
                           value={newSettingRateAmt}
                           setValue={setNewSettingRateAmt}
+                          label="Tokens to stream per second"
                         />
                         <button
                           type="button"
@@ -227,6 +232,7 @@ const ListSettings = () => {
                           onClick={addNewSetting}
                           style={{ padding: 10 }}
                           title="Add new setting"
+                          aria-label="Add new setting"
                         >
                           <i className="bi bi-plus"></i>
                         </button>
@@ -238,6 +244,7 @@ const ListSettings = () => {
                             style={{ padding: 10 }}
                             onClick={resetNewSetting}
                             title="Reset setting"
+                            aria-label="Reset setting"
                           >
                             <i className="bi bi-arrow-clockwise"></i>
                           </button>
