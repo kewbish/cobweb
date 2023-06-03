@@ -58,7 +58,11 @@ const DowngradingTokens = () => {
                 moreSquare
               />
             </p>
-            <TokenInput value={downgrading} setValue={setDowngrading} />
+            <TokenInput
+              value={downgrading}
+              setValue={setDowngrading}
+              label="Amount of ETHx to downgrade"
+            />
             <p className="mb-0 text-muted" style={{ fontSize: 14 }}>
               ({ethers.utils.formatEther(balance)} {TOKEN_MAP.ETH.name}{" "}
               available, total remaining would be{" "}

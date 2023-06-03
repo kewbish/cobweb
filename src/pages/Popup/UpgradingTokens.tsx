@@ -74,7 +74,11 @@ const UpgradingTokens = () => {
                 moreSquare
               />
             </p>
-            <TokenInput value={upgrading} setValue={setUpgrading} />
+            <TokenInput
+              value={upgrading}
+              setValue={setUpgrading}
+              label="Amount of ETH to upgrade"
+            />
             <p className="mb-0 text-muted" style={{ fontSize: 14 }}>
               ({ethers.utils.formatEther(mmBalance)} {currency.slice(0, -1)}{" "}
               available, total balance would be{" "}

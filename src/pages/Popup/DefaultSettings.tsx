@@ -92,6 +92,7 @@ const DefaultSettings = () => {
                 id="range"
                 value={timeSpent}
                 onChange={(e) => setTimeSpent(Number(e.target.value))}
+                aria-label="Minutes spent on a monetized site a day"
               />
               <label htmlFor="range" className="form-label">
                 {timeSpent} minutes on a monetized site a day, that's:

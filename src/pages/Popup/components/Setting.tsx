@@ -61,6 +61,7 @@ const Setting = ({
                 });
               }
             }}
+            aria-label="Cobweb Tag for setting to target"
           />
         ) : null}
         {deleteSetting ? (
@@ -115,6 +116,7 @@ const Setting = ({
               }
             }}
             small={true}
+            label="Amount of tokens to stream per second"
           />
         )}
         {!onBlur ? (
@@ -138,10 +140,10 @@ const Setting = ({
       </div>
       {value.payWhen !== PayRates.BLOCKED ? (
         <>
-          <p style={{ fontSize: 14 }} className="mb-0">
+          <label style={{ fontSize: 14 }} className="mb-0" htmlFor="pay-when">
             Enable Cobweb when:{" "}
-          </p>
-          <div className="btn-group" role="group">
+          </label>
+          <div className="btn-group" role="group" id="pay-when">
             <input
               type="radio"
               className="btn-check"

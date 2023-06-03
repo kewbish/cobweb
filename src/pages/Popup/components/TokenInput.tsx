@@ -11,6 +11,7 @@ const TokenInput = ({
   disabled,
   fontSize,
   small = false,
+  label = "",
 }: {
   value: BigNumber;
   setValue: (value: BigNumber) => void;
@@ -18,6 +19,7 @@ const TokenInput = ({
   disabled?: boolean;
   fontSize?: number;
   small?: boolean;
+  label?: string;
 }) => {
   // const [currency, setCurrency] = useState(TOKEN_MAP.fDAI.name);
 
@@ -45,6 +47,7 @@ const TokenInput = ({
               ...(fontSize && { fontSize }),
               textAlign: "center",
             }}
+            aria-label={label}
           />
           {/*<button
             className="glassy-cw-btn dropdown-toggle"
