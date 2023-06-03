@@ -115,6 +115,10 @@ const Onboarding = () => {
                   aria-label="Ethereum explainer website."
                 >
                   here
+                  <span className="screen-reader-text">
+                    {" "}
+                    opens a new window
+                  </span>
                 </a>{" "}
                 and Cobweb's mission{" "}
                 <a
@@ -125,6 +129,10 @@ const Onboarding = () => {
                   aria-label="Cobweb GitHub page."
                 >
                   here
+                  <span className="screen-reader-text">
+                    {" "}
+                    opens a new window
+                  </span>
                 </a>
                 .
               </p>
@@ -165,6 +173,7 @@ const Onboarding = () => {
                 aria-label="Cobweb Wiki on Cobweb Tags and Accounts"
               >
                 here
+                <span className="screen-reader-text"> opens a new window</span>
               </a>
               .
             </p>
@@ -187,8 +196,10 @@ const Onboarding = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="cobweb-link"
+                aria-label="Cobweb Wiki Stream Settings page"
               >
                 here
+                <span className="screen-reader-text"> opens a new window</span>
               </a>
               .
             </p>
@@ -206,8 +217,10 @@ const Onboarding = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="cobweb-link"
+                aria-label="ETHx Wrapped Tokens documentation"
               >
                 ETHx
+                <span className="screen-reader-text"> opens a new window</span>
               </a>
               .
             </p>
@@ -219,8 +232,10 @@ const Onboarding = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="cobweb-link"
+                aria-label="Cobweb Wiki Balances page"
               >
                 here
+                <span className="screen-reader-text"> opens a new window</span>
               </a>
               .
             </p>

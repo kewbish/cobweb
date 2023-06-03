@@ -22,6 +22,7 @@ const MetamaskNotFound = () => {
                 rel="noopener noreferrer"
               >
                 Metamask
+                <span className="screen-reader-text"> opens a new window</span>
               </a>{" "}
               is installed and try again. You may need to log into Metamask's
               extension, or wait a minute for Cobweb to detect Metamask.{" "}
@@ -40,6 +41,7 @@ const MetamaskNotFound = () => {
               className="cobweb-link"
             >
               view source
+              <span className="screen-reader-text"> opens a new window</span>
             </a>{" "}
             |{" "}
             <a
@@ -49,6 +51,7 @@ const MetamaskNotFound = () => {
               className="cobweb-link"
             >
               get help
+              <span className="screen-reader-text"> opens a new window</span>
             </a>
           </p>
         </div>

@@ -344,6 +344,10 @@ const Popup = () => {
                     className="cobweb-link"
                   >
                     Cobweb tag
+                    <span className="screen-reader-text">
+                      {" "}
+                      opens a new window
+                    </span>
                   </a>{" "}
                   on it!
                 </p>
@@ -391,6 +395,7 @@ const Popup = () => {
               className="cobweb-link"
             >
               view source
+              <span className="screen-reader-text"> opens a new window</span>
             </a>{" "}
             |{" "}
             <a
@@ -400,6 +405,7 @@ const Popup = () => {
               className="cobweb-link"
             >
               get help
+              <span className="screen-reader-text"> opens a new window</span>
             </a>
           </p>
           <div>

@@ -62,6 +62,7 @@ const StreamComponent = ({
             className="cobweb-link"
           >
             <span>{stream.userData.split(" ")[0]}</span>
+            <span className="screen-reader-text"> opens a new window</span>
           </a>
         ) : null}{" "}
         {stream.updatedAtTimestamp

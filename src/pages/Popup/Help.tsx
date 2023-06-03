@@ -19,6 +19,7 @@ const Help = () => {
               aria-label="Cobweb Wiki link"
             >
               here
+              <span className="screen-reader-text"> opens a new window</span>
             </a>
             .
           </p>
@@ -82,6 +83,7 @@ const Help = () => {
                 rel="noopener noreferrer"
               >
                 app.superfluid.finance
+                <span className="screen-reader-text"> opens a new window</span>
               </a>
               , log in with Metamask, and close the stream.{" "}
             </p>

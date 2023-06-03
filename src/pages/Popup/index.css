@@ -134,3 +134,13 @@ p {
 label {
   font-size: 16px;
 }
+
+.screen-reader-text {
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  border: 0;
+  word-wrap: normal !important;
+}

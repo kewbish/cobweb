@@ -107,6 +107,7 @@ const Welcome = () => {
               className="cobweb-link"
             >
               view source
+              <span className="screen-reader-text"> opens a new window</span>
             </a>{" "}
             |{" "}
             <a
@@ -116,6 +117,7 @@ const Welcome = () => {
               className="cobweb-link"
             >
               get help
+              <span className="screen-reader-text"> opens a new window</span>
             </a>
           </p>
         </div>
