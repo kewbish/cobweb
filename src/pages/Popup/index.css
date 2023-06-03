@@ -13,6 +13,7 @@ body {
     var(--bs-primary),
     var(--bs-secondary)
   );
+  overflow: hidden;
 }
 
 h1,

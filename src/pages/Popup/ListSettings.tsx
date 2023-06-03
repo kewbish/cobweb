@@ -109,7 +109,7 @@ const ListSettings = () => {
           <h2 className="mb-0">Settings List</h2>
           <hr className="my-1" />
           <div className="container overflow-auto" style={{ maxHeight: 300 }}>
-            <div className="accordion mb-2" id="settingsAccordion">
+            <div className="accordion mb-2" id="settingsAccordion" role="list">
               {Object.keys(rateSettings).length ? (
                 Object.entries(rateSettings).map(
                   ([key, value]: [string, Rate], i: number) => (
@@ -121,6 +121,7 @@ const ListSettings = () => {
                           ? { borderRadius: "0.5rem 0.5rem 0 0" }
                           : undefined
                       }
+                      role="listitem"
                     >
                       <div
                         className="accordion-header"

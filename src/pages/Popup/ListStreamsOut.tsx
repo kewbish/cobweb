@@ -47,13 +47,16 @@ const ListStreamsOut = () => {
           <div
             className="overflow-auto"
             style={{ maxHeight: 200, marginBottom: 5 }}
+            role="list"
           >
             {currentStreams.length ? (
               currentStreams.map((stream: Stream) => (
-                <CurrentStreamComponent
-                  stream={stream}
-                  key={stream.requestId}
-                />
+                <div role="listitem">
+                  <CurrentStreamComponent
+                    stream={stream}
+                    key={stream.requestId}
+                  />
+                </div>
               ))
             ) : (
               <p className="blue mb-1">No streams found.</p>
@@ -61,10 +64,16 @@ const ListStreamsOut = () => {
           </div>
           <h2 className="mb-0">Past Streams</h2>
           <hr className="my-1" />
-          <div className="overflow-auto" style={{ maxHeight: 200 }}>
+          <div className="overflow-auto" style={{ maxHeight: 200 }} role="list">
             {streams.length ? (
               streams.map((stream: GraphQlStream) => (
-                <StreamComponent stream={stream} key={stream.id} isIn={true} />
+                <div role="listitem">
+                  <StreamComponent
+                    stream={stream}
+                    key={stream.id}
+                    isIn={true}
+                  />
+                </div>
               ))
             ) : (
               <p className="blue mb-1">No streams found.</p>
