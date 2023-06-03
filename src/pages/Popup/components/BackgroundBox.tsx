@@ -9,9 +9,9 @@ const BackgroundBox = ({
 }) => {
   return (
     <div className="card" style={{ ...style, borderRadius: "32px" }}>
-      <div className="card-body" style={{ textAlign: "center" }}>
+      <main className="card-body" style={{ textAlign: "center" }}>
         {children}
-      </div>
+      </main>
     </div>
   );
 };

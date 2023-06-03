@@ -381,7 +381,7 @@ const Popup = () => {
             )}
           </div>
         </BackgroundBox>
-        <div className="d-flex flex-row justify-content-between align-items-end">
+        <footer className="d-flex flex-row justify-content-between align-items-end">
           <p className="mt-2 mb-0">
             <a
               href="https://github.com/kewbish/cobweb"
@@ -423,7 +423,7 @@ const Popup = () => {
               </button>
             </Link>
           </div>
-        </div>
+        </footer>
       </div>
       <DropdownModal id="editingStream" title="Edit stream">
         <>
