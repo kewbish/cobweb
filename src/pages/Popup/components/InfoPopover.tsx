@@ -26,7 +26,7 @@ const InfoPopover = ({
   }, []);
 
   return (
-    <div style={{ display: "inline-block", paddingLeft: "4px" }}>
+    <div style={{ display: "inline-block", paddingLeft: "4px" }} role="tooltip">
       <img
         src={IconSvg}
         alt="Information icon"
@@ -42,6 +42,7 @@ const InfoPopover = ({
           (darker ? "popover-darker" : "") +
           '" role="tooltip"><div class="popover-arrow popover-arrow-override"></div><p class="popover-header"></p><div class="popover-body"></div></div>'
         }
+        tabIndex={0}
       />
     </div>
   );

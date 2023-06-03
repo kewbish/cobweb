@@ -87,7 +87,7 @@ const Popup = () => {
   );
   const [rate, setRate] = useState(defaultRate);
 
-  const [currentStream, setCurrentStream] = useState<Stream | null>(null);
+  const [currentStream, setCurrentStream] = useState<Stream | null>();
 
   useEffect(() => {
     try {
@@ -257,6 +257,7 @@ const Popup = () => {
                   data-bs-template={
                     '<div class="popover" role="tooltip"><div class="popover-arrow popover-arrow-override"></div><p class="popover-header"></p><div class="popover-body"></div></div>'
                   }
+                  tabIndex={0}
                 >
                   ~
                   {ethers.utils.formatUnits(
@@ -307,17 +308,17 @@ const Popup = () => {
                 </button>
                 <div id="collapse" className="collapse" data-bs-toggle="false">
                   <div className="d-flex justify-content-evenly gap-2 mt-2">
-                    <Link to="balance">
+                    <Link to="balance" tabIndex={-1}>
                       <button className="btn p-1 glassy-cw-btn">
                         Manage balances
                       </button>
                     </Link>
-                    <Link to="streams/out">
+                    <Link to="streams/out" tabIndex={-1}>
                       <button type="button" className="btn p-1 glassy-cw-btn">
                         See past streams
                       </button>
                     </Link>
-                    <Link to="settings/default">
+                    <Link to="settings/default" tabIndex={-1}>
                       <button type="button" className="btn p-1 glassy-cw-btn">
                         Edit stream settings
                       </button>
@@ -360,17 +361,17 @@ const Popup = () => {
                 ) : null}
                 <hr className="my-1 mb-2" />
                 <div className="d-flex justify-content-evenly gap-2">
-                  <Link to="balance">
+                  <Link to="balance" tabIndex={-1}>
                     <button className="btn p-1 glassy-cw-btn">
                       Manage balances
                     </button>
                   </Link>
-                  <Link to="streams/out">
+                  <Link to="streams/out" tabIndex={-1}>
                     <button type="button" className="btn p-1 glassy-cw-btn">
                       See past streams
                     </button>
                   </Link>
-                  <Link to="settings/default">
+                  <Link to="settings/default" tabIndex={-1}>
                     <button type="button" className="btn p-1 glassy-cw-btn">
                       Edit stream settings
                     </button>
@@ -401,7 +402,7 @@ const Popup = () => {
             </a>
           </p>
           <div>
-            <Link to="/help">
+            <Link to="/help" tabIndex={-1}>
               <button
                 type="button"
                 className="btn glassy-cw-btn me-1"
@@ -411,7 +412,7 @@ const Popup = () => {
                 <i className="bi bi-question-lg"></i>
               </button>
             </Link>
-            <Link to="/report">
+            <Link to="/report" tabIndex={-1}>
               <button
                 type="button"
                 className="btn glassy-cw-btn"

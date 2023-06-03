@@ -10,13 +10,18 @@ const CobwebPage = ({ children }: { children: React.ReactNode }) => {
     <div className="mx-2 my-3 p-0">
       <div className="container">
         <div className="d-flex justify-content-between align-items-start">
-          <h1
-            className="display"
-            style={{ fontSize: 40, fontWeight: 600, cursor: "pointer" }}
+          <button
+            style={{
+              backgroundColor: "transparent",
+              color: "inherit",
+              border: "none",
+            }}
             onClick={() => navigate(-1)}
           >
-            &lt;
-          </h1>
+            <h1 className="display" style={{ fontSize: 40, fontWeight: 600 }}>
+              &lt;
+            </h1>
+          </button>
           <BalanceDisplay />
         </div>
         <BackgroundBox>

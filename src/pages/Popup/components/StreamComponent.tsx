@@ -39,6 +39,7 @@ const StreamComponent = ({
         data-bs-template={
           '<div class="popover" role="tooltip"><div class="popover-arrow popover-arrow-override"></div><p class="popover-header"></p><div class="popover-body"></div></div>'
         }
+        tabIndex={0}
       >
         {" "}
         {(+ethers.utils.formatUnits(stream.streamedUntilUpdatedAt)).toFixed(

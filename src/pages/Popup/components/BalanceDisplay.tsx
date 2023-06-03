@@ -71,6 +71,7 @@ const BalanceDisplay = () => {
       data-bs-template={
         '<div class="popover" role="tooltip"><div class="popover-arrow popover-arrow-override"></div><p class="popover-header"></p><div class="popover-body"></div></div>'
       }
+      tabIndex={0}
     >
       <FadedPill>
         <div className="d-flex justify-content-end align-items-center h-auto">

@@ -89,10 +89,10 @@ const Setting = ({
                   setSetting({
                     oldKey: skey,
                     newKey: skey,
-                    rateAmt: defaultRate.rateAmount,
+                    rateAmt: BigNumber.from(defaultRate.rateAmount),
                     payWhen: PayRates.ANY,
                   });
-                  setCurrentRateAmt(defaultRate.rateAmount);
+                  setCurrentRateAmt(BigNumber.from(defaultRate.rateAmount));
                 }}
                 style={{ padding: 10 }}
               >
@@ -139,7 +139,7 @@ const Setting = ({
       {value.payWhen !== PayRates.BLOCKED ? (
         <>
           <p style={{ fontSize: 14 }} className="mb-0">
-            Enable CobWeb when:{" "}
+            Enable Cobweb when:{" "}
           </p>
           <div className="btn-group" role="group">
             <input

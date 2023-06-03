@@ -80,6 +80,7 @@ const ManageBalances = () => {
             data-bs-title={
               ethers.utils.formatUnits(balance) + " " + TOKEN_MAP.ETH.name
             }
+            tabIndex={0}
           >
             {(+ethers.utils.formatUnits(balance)).toFixed(4)}{" "}
             {/*sfToken.name*/ "ETHx"}

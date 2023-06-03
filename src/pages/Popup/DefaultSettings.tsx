@@ -64,7 +64,7 @@ const DefaultSettings = () => {
             darker
           />
           <div className="d-flex flex-row gap-1">
-            <Link to="/settings/list">
+            <Link to="/settings/list" tabIndex={-1}>
               <button type="button" className="btn p-1 glassy-cw-btn">
                 Edit individual settings
               </button>
@@ -115,6 +115,7 @@ const DefaultSettings = () => {
                 data-bs-template={
                   '<div class="popover" role="tooltip"><div class="popover-arrow popover-arrow-override"></div><p class="popover-header"></p><div class="popover-body"></div></div>'
                 }
+                tabIndex={0}
               >
                 {(+ethers.utils.formatUnits(
                   Boolean(defaultRate)
@@ -144,6 +145,7 @@ const DefaultSettings = () => {
                 data-bs-template={
                   '<div class="popover" role="tooltip"><div class="popover-arrow popover-arrow-override"></div><p class="popover-header"></p><div class="popover-body"></div></div>'
                 }
+                tabIndex={0}
               >
                 {(+ethers.utils.formatUnits(
                   Boolean(defaultRate)
@@ -173,6 +175,7 @@ const DefaultSettings = () => {
                 data-bs-template={
                   '<div class="popover" role="tooltip"><div class="popover-arrow popover-arrow-override"></div><p class="popover-header"></p><div class="popover-body"></div></div>'
                 }
+                tabIndex={0}
               >
                 {(+ethers.utils.formatUnits(
                   Boolean(defaultRate)
@@ -202,6 +205,7 @@ const DefaultSettings = () => {
                 data-bs-template={
                   '<div class="popover" role="tooltip"><div class="popover-arrow popover-arrow-override"></div><p class="popover-header"></p><div class="popover-body"></div></div>'
                 }
+                tabIndex={0}
               >
                 {(+ethers.utils.formatUnits(
                   Boolean(defaultRate)
