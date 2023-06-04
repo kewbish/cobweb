@@ -45,12 +45,6 @@ const fetchAndUpdateBalance = async ({
     const balance = await infuraProvider.getBalance(address);
     storage.local.set({ mmBalance: BigNumber.from(balance) });
 
-    const mmSigner = mmProvider.getSigner();
-
-    if (!cwInitialized || !mmSigner) {
-      return;
-    }
-
     ({ availableBalance, deposit } = await sfToken.realtimeBalanceOf({
       account: address,
       providerOrSigner: mmProvider,
@@ -76,7 +70,11 @@ const fetchAndUpdateBalance = async ({
   if (balanceRes.eq(constants.Zero)) {
     return;
   }
-  if (balanceRes.gt(constants.Zero) && balanceRes.lte(deposit)) {
+  if (
+    balanceRes.gt(constants.Zero) &&
+    balanceRes.lte(deposit) &&
+    mmProvider.getSigner()
+  ) {
     // critical balance
     if (sf && mmProvider) {
       cleanUpStreams({

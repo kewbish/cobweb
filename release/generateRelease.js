@@ -3,6 +3,12 @@ const { exit } = require("process");
 const semver = require("semver");
 const shell = require("shelljs");
 const cheerio = require("cheerio");
+const process = require("node:process");
+
+if (process.cwd() !== "/home/kewbish/Downloads/dev/cobweb-rise") {
+  console.log("cd to project root first.");
+  exit(1);
+}
 
 // increment version numbers in package.json and manifest.json
 const rawdata = fs.readFileSync("package.json");
@@ -36,7 +42,7 @@ if (code !== 0) {
   console.error("Packing extension failed.");
   exit(1);
 }
-shell.mv("build.crx", "cobweb.crx");*/
+shell.mv("build.crx", "cobweb.crx");
 
 // zip extension to Downloads folder
 ({ code } = shell.exec("zip /home/kewbish/Downloads/build.zip -r build"));
@@ -57,7 +63,7 @@ const checksum = stdout.trim();
 // write to landing page HTML
 const rawhtml = fs.readFileSync("landing/index.html");
 const $ = cheerio.load(rawhtml);
-$('code[style="word-break:break-all;"]').text(checksum);
+$('code[style="word-break: break-all"]').text(checksum);
 fs.writeFileSync("landing/index.html", $.html());
 
 // update release notes
@@ -69,14 +75,4 @@ rawMD = rawMD.replace(
 );
 fs.writeFileSync("release/RELEASE_NOTES.md", rawMD);
 
-({ stdout } = shell.exec(`git diff HEAD`));
-if (stdout) {
-    console.log("Repository dirty, skipping tagging")
-    exit(0)
-}
-
-({ code, stdout } = shell.exec(`git add . && git commit --amend --no-edit && git tag v${newVersion}`));
-if (code !== 0) {
-  console.error("Packing extension failed.");
-  exit(1);
-}
+console.log(`Remember to tag releases: git tag v${newVersion}`);
