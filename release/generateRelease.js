@@ -68,3 +68,15 @@ rawMD = rawMD.replace(
   `https://github.com/kewbish/cobweb/compare/v${lastVersion}...v${newVersion}`
 );
 fs.writeFileSync("release/RELEASE_NOTES.md", rawMD);
+
+({ stdout } = shell.exec(`git diff HEAD`));
+if (stdout) {
+    console.log("Repository dirty, skipping tagging")
+    exit(0)
+}
+
+({ code, stdout } = shell.exec(`git add . && git commit --amend --no-edit && git tag v${newVersion}`));
+if (code !== 0) {
+  console.error("Packing extension failed.");
+  exit(1);
+}
