@@ -1,16 +1,17 @@
 # Cobweb 🕸️
-A Web3-based tool enabling one-click content monetization for creative teens. Learn and earn on the blockchain!   
+
+A Web3-based tool enabling one-click content monetization for creative teens. Learn and earn on the blockchain!  
 Made in Typescript, October 2022 to present.  
 Released under the [MIT License](./LICENSE).  
-Created by [Kewbish](https://github.com/kewbish).     
+Created by [Kewbish](https://github.com/kewbish).
 
 ![Cobweb Logo](./landing/cobweb.png)
 
-Download the Chrome extension [here](https://chrome.google.com/webstore/detail/cobweb/agdomcadfhkpkcjceenogkiglbhgpclg).  
+Download the Chrome extension [here](https://chrome.google.com/webstore/detail/cobweb/agdomcadfhkpkcjceenogkiglbhgpclg).
 
 See [documentation here](https://github.com/kewbish/cobweb/wiki) for an installation guide and troubleshooting tips.
 
---- 
+---
 
 Cobweb is a tool to make supporting other teen creators and getting paid for your content easier. Learn and interact directly with the blockchain, all while earning real tokens.
 
