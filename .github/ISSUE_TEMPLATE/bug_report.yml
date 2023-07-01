@@ -1,0 +1,33 @@
+name: Cobweb Bug Report
+description: File a bug report
+title: "[Bug]: "
+assignees:
+  - kewbish
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+        Please note that feature requests will not be actively considered at this time, and that Cobweb tag reporting should be done through the Report page (flag icon on main page).
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Where did the bug occur? What did you expect to happen, and what actually happened?
+      value: "A bug happened in Cobweb: when I ..."
+    validations:
+      required: true
+  - type: textarea
+    id: version
+    attributes:
+      label: Version
+      description: What version of Cobweb are you running? Does the issue persist on the latest version of Cobweb?
+    validations:
+      required: true
+  - type: textarea
+    id: chrome-version
+    attributes:
+      label: Version
+      description: What version of Chrome are you running? Does the issue persist on the latest version of Chrome?
+    validations:
+      required: true
